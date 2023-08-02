@@ -1,0 +1,191 @@
+name: aylahealth
+description: A new Flutter project.
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.5 <3.0.0'
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  get:
+  shimmer:
+  flutter_svg:
+  fluttertoast:
+  hexcolor:
+  shared_preferences:
+#  flutter_spinkit:
+  page_view_indicators: ^2.0.0
+  flutter_holo_date_picker: ^1.1.0
+  intl: ^0.18.1
+  multiple_search_selection: ^2.5.0
+  http:
+  connectivity_plus:
+  provider:
+
+  firebase_core:
+  firebase_auth:
+  google_sign_in:
+#  flutter_facebook_auth:
+  flutter_login_facebook:
+  sign_in_with_apple: ^4.3.0
+
+  dropdown_button2: ^2.1.3
+  persistent_bottom_nav_bar:
+
+#  infinite_scroll_pagination: ^3.2.0
+#  flash: ^2.0.3+2
+#  sn_progress_dialog: ^1.1.3
+  page_transition: ^2.0.9
+#  bottom_picker:
+
+  function_tree:
+  fraction:
+  table_calendar: ^3.0.9
+#  paged_vertical_calendar: ^1.1.6
+#  cool_datepicker: ^1.0.5
+  custom_cupertino_picker: ^2.0.3
+#  syncfusion_flutter_calendar: ^20.1.60
+#  mat_month_picker_dialog: ^1.1.1
+  readmore: ^2.2.0
+  convert: ^3.1.1
+  path_provider: ^2.0.5
+
+
+
+
+
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+     - assets/
+     - assets/image/
+     - assets/aa/
+
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: Messina Sans
+      fonts:
+        - asset: fonts/messinasans/MessinaSans-Black.ttf
+        - asset: fonts/messinasans/MessinaSans-BlackItalic.ttf
+        - asset: fonts/messinasans/MessinaSans-Bold.ttf
+        - asset: fonts/messinasans/MessinaSans-BoldItalic.ttf
+        - asset: fonts/messinasans/MessinaSans-Book.ttf
+        - asset: fonts/messinasans/MessinaSans-BookItalic.ttf
+        - asset: fonts/messinasans/MessinaSans-Light.ttf
+        - asset: fonts/messinasans/MessinaSans-LightItalic.ttf
+        - asset: fonts/messinasans/MessinaSans-Regular.ttf
+        - asset: fonts/messinasans/MessinaSans-RegularItalic.ttf
+        - asset: fonts/messinasans/MessinaSans-SemiBold.ttf
+        - asset: fonts/messinasans/MessinaSans-SemiBoldItalic.ttf
+
+    - family: Playfair Display
+      fonts:
+        - asset: fonts/Playfair_Display/static/PlayfairDisplay-Medium.ttf
+
+    - family: SP Fonts
+      fonts:
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-Black.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-BlackItalic.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-BoldItalic.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-ExtraLight.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-ExtraLightItalic.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-Italic.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-Light.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-LightItalic.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-SemiBold.ttf
+        - asset: fonts/Source_Sans_Pro/SourceSansPro-SemiBoldItalic.ttf
+
+    - family: Playfair Display
+      fonts:
+        - asset: fonts/playfair font/PlayfairDisplay-Black.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-BlackItalic.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-Bold.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-BoldItalic.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-ExtraBold.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-ExtraBoldItalic.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-Italic.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-Medium.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-MediumItalic.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-Regular.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-SemiBold.ttf
+        - asset: fonts/playfair font/PlayfairDisplay-SemiBoldItalic.ttf
+
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages

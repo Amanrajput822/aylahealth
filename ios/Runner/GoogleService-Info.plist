@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>691184521472-vluv22j64h0ua9q0eflaheq8baf2e0gm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.691184521472-vluv22j64h0ua9q0eflaheq8baf2e0gm</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>691184521472-38dl7amcu041ek5ob73u05uarpr7vef8.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAuNoDukMegVzRBNFbW0KKi4ep2BjhoJiw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>691184521472</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.applite.aylahealth</string>
+	<key>PROJECT_ID</key>
+	<string>ayla-health-15cd4</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ayla-health-15cd4.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:691184521472:ios:88f0047e05da468f4a63e5</string>
+</dict>
+</plist>
