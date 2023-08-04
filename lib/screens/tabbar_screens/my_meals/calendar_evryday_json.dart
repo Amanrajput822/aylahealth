@@ -4,15 +4,17 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/styles/Fluttertoast_internet.dart';
 import 'My_Meals_Provider.dart';
 
 
 
 /// calendar year all months and dates json data create andd meals add function
-void json_add_api_data_calendar_json_fuction(context,String year, String month,String day,List<Map<String, dynamic>> mealDataList,int index) async{
+void json_add_api_data_calendar_json_fuction(context,String year, String month,String days,List<Map<String, dynamic>> mealDataList,int index) async{
   // removeDataFromFile();
+  bool recipe_check = false;
   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
-  List<Map<String, dynamic>> monthsData = createMonthsData();
+  List<Map<String, dynamic>> monthsData = createMonthsData(year);
 
   List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year);
 
@@ -22,31 +24,59 @@ void json_add_api_data_calendar_json_fuction(context,String year, String month,S
 
       if(lodeing_save_data[m]['days'][day]['mealData'].isNotEmpty){
         for(int j=0;j<lodeing_save_data[m]['days'][day]['mealData'].length;j++){
-          List<Map<String, dynamic>> mealDataList = [{
+          List<Map<String, dynamic>> mealDataList1 = [{
               "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString(),
               "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString(),
               "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString(),
               "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString()
           }];
-          addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'].toString(), mealDataList);
+
+          if(int.parse(month)==int.parse(lodeing_save_data[m]['month'])&&int.parse(days.toString())==int.parse(lodeing_save_data[m]['days'][day]['date'])){
+            if(lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString() == mealDataList[0]['rec_id']&&
+                lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString() == mealDataList[0]['mt_id']&&
+                lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString() == mealDataList[0]['note']&&
+                lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString() == mealDataList[0]['logged']
+            ){
+              print('###########');
+              recipe_check = true;
+            }
+          }
+          addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'].toString(), mealDataList1);
         }
       }
     }}
   }
+  print('recipe_check');
+  print(recipe_check);
+  if(recipe_check){
+    FlutterToast_message('This recipe already added');
+  }else{
+    addMealDataDynamically(monthsData, month.toString(), days.toString(), mealDataList);
+    String jsonData = jsonEncode(monthsData[int.parse(month)-1]['days']);
+    mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,index);
+    print(jsonData);
+  }
 
-  addMealDataDynamically(monthsData, month.toString(), day.toString(), mealDataList);
-  String jsonData = jsonEncode(monthsData[int.parse(month)-1]['days']);
-  mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,index);
-
-  print(jsonData);
 }
 /// meals data change function
 // remove_meals_fuction(2023,7,1,mealsModel.recipe_data_List![index * 2 + 1].recId.toString());
 void change_meals_fuction(context,String remove_year,String remove_month,String remove_day,remove_selectedRecId,remove_selectedMtId,int index,  String add_year, String add_month,String add_day,List<Map<String, dynamic>> add_mealDataList) async{
   // removeDataFromFile();
+  bool recipe_check = false;
+  print("remove_year:${remove_year.toString()}");
+  print("remove_month:${remove_month.toString()}");
+  print("remove_day:${remove_day.toString()}");
+  print("remove_selectedRecId:${remove_selectedRecId.toString()}");
+  print("remove_selectedMtId:${remove_selectedMtId.toString()}");
+  print("index:${index.toString()}");
+  print("add_year:${add_year.toString()}");
+  print("add_year:${add_year.toString()}");
+  print("add_month:${add_month.toString()}");
+  print("add_day:${add_day.toString()}");
+  print("add_mealDataList:${add_mealDataList.toString()}");
   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
-  List<Map<String, dynamic>> monthsData = createMonthsData();
+  List<Map<String, dynamic>> monthsData = createMonthsData(remove_year);
   List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(remove_year);
 
   if(lodeing_save_data.isNotEmpty){
@@ -62,28 +92,46 @@ void change_meals_fuction(context,String remove_year,String remove_month,String 
               "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'],
               "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged']
             }];
+
+            if(int.parse(add_month)==int.parse(lodeing_save_data[m]['month'])&&int.parse(add_day.toString())==int.parse(lodeing_save_data[m]['days'][day]['date'])){
+              if(lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString() == add_mealDataList[0]['rec_id']&&
+                  lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString() == add_mealDataList[0]['mt_id']&&
+                  lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString() == add_mealDataList[0]['note']&&
+                  lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString() == add_mealDataList[0]['logged']
+              ){
+                print('###########');
+                recipe_check = true;
+              }
+            }
             addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'], mealDataList);
           }
         }
-      }}
+      }
+    }
   }
 
-
-  removeMealDataObject(context,monthsData,int.parse(remove_month), int.parse(remove_day), remove_selectedRecId,remove_selectedMtId,remove_year);
-  String remove_jsonData = jsonEncode(monthsData[int.parse(remove_month)-1]['days']);
-  mealsModel.add_update_meals_api(context,remove_year.toString(),remove_month.toString(),remove_jsonData.toString(),monthsData,index);
-
-  Timer(Duration(seconds:2), () {
-
+  print('recipe_check');
+  print(recipe_check);
+  if(recipe_check){
+    FlutterToast_message('This recipe already added');
+  }else{
     addMealDataDynamically(monthsData, add_month.toString(), add_day.toString(), add_mealDataList);
-    String add_jsonData = jsonEncode(monthsData[int.parse(add_month)-1]['days']);
-    mealsModel.add_update_meals_api(context,add_year.toString(),add_month.toString(),add_jsonData.toString(),monthsData,index);
-});
+    removeMealDataObject(context,monthsData,int.parse(remove_month), int.parse(remove_day), remove_selectedRecId,remove_selectedMtId,remove_year);
+    index = index;
+    Timer(Duration(seconds:1), () {
+      String add_jsonData = jsonEncode(monthsData[int.parse(add_month)-1]['days']);
+      String remove_jsonData = jsonEncode(monthsData[int.parse(remove_month)-1]['days']);
+      mealsModel.add_update_meals_api(context,remove_year.toString(),remove_month.toString(),remove_jsonData.toString(),monthsData,index);
+      mealsModel.add_update_meals_api(context,add_year.toString(),add_month.toString(),add_jsonData.toString(),monthsData,index);
+
+    });
+  }
+
 }
 /// calendar year all months and dates json data create function
 void apidata_lode_calendar_json_fuction(String year, String month,List<Map<String, dynamic>> apimonthdata,) async{
   // removeDataFromFile();
-  List<Map<String, dynamic>> monthsData = createMonthsData();
+  List<Map<String, dynamic>> monthsData = createMonthsData(year);
 
   //List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year);
   List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year);
@@ -152,7 +200,7 @@ void remove_meals_fuction(context,String year,String month,String day,selectedRe
   // removeDataFromFile();
   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
-  List<Map<String, dynamic>> monthsData = createMonthsData();
+  List<Map<String, dynamic>> monthsData = createMonthsData(year);
   List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year);
 
   if(lodeing_save_data.isNotEmpty){
@@ -186,7 +234,7 @@ void update_json_create_fuction(context,String year,String month,String day,sele
   // removeDataFromFile();
   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
-  List<Map<String, dynamic>> monthsData = createMonthsData();
+  List<Map<String, dynamic>> monthsData = createMonthsData(year);
 
   List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year.toString());
   // List<Map<String, dynamic>> mealDataList = [
@@ -273,7 +321,7 @@ Future<void> removeDataFromFile(String year) async {
   print('Data removed from the file.');
 }
 /// calendar json create function
-List<Map<String, dynamic>> createMonthsData() {
+List<Map<String, dynamic>> createMonthsData(year) {
   List<String> monthNames = [
     "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"
   ];
@@ -281,11 +329,24 @@ List<Map<String, dynamic>> createMonthsData() {
   List<int> daysInMonths = [
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
   ];
-
+  List<int> daysInMonths_lepyear = [
+    31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+  ];
+  bool isLeapYear(int year) {
+    if (year % 4 != 0) {
+      return false; // Not divisible by 4, not a leap year
+    } else if (year % 100 != 0) {
+      return true; // Divisible by 4 and not divisible by 100, it's a leap year
+    } else if (year % 400 != 0) {
+      return false; // Divisible by 100 but not divisible by 400, not a leap year
+    } else {
+      return true; // Divisible by 400, it's a leap year
+    }
+  }
   List<Map<String, dynamic>> monthsData = [];
   for (int i = 0; i < monthNames.length; i++) {
     List<Map<String, dynamic>> daysData = [];
-    for (int day = 1; day <= daysInMonths[i]; day++) {
+    for (int day = 1; day <= (isLeapYear(int.parse(year))?daysInMonths_lepyear[i]:daysInMonths[i]); day++) {
       Map<String, dynamic> dayData = {
         'date': day.toString(),
         // 'comment': '',

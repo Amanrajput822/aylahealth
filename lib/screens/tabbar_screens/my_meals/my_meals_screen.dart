@@ -598,7 +598,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
   Widget add_mealsbuttonBtn(context) {
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
-    final recipeModel1 = Provider.of<RecipeData_Provider>(context, listen: false);
+    final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
     return Container(
       alignment: Alignment.center,
       child: Button(
@@ -613,18 +613,16 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
        /// calendar data save api
         mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1);
        /// select day and focused day save
-        recipeModel1.selectedDay_data( mealsModel.selectedDay);
-        recipeModel1.focusedDay_data( mealsModel.selectedDay);
-        recipeModel1.meal_plan_id_select_fuction_recipe(mealsModel.select_mealplanID);
+        recipeModel.selectedDay_data( mealsModel.selectedDay);
+        recipeModel.focusedDay_data( mealsModel.selectedDay);
+        recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.select_mealplanID);
        /// select meal plan id
-        print('???????????????????????');
-        print(mealsModel.select_mealplanID);
-        print('???????????????????????');
         mealsModel.meal_plan_id_select_fuction(mealsModel.select_mealplanID);
        /// date string type save
-        recipeModel1.selectedDate_string(DateFormat('EEEE d MMM').format(mealsModel.selectedDay!));
+        recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(mealsModel.selectedDay!));
        /// screen check function
-        recipeModel1.select_screen_data(true);
+        recipeModel.select_screen_data(true);
+        mealsModel.singleDayMeals_change(false);
         },
       ),
     );
@@ -1528,7 +1526,57 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                                               )),
                                             ),
                                             GestureDetector(
-                                              onTap: (){},
+                                              onTap: (){
+                                                Navigator.pop(context);
+                                                /// tab bar tab controller
+                                                Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+
+                                                /// screen check function
+                                                recipeModel.select_screen_data(true);
+
+
+
+                                                if(recipeModel.selectedDay != null){
+                                                  if(recipeModel.select_mealplanID_recipe!=null){
+                                                    if(recipe_data_List[index].recId!=null){
+                                                      //     json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+
+                                                      setState(() {
+                                                        for(int i=0;i<mealsModel.mealData!.length;i++){
+                                                          if(mealsModel.mealData![i].mtId==mealsModel.select_tab_data_list![index].mtId&&mealsModel.mealData![i].recId==mealsModel.select_tab_data_list![index].recId){
+                                                            mealsModel.singleDaySelectIndex(i);
+                                                            mealsModel.singleDayRecipeSelectIndex(index);
+                                                            mealsModel.singleDayMeals_change(true);
+                                                            // change_meals_fuction(context,
+                                                            //     mealsModel.single_day_data!.mlpYear.toString(),
+                                                            //     mealsModel.single_day_data!.mlpMonth.toString(),
+                                                            //     mealsModel.single_day_data!.date.toString(),
+                                                            //     mealsModel.single_day_data!.mealData![i].recId.toString(),
+                                                            //     mealsModel.single_day_data!.mealData![i].mtId.toString(),
+                                                            //     int.parse(mealsModel.select_mealplanID.toString())-1,
+                                                            //
+                                                            //     recipeModel.selectedDay.year.toString(),
+                                                            //     recipeModel.selectedDay.month.toString(),
+                                                            //     recipeModel.selectedDay.day.toString(),
+                                                            //     [{"rec_id":mealsModel.select_tab_data_list![index].recId.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":mealsModel.select_tab_data_list![index].note.toString(),"logged":mealsModel.select_tab_data_list![index].logged.toString()}]
+                                                            // );
+                                                          }
+                                                        }
+                                                      });
+
+                                                    }
+                                                    else{
+                                                      FlutterToast_message('Add to your calendar');
+                                                    }
+                                                  }
+                                                  else{
+                                                    FlutterToast_message('Choose an eating occasion');
+                                                  }
+                                                }else{
+                                                  FlutterToast_message('Please select Date');
+                                                }
+
+                                              },
                                               child: Container(
                                                   width: 30,
                                                   child: SvgPicture.asset('assets/image/edit 1.svg',width: 18,height: 18,color: colorShadowBlue,)),
@@ -1640,19 +1688,19 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
           if(recipeModel.selectedDay != null){
             if(recipeModel.select_mealplanID_recipe!=null){
               if(rec_id!=null){
-                json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+           //     json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
 
                 setState(() {
                   for(int i=0;i<mealsModel.mealData!.length;i++){
                     if(mealsModel.mealData![i].mtId==mealsModel.select_tab_data_list![index].mtId&&mealsModel.mealData![i].recId==mealsModel.select_tab_data_list![index].recId){
-
                       change_meals_fuction(context,
                           mealsModel.single_day_data!.mlpYear.toString(),
                           mealsModel.single_day_data!.mlpMonth.toString(),
                           mealsModel.single_day_data!.date.toString(),
                           mealsModel.single_day_data!.mealData![i].recId.toString(),
                           mealsModel.single_day_data!.mealData![i].mtId.toString(),
-                          (int.parse(mealsModel.select_tab_data_list![index].recId.toString())-1),
+                          int.parse(mealsModel.select_mealplanID.toString())-1,
+
                           recipeModel.selectedDay.year.toString(),
                           recipeModel.selectedDay.month.toString(),
                           recipeModel.selectedDay.day.toString(),

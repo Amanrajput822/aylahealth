@@ -329,6 +329,27 @@ class MyMeals_Provider with ChangeNotifier {
   Meal_Plan_Date_Data_Response? _single_day_data;
   Meal_Plan_Date_Data_Response? get single_day_data => _single_day_data;
 
+  int? _single_day_index ;
+  int? get single_day_index => _single_day_index;
+  void singleDaySelectIndex(newValue) {
+    _single_day_index = newValue;
+    notifyListeners();
+  }
+
+  int? _single_day_recipe_index ;
+  int? get single_day_recipe_index => _single_day_recipe_index;
+  void singleDayRecipeSelectIndex(newValue) {
+    _single_day_recipe_index = newValue;
+    notifyListeners();
+  }
+
+  bool? _single_day_meals_change = false;
+  bool? get single_day_meals_change => _single_day_meals_change;
+  void singleDayMeals_change(newValue) {
+    _single_day_meals_change = newValue;
+    notifyListeners();
+  }
+
   List<MealData_list>? _mealData = [];
   List<MealData_list>? get mealData =>_mealData;
 
@@ -400,17 +421,17 @@ class MyMeals_Provider with ChangeNotifier {
         select_tab_data_list!.clear();
         for(var item in mealData!){
           print(item);
-          print(int.parse(item.mtId.toString()) == get_meals_planlist_data![index].mtId);
-          if(int.parse(item.mtId.toString()) == get_meals_planlist_data![index].mtId){
+          print(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId);
+          if(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId){
             select_tab_data_list!.add(item);
             _boolDataList.add(false);
             print(select_tab_data_list!.length.toString());
           }
         }
-        _selecttab = index;
-        _select_mealplanID = get_meals_planlist_data![index].mtId.toString();
-        selecttab_fuction(index);
-        meal_plan_id_select_fuction(get_meals_planlist_data![index].mtId.toString());
+        _selecttab = selecttab;
+        _select_mealplanID = get_meals_planlist_data![selecttab!].mtId.toString();
+        selecttab_fuction(selecttab);
+        meal_plan_id_select_fuction(get_meals_planlist_data![selecttab!].mtId.toString());
 
        // notifyListeners();
         // Get.to(() => Pre_Question_Screen());

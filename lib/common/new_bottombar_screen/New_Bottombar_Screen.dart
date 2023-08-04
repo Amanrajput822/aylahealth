@@ -38,17 +38,21 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
     super.initState();
     final recipeModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);
     recipeModel.setcontrollervalue(0);
-    final recipeModel1 = Provider.of<MyMeals_Provider>(context, listen: false);
-    recipeModel1.get_meals_plantypelist_api();
+    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+    mealsModel.get_meals_plantypelist_api();
    // _controller = PersistentTabController(initialIndex: 0);
   }
   /// recipe screen list  ////
   void recipe_screen_tap() {
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
+    recipeModel.select_screen_data(false);
+    mealsModel.singleDayMeals_change(false);
     recipeModel.getRecipeData1(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
     final Duration duration = Duration(milliseconds: 400);
     final Curve curve = Curves.ease;
+
     if (recipeModel.controller!.hasClients) {
       var scrollPosition = recipeModel.controller!.position;
 
@@ -60,7 +64,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
     }}
 
   void meals_screen_tap() {
-    final recipeModel = Provider.of<MyMeals_Provider>(context, listen: false);
+    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     //  recipeModel.add_update_meals_api(context, 2020,recipeModel.selectedDay!.month,dayEvent_list);
 
    // recipeModel.get_meals_calendardata_api(context, recipeModel.selectedDay!.year,recipeModel.selectedDay!.month);

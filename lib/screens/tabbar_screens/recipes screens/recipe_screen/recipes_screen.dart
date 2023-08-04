@@ -538,6 +538,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                       print(recipeModel.select_mealplanID_recipe.toString());
 
                                     }else{
+                                      mealsModel.singleDayMeals_change(false);
                                       recipeModel.selectedDay_data(DateTime.now());
                                       recipeModel.meal_plan_id_select_fuction_recipe(null);
                                     }
@@ -687,6 +688,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                       if(recipeModel.meals_screen){
                                         print(recipeModel.select_mealplanID_recipe.toString());
                                       }else{
+                                        mealsModel.singleDayMeals_change(false);
                                         recipeModel.selectedDay_data(DateTime.now());
                                         recipeModel.meal_plan_id_select_fuction_recipe(null);
                                       }
@@ -1393,32 +1395,46 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
         btnColor: colorEnabledButton,
         onPressed: () {
          Navigator.pop(context);
-         // mealsModel.get_meals_calendardata_api(context, 2024,'7');
-        //  removeDataFromFile(_selectedDay!.year.toString());
-         print(recipeModel.selectedDay);
-         print(recipeModel.selectedDay.runtimeType);
-         if(recipeModel.selectedDay != null){
-           if(recipeModel.select_mealplanID_recipe!=null){
-             if(rec_id!=null){
-               json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+
+         if(mealsModel.single_day_meals_change!){
+           change_meals_fuction(context,
+               mealsModel.single_day_data!.mlpYear.toString(),
+               mealsModel.single_day_data!.mlpMonth.toString(),
+               mealsModel.single_day_data!.date.toString(),
+               mealsModel.single_day_data!.mealData![mealsModel.single_day_index!].recId.toString(),
+               mealsModel.single_day_data!.mealData![mealsModel.single_day_index!].mtId.toString(),
+               int.parse(mealsModel.select_mealplanID.toString())-1,
+
+               recipeModel.selectedDay.year.toString(),
+               recipeModel.selectedDay.month.toString(),
+               recipeModel.selectedDay.day.toString(),
+               [{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].note.toString(),"logged":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].logged.toString()}]
+           );
+         }
+         else{
+           if(recipeModel.selectedDay != null){
+             if(recipeModel.select_mealplanID_recipe!=null){
+               if(rec_id!=null){
+                 json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+               }
+               else{
+                 FlutterToast_message('Add to your calendar');
+               }
              }
              else{
-               FlutterToast_message('Add to your calendar');
+               FlutterToast_message('Choose an eating occasion');
              }
+           }else{
+             FlutterToast_message('Please select Date');
            }
-           else{
-             FlutterToast_message('Choose an eating occasion');
-           }
-         }else{
-           FlutterToast_message('Please select Date');
+         }
+         if(recipeModel.meals_screen){
+           Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
          }
 
+         recipeModel.select_screen_data(false);
+         mealsModel.singleDayMeals_change(false);
 
-         //String? array = months_json_fuction();
-         // (context as Element).reassemble();
-         // Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(PersistentTabController(initialIndex: 3));
-         //  Navigator.pop(context);
-         // (context as Element).reassemble();
         },
       ),
     );
