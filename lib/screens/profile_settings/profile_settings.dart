@@ -1,5 +1,5 @@
 import 'package:aylahealth/common/styles/const.dart';
-import 'package:aylahealth/screens/profile_settings/personal_settings.dart';
+import 'package:aylahealth/screens/profile_settings/personal_setting/personal_setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -56,7 +56,7 @@ class _Profile_SettingsState extends State<Profile_Settings> {
             sizedboxheight(10.0),
 
             commenlisttile('Personal settings', 'Edit personal details', (){
-              Get.to(() => Personal_Settings());
+              Get.to(() => Personal_Setting());
             })
           ],
         ),

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:aylahealth/screens/profile_settings/personal_settings.dart';
+import 'package:aylahealth/screens/profile_settings/personal_setting/personal_setting.dart';
+import 'package:aylahealth/screens/profile_settings/personal_setting/personal_setting_provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,14 +26,14 @@ import '../../models/onboarding_screens_models/Gender_List_Model.dart';
 import '../../models/profile/user_details_model.dart';
 
 class Edite_Profile_Screen extends StatefulWidget {
-  user_details_esponse? user_details_data;
-  int? edit;
-   Edite_Profile_Screen({Key? key ,this.user_details_data,this.edit}) : super(key: key);
+
+
+   Edite_Profile_Screen({Key? key }) : super(key: key);
 
   @override
   State<Edite_Profile_Screen> createState() => _Edite_Profile_ScreenState();
 }
-enum Product { Apple, Samsung, Oppo, Redmi }
+
 class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
 
   Future? _future;
@@ -49,24 +51,26 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
   TextEditingController txt_gender = TextEditingController();
 
   void api_dta(){
-    txt_firstname.text = widget.user_details_data!.custFirstname??"";
-    txt_lastname.text = widget.user_details_data!.custLastname??"";
-    selectedDate = widget.user_details_data!.custDOB??"";
-    txt_street_address.text = widget.user_details_data!.custAddress??"";
-    txt_suburb.text = widget.user_details_data!.custSuburb??"";
-    txt_state.text = widget.user_details_data!.custState??"";
-    txt_postcode.text = widget.user_details_data!.custPostcode??"";
-    txt_Phone_number.text = widget.user_details_data!.custPhone??"";
-    selectedgender = widget.user_details_data!.custGender.toString();
-    selectedvalue = widget.user_details_data!.genName.toString();
+    final uerdatamodal = Provider.of<userprofile_Provider>(context, listen: false);
 
-    print(widget.user_details_data!.custFirstname.toString());
-    print(widget.user_details_data!.custLastname.toString());
-    print(widget.user_details_data!.custAddress.toString());
-    print(widget.user_details_data!.custSuburb.toString());
-    print(widget.user_details_data!.custState.toString());
-    print(widget.user_details_data!.custPostcode.toString());
-    print(widget.user_details_data!.custPhone.toString());
+    txt_firstname.text = uerdatamodal.user_details_data!.custFirstname??"";
+    txt_lastname.text = uerdatamodal.user_details_data!.custLastname??"";
+    selectedDate = uerdatamodal.user_details_data!.custDOB??"";
+    txt_street_address.text = uerdatamodal.user_details_data!.custAddress??"";
+    txt_suburb.text = uerdatamodal.user_details_data!.custSuburb??"";
+    txt_state.text = uerdatamodal.user_details_data!.custState??"";
+    txt_postcode.text = uerdatamodal.user_details_data!.custPostcode??"";
+    txt_Phone_number.text = uerdatamodal.user_details_data!.custPhone??"";
+    selectedgender = uerdatamodal.user_details_data!.custGender.toString();
+    selectedvalue = uerdatamodal.user_details_data!.genName.toString();
+
+    print(uerdatamodal.user_details_data!.custFirstname.toString());
+    print(uerdatamodal.user_details_data!.custLastname.toString());
+    print(uerdatamodal.user_details_data!.custAddress.toString());
+    print(uerdatamodal.user_details_data!.custSuburb.toString());
+    print(uerdatamodal.user_details_data!.custState.toString());
+    print(uerdatamodal.user_details_data!.custPostcode.toString());
+    print(uerdatamodal.user_details_data!.custPhone.toString());
   }
 
   var success, message;
@@ -85,7 +89,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
       if (intenet != null && intenet) {
         // Internet Present Case
         showLoaderDialog_popup(context,"User Details ...");
-        widget.edit = 1;
+
       } else {
         FlutterToast_Internet();
       }
@@ -121,7 +125,8 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
             )}")
         );
         FlutterToast_message('Profile updated successfully');
-        Get.off(() => Personal_Settings(user_details_data:user_details_data,screen:1));
+      final uerdatamodal = Provider.of<userprofile_Provider>(context, listen: false);
+      uerdatamodal.customer_ditels_api(context);
 
     } else {
       Navigator.pop(context);
@@ -225,19 +230,22 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
     // TODO: implement initState
     super.initState();
     api_dta();
+    final uerdatamodal = Provider.of<userprofile_Provider>(context, listen: false);
+    uerdatamodal.customer_ditels_api(context);
     _future = gender_List_api();
   }
-  Future<bool> _willPopCallback() async {
-    if(widget.edit != 0){
-      Get.off(() => Personal_Settings(user_details_data:widget.user_details_data,screen:1));
-
-    }
-   else if(widget.edit == 0){
-     //Navigator.pop(context);
-      Get.off(() => Personal_Settings(user_details_data:widget.user_details_data,screen:1));
-    }
-    return true; // return true if the route to be popped
-  }
+  //
+  // Future<bool> _willPopCallback() async {
+  //   if(widget.edit != 0){
+  //     Get.off(() => Personal_Setting(user_details_data:widget.user_details_data,screen:1));
+  //
+  //   }
+  //  else if(widget.edit == 0){
+  //    //Navigator.pop(context);
+  //     Get.off(() => Personal_Setting(user_details_data:widget.user_details_data,screen:1));
+  //   }
+  //   return true; // return true if the route to be popped
+  // }
 
   Future<void> _asyncSimpleDialog(BuildContext context) async {
     return await showDialog<void>(
@@ -318,80 +326,77 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _willPopCallback,
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: colorWhite,
+      appBar: AppBar(
         backgroundColor: colorWhite,
-        appBar: AppBar(
-          backgroundColor: colorWhite,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: (){
-              _willPopCallback();
+        elevation: 0,
+        leading: IconButton(
+          onPressed: (){
+          Navigator.pop(context);
 
-            },
-            icon: Icon(Icons.arrow_back_ios_new,color: colorRichblack,),
-          ),
+          },
+          icon: Icon(Icons.arrow_back_ios_new,color: colorRichblack,),
         ),
-        body: Container(
-          height: deviceheight(context),
-          width: deviceWidth(context),
-          padding: EdgeInsets.all(15),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Personal settings',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontFamily: fontFamilyText,
-                      color: colorPrimaryColor,
-                      fontWeight: fontWeight600,
-                      overflow: TextOverflow.ellipsis
-                  ),
-                  maxLines: 1,
+      ),
+      body: Container(
+        height: deviceheight(context),
+        width: deviceWidth(context),
+        padding: EdgeInsets.all(15),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Personal settings',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontFamily: fontFamilyText,
+                    color: colorPrimaryColor,
+                    fontWeight: fontWeight600,
+                    overflow: TextOverflow.ellipsis
                 ),
-                sizedboxheight(20.0),
-                // Text('First name',
-                //   style: TextStyle(
-                //     fontSize: 14,
-                //     fontFamily: fontFamilyText,
-                //     color: colorRichblack,
-                //     fontWeight: fontWeight400,
-                //   ),
-                // ),
-                // sizedboxheight(5.0),
-                firstnamefield(),
-                sizedboxheight(15.0),
+                maxLines: 1,
+              ),
+              sizedboxheight(20.0),
+              // Text('First name',
+              //   style: TextStyle(
+              //     fontSize: 14,
+              //     fontFamily: fontFamilyText,
+              //     color: colorRichblack,
+              //     fontWeight: fontWeight400,
+              //   ),
+              // ),
+              // sizedboxheight(5.0),
+              firstnamefield(),
+              sizedboxheight(15.0),
 
-                lastnamefield(),
-                sizedboxheight(10.0),
+              lastnamefield(),
+              sizedboxheight(10.0),
 
-               dobfield(),
-                sizedboxheight(10.0),
+             dobfield(),
+              sizedboxheight(10.0),
 
-                addressfield(),
-                sizedboxheight(15.0),
+              addressfield(),
+              sizedboxheight(15.0),
 
-                suburbfield(),
-                sizedboxheight(15.0),
+              suburbfield(),
+              sizedboxheight(15.0),
 
-                statefield(),
-                sizedboxheight(15.0),
+              statefield(),
+              sizedboxheight(15.0),
 
-                postcodefield(),
-                sizedboxheight(15.0),
+              postcodefield(),
+              sizedboxheight(15.0),
 
-                mobilefield(),
-                sizedboxheight(15.0),
+              mobilefield(),
+              sizedboxheight(15.0),
 
-                Genderfield(),
-                sizedboxheight(20.0),
+              Genderfield(),
+              sizedboxheight(20.0),
 
-                saveBtn(context),
-                sizedboxheight(20.0),
-              ],
-            ),
+              saveBtn(context),
+              sizedboxheight(20.0),
+            ],
           ),
         ),
       ),

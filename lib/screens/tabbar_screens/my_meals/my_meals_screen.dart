@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:custom_cupertino_picker/custom_cupertino_picker.dart';
@@ -42,9 +43,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
   TabController? _controller;
 
-//  List<Month_all_Date_json_model> dayEvent_list = [];
   int? selectedIdx;
-  // List<String> dataList = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
 
   void handleTap(int index) {
     setState(() {
@@ -71,8 +70,10 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
     _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
     //  recipeModel.add_update_meals_api(context, recipeModel.selectedDay!.year,recipeModel.selectedDay!.month,jsonDataList);
-    mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0);
+    mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1");
     mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
+
+
   }
 
 
@@ -100,7 +101,16 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
   }
 
 
+  List<Event> _getEventsForDay(DateTime day) {
+    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
+    final kEvents = LinkedHashMap<DateTime, List<Event>>(
+      equals: isSameDay,
+      //  hashCode: getHashCode,
+    )..addAll(mealsModel.kEventSource!);
+
+    return kEvents[day] ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +219,10 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                   ],
                 ).paddingOnly(left: 17,right: 17,bottom: 12),
                 /// single month calendar
-                single_months_calendar(),
+                mealsModel.loading1
+                    ? Container(
+                  child: Center(),
+                ):  single_months_calendar(),
 
                 Text(mealsModel.user_select_day.toString(),style: TextStyle(
                     fontSize: 24,
@@ -611,7 +624,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         /// tab bar tab controller
         Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
        /// calendar data save api
-        mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1);
+        mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0");
        /// select day and focused day save
         recipeModel.selectedDay_data( mealsModel.selectedDay);
         recipeModel.focusedDay_data( mealsModel.selectedDay);
@@ -833,6 +846,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                     DateTime  lastDay =DateTime(dateNow.year, dateNow.month + index+1, 0);
 
                       return TableCalendar(
+                        eventLoader: _getEventsForDay,
                         rowHeight:48,
                         daysOfWeekHeight: 48,
 
@@ -864,6 +878,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                         ),
                         calendarStyle: CalendarStyle(
                           outsideDaysVisible: false,
+                          markersAnchor: 0,
+                          cellMargin: const EdgeInsets.all(8),
                           weekendTextStyle: TextStyle(color: colorBluePigment ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
                           defaultTextStyle:TextStyle(color: colorRichblack ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
                           disabledTextStyle:TextStyle(color: HexColor('#9E9E9E') ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
@@ -917,7 +933,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
     return Container(
       color: colorWhite,
       child: TableCalendar(
-        firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month-2),
+        eventLoader: _getEventsForDay,
+     firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month-2),
         lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month+3),
 
         focusedDay: mealsModel.focusedDay!,
@@ -926,8 +943,10 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         calendarFormat: mealsModel.calendarFormat,
 
         calendarStyle: CalendarStyle(
-          canMarkersOverflow: true,
-          outsideTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+
+            markersAnchor: 0,
+            canMarkersOverflow: true,
+            outsideTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
             cellMargin: const EdgeInsets.all(14),
             selectedTextStyle: TextStyle(color: colorWhite ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
             selectedDecoration:BoxDecoration(color: (mealsModel.selectedDay!.year == DateTime.now().year&&mealsModel.selectedDay!.month == DateTime.now().month&&mealsModel.selectedDay!.day == DateTime.now().day)?colorBluePigment:colorBlackRichBlack, shape: BoxShape.circle),
@@ -986,6 +1005,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         onPageChanged: (focusedDay) {
           setState(() {
             mealsModel.singlecalendar_focuseday(focusedDay);
+            mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
           //  print(focusedDay.toString());
           });
         },
@@ -994,6 +1014,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
             mealsModel.singlecalendar_selectedDay(selectedDay);
             mealsModel.singlecalendar_focuseday(focusedDay);
             mealsModel.singal_day_data_gate_api(selectedDay,true,0);
+
+            mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0");
           //  _selectedDay = selectedDay;
             mealsModel.select_tab_data_list!.clear();
             mealsModel.boolDataList.clear();
@@ -1359,7 +1381,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                                 Navigator.pop(context);
                                 DateFormat('EEEE d MMM yyyy').format(selectedDay);
                                 print(DateFormat('EE d MMM').format(selectedDay));
-                                mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+                                mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0");
                                 // only_year_json_create_fuction(selectedDay.year.toString(), selectedDay.month.toString(),selectedDay.day.toString());
 
                                 // int s = getTotalDaysInMonth(_selectedDay!.year, _selectedDay!.month);
@@ -1746,3 +1768,11 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
   }
 }
 
+class Event {
+  final String title;
+
+  const Event(this.title);
+
+  @override
+  String toString() => title;
+}

@@ -16,6 +16,7 @@ import '../../../models/meals plans/MealPlaneLestData_Model.dart';
 import '../../../models/meals plans/Meal_Plan_Date_Data_model.dart';
 import '../../../models/meals plans/Meals_Update_MealsPlane_nodel.dart';
 import '../../../models/month_json_model.dart';
+import 'my_meals_screen.dart';
 
 
 
@@ -37,7 +38,8 @@ class MyMeals_Provider with ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
-
+  bool _loading1 = false;
+  bool get loading1 => _loading1;
 
   /// tabbat tab index save /////
 
@@ -205,7 +207,17 @@ class MyMeals_Provider with ChangeNotifier {
   List<Month_all_Date_json_model> _jsondata =[];
   List<Month_all_Date_json_model> get jsondata => _jsondata;
 
-  Future<Get_Meals_Plane_model?> get_meals_calendardata_api(context, year,month,index) async {
+  List<Map<String, dynamic>>? _dataList;
+  List<Map<String, dynamic>>? get dataList => _dataList;
+
+  Map<DateTime, List<Event>>? _kEventSource ;
+  Map<DateTime, List<Event>>? get kEventSource =>_kEventSource;
+
+  Future<Get_Meals_Plane_model?> get_meals_calendardata_api(context, year,month,index, loader) async {
+    if(loader=="1"){
+      _loading1 = true;
+    }
+
     Get_Meals_Plane_model? result;
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -235,6 +247,10 @@ class MyMeals_Provider with ChangeNotifier {
             'Accept': 'application/json'
           }
       );
+      if(loader=="1"){
+        _loading1 = false;
+      }
+     // _loading1 = false;
       _success = (Get_Meals_Plane_model.fromJson(json.decode(response.body)).status);
       print("json.decode(response.body)${json.decode(response.body)}");
       if (success == 200) {
@@ -245,25 +261,38 @@ class MyMeals_Provider with ChangeNotifier {
 
         print('person.toString()');
         print('121212');
-        List<Map<String, dynamic>> dataList = (json.decode(jsondata) as List)
+         _dataList = (json.decode(jsondata) as List)
             .map((item) => item as Map<String, dynamic>)
             .toList();
+
+        _kEventSource = { for (var item in dataList!)
+          DateTime.utc(result.data!.mlpYear!, result.data!.mlpMonth!, int.parse(item['date'])) : List.generate(
+              item['mealData'].isEmpty? 0:1, (index) => Event('Event')) };
 
         print(dataList.runtimeType);
         print('person.toString()${dataList}');
         // for(int i = 0; i<person.length;i++){
         //   _jsondata.add(Month_all_Date_json_model(date: person[i]['date'], mealData:person[i]['comment'] ,comment: person[i]['mealData']));
         // }
-        apidata_lode_calendar_json_fuction(get_meals_calendar_data!.mlpYear.toString(), get_meals_calendar_data!.mlpMonth.toString(),dataList);
+        apidata_lode_calendar_json_fuction(get_meals_calendar_data!.mlpYear.toString(), get_meals_calendar_data!.mlpMonth.toString(),dataList!);
+      if(loader !="2"){
         singal_day_data_gate_api(selectedDay!,true,index);
+      }
+
         notifyListeners();
         // Get.to(() => Pre_Question_Screen());
       } else {
+        if(loader=="1"){
+          _loading1 = false;
+        }
         // Navigator.pop(context);
         print('else==============');
         FlutterToast_message('No Data');
       }
     } catch (e) {
+      if(loader=="1"){
+        _loading1 = false;
+      }
       error = e.toString();
     }
     return result;
@@ -366,6 +395,7 @@ class MyMeals_Provider with ChangeNotifier {
     _boolDataList[index] = newValue;
       notifyListeners();
   }
+
 
   Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
 

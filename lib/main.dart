@@ -1,6 +1,9 @@
+import 'package:aylahealth/screens/food_natrition_settings/Food_Nutrition_Settings_provider.dart';
+import 'package:aylahealth/screens/food_natrition_settings/Show_Updete_Settings_provider.dart';
 import 'package:aylahealth/screens/onbording_screen/pre_question_loding_screen.dart';
 import 'package:aylahealth/screens/onbording_screen/screen1.dart';
 import 'package:aylahealth/screens/onbording_screen/screen7.dart';
+import 'package:aylahealth/screens/profile_settings/personal_setting/personal_setting_provider.dart';
 import 'package:aylahealth/screens/subscription_screens/subscription_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/home.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/My_Meals_Provider.dart';
@@ -44,6 +47,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => RecipeData_Provider()),
         ChangeNotifierProvider(create: (context) => Bottom_NavBar_Provider()),
         ChangeNotifierProvider(create: (context) => MyMeals_Provider()),
+        ChangeNotifierProvider(create: (context) => userprofile_Provider()),
+        ChangeNotifierProvider(create: (context) => Food_Nutrition_Settings_provider()),
+       // ChangeNotifierProvider(create: (context) => Show_Updete_Settings_provider()),
       ],
      // create: (context) => RecipeDataProvider(),
       child: GetMaterialApp(

@@ -10,12 +10,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
+import '../profile_settings/personal_setting/personal_setting_provider.dart';
 import '../tabbar_screens/my_meals/calendar_evryday_json.dart';
 import '../../models/auth model/logout_model.dart';
 import '../auth/google_authentication.dart';
@@ -118,10 +120,14 @@ class _Profile_screenState extends State<Profile_screen> {
     // TODO: implement initState
     super.initState();
     userdetails();
-  }
+    final uerdatamodal = Provider.of<userprofile_Provider>(context, listen: false);
+    uerdatamodal.customer_ditels_api(context);
+
+}
   @override
   Widget build(BuildContext context) {
-    userdetails();
+   // userdetails();
+    final uerdatamodal = Provider.of<userprofile_Provider>(context);
     return Scaffold(
       backgroundColor: colorWhite,
       body: Container(
@@ -161,7 +167,10 @@ class _Profile_screenState extends State<Profile_screen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(user_name??'User Name',
+                            uerdatamodal.loading
+                                ? Container(
+                              child: Center(),
+                            ) : Text(uerdatamodal.user_details_data!.custFirstname!=null?"${uerdatamodal.user_details_data!.custFirstname!} ${uerdatamodal.user_details_data!.custLastname!}":"User Name",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: fontFamilyText,
@@ -197,7 +206,7 @@ class _Profile_screenState extends State<Profile_screen> {
                     ),
 
                     topcommenlisttile('Food & Nutrition Settings', 'assets/image/recipes.svg', (){
-                      Get.to(() => Food_Nutrition_Settings(screen:0));
+                      Get.to(() => Food_Nutrition_Settings());
                     }),
 
                     Divider(

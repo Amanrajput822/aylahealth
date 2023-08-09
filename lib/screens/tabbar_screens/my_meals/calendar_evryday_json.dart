@@ -7,8 +7,6 @@ import 'package:provider/provider.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
 import 'My_Meals_Provider.dart';
 
-
-
 /// calendar year all months and dates json data create andd meals add function
 void json_add_api_data_calendar_json_fuction(context,String year, String month,String days,List<Map<String, dynamic>> mealDataList,int index) async{
   // removeDataFromFile();
@@ -137,7 +135,7 @@ void apidata_lode_calendar_json_fuction(String year, String month,List<Map<Strin
   List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year);
   if(lodeing_save_data.isNotEmpty){
     for(int m=0;m<lodeing_save_data.length;m++){
-      if(lodeing_save_data[m] == month ){
+      if(lodeing_save_data[m]['month'] == month ){
         for(int day=0;day<apimonthdata.length;day++){
           print(apimonthdata[day]['mealData']);
           print(apimonthdata[day]['mealData'].isEmpty);
@@ -154,36 +152,43 @@ void apidata_lode_calendar_json_fuction(String year, String month,List<Map<Strin
           }
         }
       }
-      for(int day=0;day<lodeing_save_data[m]['days'].length;day++){
-        print(lodeing_save_data[m]['days'][day]['mealData']);
-        print(lodeing_save_data[m]['days'][day]['mealData'].isEmpty);
-        if(lodeing_save_data[m]['days'][day]['mealData'].isNotEmpty){
-          for(int j=0;j<lodeing_save_data[m]['days'][day]['mealData'].length;j++){
-            List<Map<String, dynamic>> mealDataList = [{
-              "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString(),
-              "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString(),
-              "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString(),
-              "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString()
-            }];
-            addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'].toString(), mealDataList);
+      else{
+        for(int day=0;day<lodeing_save_data[m]['days'].length;day++){
+          print(lodeing_save_data[m]['days'][day]['mealData']);
+          print(lodeing_save_data[m]['days'][day]['mealData'].isEmpty);
+          if(lodeing_save_data[m]['days'][day]['mealData'].isNotEmpty){
+            for(int j=0;j<lodeing_save_data[m]['days'][day]['mealData'].length;j++){
+              List<Map<String, dynamic>> mealDataList = [{
+                "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString(),
+                "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString(),
+                "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString(),
+                "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString()
+              }];
+              addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'].toString(), mealDataList);
+            }
           }
         }
-      }}
+      }
+    }
   }
   else{
     if(apimonthdata.isNotEmpty){
-      for(int day=0;day<apimonthdata.length;day++){
-        print(apimonthdata[day]['mealData']);
-        print(apimonthdata[day]['mealData'].isEmpty);
-        if(apimonthdata[day]['mealData'].isNotEmpty){
-          for(int j=0;j<apimonthdata[day]['mealData'].length;j++){
-            List<Map<String, dynamic>> mealDataList = [{
-              "rec_id": apimonthdata[day]['mealData'][j]['rec_id'].toString(),
-              "mt_id": apimonthdata[day]['mealData'][j]['mt_id'].toString(),
-              "note": apimonthdata[day]['mealData'][j]['note'].toString(),
-              "logged":apimonthdata[day]['mealData'][j]['logged'].toString()
-            }];
-            addMealDataDynamically(monthsData, month.toString(), apimonthdata[day]['date'].toString(), mealDataList);
+      for(int m=0;m<monthsData.length;m++){
+        if(monthsData[m]['month'] == month ){
+          for(int day=0;day<apimonthdata.length;day++){
+            print(apimonthdata[day]['mealData']);
+            print(apimonthdata[day]['mealData'].isEmpty);
+            if(apimonthdata[day]['mealData'].isNotEmpty){
+              for(int j=0;j<apimonthdata[day]['mealData'].length;j++){
+                List<Map<String, dynamic>> mealDataList = [{
+                  "rec_id": apimonthdata[day]['mealData'][j]['rec_id'].toString(),
+                  "mt_id": apimonthdata[day]['mealData'][j]['mt_id'].toString(),
+                  "note": apimonthdata[day]['mealData'][j]['note'].toString(),
+                  "logged":apimonthdata[day]['mealData'][j]['logged'].toString()
+                }];
+                addMealDataDynamically(monthsData, month.toString(), apimonthdata[day]['date'].toString(), mealDataList);
+              }
+            }
           }
         }
       }
