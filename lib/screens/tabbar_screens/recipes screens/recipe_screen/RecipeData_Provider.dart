@@ -132,7 +132,7 @@ class RecipeData_Provider with ChangeNotifier {
     notifyListeners();
   }
   /// Recipe like api function  ///
-  unRecipeData1(context,recipe_id,txt_search,fav_filter) async {
+  unlikeRecipeData1(context,recipe_id,txt_search,fav_filter) async {
     recipe_unlike_api(context,recipe_id,txt_search,fav_filter);
     notifyListeners();
   }

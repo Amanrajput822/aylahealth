@@ -10,6 +10,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
+import '../../../models/recipelist/recipe_like_unlike_data_model.dart';
 import 'calendar_evryday_json.dart';
 import '../../../models/meals plans/Get_Meals_Plane_model.dart';
 import '../../../models/meals plans/MealPlaneLestData_Model.dart';
@@ -212,6 +213,10 @@ class MyMeals_Provider with ChangeNotifier {
 
   Map<DateTime, List<Event>>? _kEventSource ;
   Map<DateTime, List<Event>>? get kEventSource =>_kEventSource;
+  void EventSource(event){
+    _kEventSource = event;
+    notifyListeners();
+  }
 
   Future<Get_Meals_Plane_model?> get_meals_calendardata_api(context, year,month,index, loader) async {
     if(loader=="1"){
@@ -274,7 +279,7 @@ class MyMeals_Provider with ChangeNotifier {
         // for(int i = 0; i<person.length;i++){
         //   _jsondata.add(Month_all_Date_json_model(date: person[i]['date'], mealData:person[i]['comment'] ,comment: person[i]['mealData']));
         // }
-        apidata_lode_calendar_json_fuction(get_meals_calendar_data!.mlpYear.toString(), get_meals_calendar_data!.mlpMonth.toString(),dataList!);
+        apidata_lode_calendar_json_fuction(context,get_meals_calendar_data!.mlpYear.toString(), get_meals_calendar_data!.mlpMonth.toString(),dataList!);
       if(loader !="2"){
         singal_day_data_gate_api(selectedDay!,true,index);
       }
@@ -396,6 +401,8 @@ class MyMeals_Provider with ChangeNotifier {
       notifyListeners();
   }
 
+  List<int>? _tabbarindex = [];
+  List<int>? get tabbarindex => _tabbarindex;
 
   Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
 
@@ -405,6 +412,7 @@ class MyMeals_Provider with ChangeNotifier {
    };
     select_tab_data_list!.clear();
     mealData!.clear();
+    tabbarindex!.clear();
     Meal_Plan_Date_Data_model? result;
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -443,7 +451,7 @@ class MyMeals_Provider with ChangeNotifier {
       if (success == 200) {
         if(loder) {
           _loading = false;
-        };
+        }
         final item = json.decode(response.body);
         result = (Meal_Plan_Date_Data_model.fromJson(item));
         _single_day_data = result.data;
@@ -457,6 +465,26 @@ class MyMeals_Provider with ChangeNotifier {
             _boolDataList.add(false);
             print(select_tab_data_list!.length.toString());
           }
+        }
+        tabbarindex!.clear();
+        _tabbarindex =[];
+        bool a = true;
+        for(int i =0;i<get_meals_planlist_data!.length;i++){
+           a = true;
+          for(int j =0;j<mealData!.length;j++){
+            if(a){
+              if (get_meals_planlist_data![i].mtId == int.parse(mealData![j].mtId!)){
+                tabbarindex!.add(get_meals_planlist_data![i].mtId!);
+                print("****************");
+                print(tabbarindex!.length);
+                print(get_meals_planlist_data![i].mtId.toString());
+                print("****************");
+                a = false;
+                notifyListeners();
+              }
+            }
+          }
+          a = true;
         }
         _selecttab = selecttab;
         _select_mealplanID = get_meals_planlist_data![selecttab!].mtId.toString();
@@ -482,4 +510,136 @@ class MyMeals_Provider with ChangeNotifier {
     }
     return result;
   }
+
+
+  /// recipe_like_api //////////////////
+
+  Future<recipe_like_unlike_data_model> recipe_like_api(recipe_id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _tokanget = prefs.getString('login_user_token');
+    _tokanget = _tokanget!.replaceAll('"', '');
+    _user_id = prefs.getString('login_user_id');
+    _user_id = _user_id!.replaceAll('"', '');
+
+    print(_tokanget.toString());
+    check().then((intenet) async {
+      if (intenet != null && intenet) {
+
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+
+    Map toMap() {
+      var map = Map<String, dynamic>();
+      map["rec_id"] = recipe_id.toString();
+      map["cust_id"] = _user_id.toString();
+
+      return map;
+    }
+    var response = await http.post(
+        Uri.parse(beasurl + markRecipeFavorite),
+        body: toMap(),
+        headers: {
+          'Authorization': 'Bearer $_tokanget',
+          'Accept': 'application/json'
+        }
+    );
+    if (response.statusCode == 200) {
+      print(response.body.toString());
+      _success = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .status);
+      _message = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .message);
+      print("success 123 ==${_success}");
+      if (_success == 200) {
+        // Navigator.pop(context);
+        FlutterToast_message(_message);
+        notifyListeners();
+        // Get.to(() => Pre_Question_Screen());
+      }
+    }
+    else {
+      print('else==============');
+      FlutterToast_message(_message);
+    }
+    return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
+  }
+
+  /// Recipe like api function  ///
+  likeRecipeData1(context,recipe_id) async {
+    recipe_like_api(recipe_id);
+    notifyListeners();
+  }
+  /// Recipe like api function  ///
+  unlikeRecipeData1(context,recipe_id,txt_search,fav_filter) async {
+    recipe_unlike_api(context,recipe_id,txt_search,fav_filter);
+    notifyListeners();
+  }
+  ////////////////////// recipe_unlike_api ///////////////////
+
+  Future<recipe_like_unlike_data_model> recipe_unlike_api(context,recipe_id,txt_search,fav_filter) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _tokanget = prefs.getString('login_user_token');
+    _tokanget = _tokanget!.replaceAll('"', '');
+    _user_id = prefs.getString('login_user_id');
+    _user_id = _user_id!.replaceAll('"', '');
+
+    print(_tokanget.toString());
+    check().then((intenet) async {
+      if (intenet != null && intenet) {
+
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+
+    Map toMap() {
+      var map = Map<String, dynamic>();
+      map["rec_id"] = recipe_id.toString();
+      map["cust_id"] = _user_id.toString();
+      return map;
+    }
+    var response = await http.post(
+        Uri.parse(beasurl + unmarkRecipeFromFavorite),
+        body: toMap(),
+        headers: {
+          'Authorization': 'Bearer $_tokanget',
+          'Accept': 'application/json'
+        }
+    );
+    if (response.statusCode == 200) {
+      print(response.body.toString());
+      _success = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .status);
+      _message = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .message);
+      print("success 123 ==${_success}");
+      if (_success == 200) {
+
+        FlutterToast_message(_message);
+        // if(fav_filter=='1'){
+        //   getRecipeData(context,txt_search.toString(),fav_filter,select_cat_id,save_eatingPattern_id,selected_filter);
+        //
+        //   //getRecipeData(context,search_test,favorite,cat_id,eat_id,tagIds_list)
+        // }
+        notifyListeners();
+        // Get.to(() => Pre_Question_Screen());
+      }
+    }
+    else {
+
+      print('else==============');
+      FlutterToast_message(_message);
+
+    }
+    return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
+  }
+
 }

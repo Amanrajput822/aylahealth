@@ -495,7 +495,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                                 }
                                                 else if(recipeModel.recipe_data_List![index * 2].favStatus == 1){
                                                   recipeModel.recipe_data_List![index * 2].favStatus = 0;
-                                                  recipeModel.unRecipeData1(context,recipeModel.recipe_data_List![index * 2].recId,txt_search.text.toString(),recipeModel.fav_filter);
+                                                  recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![index * 2].recId,txt_search.text.toString(),recipeModel.fav_filter);
                                                   if(recipeModel.fav_filter =='1'){
                                                     recipeModel.getRecipeData(context,txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                                                   }
@@ -540,6 +540,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                     }else{
                                       mealsModel.singleDayMeals_change(false);
                                       recipeModel.selectedDay_data(DateTime.now());
+                                      recipeModel.selectedDate_string(null);
                                       recipeModel.meal_plan_id_select_fuction_recipe(null);
                                     }
                                     add_meals_bottom_sheet(recipeModel.recipe_data_List!,(index * 2));
@@ -642,7 +643,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                                   }
                                                   else if(recipeModel.recipe_data_List![index * 2+1].favStatus == 1){
                                                     recipeModel.recipe_data_List![index * 2+1].favStatus = 0;
-                                                    recipeModel.unRecipeData1(context,recipeModel.recipe_data_List![index * 2+1].recId,txt_search.text.toString(),recipeModel.fav_filter);
+                                                    recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![index * 2+1].recId,txt_search.text.toString(),recipeModel.fav_filter);
                                                     if(recipeModel.fav_filter =='1'){
                                                       recipeModel.getRecipeData(context,txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                                                     }
@@ -690,6 +691,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                       }else{
                                         mealsModel.singleDayMeals_change(false);
                                         recipeModel.selectedDay_data(DateTime.now());
+                                        recipeModel.selectedDate_string(null);
                                         recipeModel.meal_plan_id_select_fuction_recipe(null);
                                       }
                                       add_meals_bottom_sheet(recipeModel.recipe_data_List!,(index * 2+1));
@@ -1394,9 +1396,10 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
         btnWidth: deviceWidth(context,0.92),
         btnColor: colorEnabledButton,
         onPressed: () {
-         Navigator.pop(context);
+
 
          if(mealsModel.single_day_meals_change!){
+           Navigator.pop(context);
            change_meals_fuction(context,
                mealsModel.single_day_data!.mlpYear.toString(),
                mealsModel.single_day_data!.mlpMonth.toString(),
@@ -1415,6 +1418,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
            if(recipeModel.selectedDay != null){
              if(recipeModel.select_mealplanID_recipe!=null){
                if(rec_id!=null){
+                 Navigator.pop(context);
                  json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                }
                else{

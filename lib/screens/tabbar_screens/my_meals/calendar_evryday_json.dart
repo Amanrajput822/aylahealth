@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:aylahealth/screens/tabbar_screens/my_meals/my_meals_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -127,9 +128,10 @@ void change_meals_fuction(context,String remove_year,String remove_month,String 
 
 }
 /// calendar year all months and dates json data create function
-void apidata_lode_calendar_json_fuction(String year, String month,List<Map<String, dynamic>> apimonthdata,) async{
+void apidata_lode_calendar_json_fuction(context,String year, String month,List<Map<String, dynamic>> apimonthdata,) async{
   // removeDataFromFile();
   List<Map<String, dynamic>> monthsData = createMonthsData(year);
+  final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
   //List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year);
   List<Map<String, dynamic>> lodeing_save_data = await loadMonthsDataFromFile(year);
@@ -165,6 +167,8 @@ void apidata_lode_calendar_json_fuction(String year, String month,List<Map<Strin
                 "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString()
               }];
               addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'].toString(), mealDataList);
+
+
             }
           }
         }
@@ -194,6 +198,13 @@ void apidata_lode_calendar_json_fuction(String year, String month,List<Map<Strin
       }
     } else{}
   }
+
+  // for(int m=0;m<monthsData.length;m++){
+  //   mealsModel.EventSource( { for (var item in monthsData[int.parse(month)-1]['days'])
+  //     DateTime.utc(int.parse(year), int.parse(month), int.parse(item['date'])) : List.generate(
+  //         item['mealData'].isEmpty? 0:1, (index) => Event('Event')) });
+  //
+  // }
 
   String jsonData = jsonEncode(monthsData[int.parse(month)-1]['days']);
   saveMonthsDataToFile(monthsData,year);
