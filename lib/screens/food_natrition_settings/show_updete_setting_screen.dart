@@ -53,7 +53,7 @@ class Show_Updete_Settings_Screen extends StatefulWidget {
 }
 
 class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Screen> {
-
+  final focusKey=FocusNode();
   Future? _future;
   Future? _future3;
   Future? _future4;
@@ -746,7 +746,9 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
                                           // fontFamily: 'Nunito',
                                           fontFamily: 'Messina Sans',
                                           fontWeight: FontWeight.w400,
-                                          fontSize:  16),
+                                          fontSize:  16,
+
+                                      ),
 
                                       searchFieldBoxDecoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
@@ -778,7 +780,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
                                           color: colorWhite
                                       ),
                                       maxSelectedItems: countries!.length,
-                                      textFieldFocus:  FocusNode(),
+                                      textFieldFocus:  focusKey,
 
                                     ),
                                   );

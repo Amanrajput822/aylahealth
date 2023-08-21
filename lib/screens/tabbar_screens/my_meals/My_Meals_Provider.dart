@@ -42,6 +42,14 @@ class MyMeals_Provider with ChangeNotifier {
   bool _loading1 = false;
   bool get loading1 => _loading1;
 
+  int? _selectedIdx = null;
+  int? get selectedIdx => _selectedIdx;
+
+  void handleTap(int index) {
+    _selectedIdx = index;
+   notifyListeners();
+  }
+
   /// tabbat tab index save /////
 
   int? _selecttab = 0;

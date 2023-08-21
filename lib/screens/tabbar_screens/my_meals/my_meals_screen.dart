@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/ShoppingListScreen.dart';
 import 'package:custom_cupertino_picker/custom_cupertino_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,13 +46,13 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
   TabController? _controller;
 
-  int? selectedIdx;
+  // int? selectedIdx;
 
-  void handleTap(int index) {
-    setState(() {
-      selectedIdx = index;
-    });
-  }
+  // void handleTap(int index) {
+  //   setState(() {
+  //     selectedIdx = index;
+  //   });
+  // }
 
 
   /// initState ///
@@ -141,23 +142,29 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                   children: [
                     InkWell(
                       onTap: () {
-                        setState(() {
+                        if(mealsModel.notes){
+                          setState(() {
 
-                          mealsModel.listviewCalendar_hideShow(true);
-                          mealsModel.selectDate(DateTime.now());
-                          mealsModel.listviwe_months_set(12);
-                          mealsModel.listviwe_controller(ScrollController());
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            // Calculate the initial scroll offset to center the list
-                            double itemHeight = 350.0; // Set the height of each list item
-                            int initialIndex = mealsModel.selectedDay!.month; // Set the index of the item you want to center on
-                            double initialOffset = (initialIndex * itemHeight) -
-                                (MediaQuery.of(context).size.height / 2) +
-                                (itemHeight / 2);
-                            mealsModel.scrollController!.jumpTo(initialOffset);
+                            mealsModel.listviewCalendar_hideShow(true);
+                            mealsModel.selectDate(DateTime.now());
+                            mealsModel.listviwe_months_set(12);
+                            mealsModel.listviwe_controller(ScrollController());
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              // Calculate the initial scroll offset to center the list
+                              double itemHeight = 350.0; // Set the height of each list item
+                              int initialIndex = mealsModel.selectedDay!.month; // Set the index of the item you want to center on
+                              double initialOffset = (initialIndex * itemHeight) -
+                                  (MediaQuery.of(context).size.height / 2) +
+                                  (itemHeight / 2);
+                              mealsModel.scrollController!.jumpTo(initialOffset);
+                            });
+
                           });
+                        }
+                        else{
+                          warning_popup();
+                        }
 
-                        });
                       },
                       child: Row(
                         children: [
@@ -175,41 +182,47 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                     ),
                     InkWell(
                       onTap: (){
-                        if(today_check!=today){
-                          setState(() {
-                            mealsModel.singlecalendarstartdate_set(DateTime.now());
-                            mealsModel.singlecalendar_selectedDay(DateTime.now());
-                            final aDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-                            if(aDate == today) {
-                              mealsModel.userSelectDay_set('Today');
-                              today_check = today;
-                            }
-                            mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
-                            //  _selectedDay = selectedDay;
-                            mealsModel.select_tab_data_list!.clear();
-                            mealsModel.boolDataList.clear();
-                            for(var item in mealsModel.mealData!){
-                              print(item);
-                              print(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId);
-                              if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
-                               setState(() {
-                                 print('value6');
-                                 print(item.mtId.toString());
-                                 mealsModel.boolDataList.add(false);
-                                 mealsModel.select_tab_data_list!.add(item);
-
-                                 print(mealsModel.select_tab_data_list!.length.toString());
-                               });
-
+                        if(mealsModel.notes){
+                          if(today_check!=today){
+                            setState(() {
+                              mealsModel.singlecalendarstartdate_set(DateTime.now());
+                              mealsModel.singlecalendar_selectedDay(DateTime.now());
+                              final aDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+                              if(aDate == today) {
+                                mealsModel.userSelectDay_set('Today');
+                                today_check = today;
                               }
-                            }
-                            _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
-                            mealsModel.selecttab_fuction(0);
-                            mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
-                          });
+                              mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
+                              //  _selectedDay = selectedDay;
+                              mealsModel.select_tab_data_list!.clear();
+                              mealsModel.boolDataList.clear();
+                              for(var item in mealsModel.mealData!){
+                                print(item);
+                                print(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId);
+                                if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
+                                  setState(() {
+                                    print('value6');
+                                    print(item.mtId.toString());
+                                    mealsModel.boolDataList.add(false);
+                                    mealsModel.select_tab_data_list!.add(item);
+
+                                    print(mealsModel.select_tab_data_list!.length.toString());
+                                  });
+
+                                }
+                              }
+                              _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
+                              mealsModel.selecttab_fuction(0);
+                              mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+                            });
+                          }
+                          mealsModel.multiple_calender_selected(DateTime.now());
+                          mealsModel.singlecalendar_focuseday(DateTime.now());
                         }
-                        mealsModel.multiple_calender_selected(DateTime.now());
-                        mealsModel.singlecalendar_focuseday(DateTime.now());
+                        else{
+                          warning_popup();
+                        }
+
                       },
                       child: Text('Today',style: TextStyle(
                         color: today_check==today?colorShadowBlue:colorBluePigment,
@@ -246,340 +259,347 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                     children: [
                       for(int i =0;i<mealsModel.get_meals_planlist_data!.length;i++)...[
                         Container(
-                            child:Stack(
-                              children: [
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: mealsModel.select_tab_data_list!.length,
-                                    padding: const EdgeInsets.only(bottom: 45),
-                                    itemBuilder: (BuildContext context,int index){
-                                      // final itam = recipeModel.select_tab_data_list![index];
-                                      final recipe_model = Provider.of<RecipeData_Provider>(context, listen: false);
-                                      return  Container(
-                                        width: deviceWidth(context),
-                                        color: colorWhite,
-                                        padding: const EdgeInsets.only(bottom: 20),
-                                        child: SingleChildScrollView(
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                                                    context,
-                                                    settings: const RouteSettings(name: "/Recipes_Screen"),
-                                                    screen:  Recipes_Description_Screen(rec_id:mealsModel.select_tab_data_list![index].recId,rec_index:index,txt_search:txt_search.text.toString(),fav_filter:'0',screen:"meals"),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  height:deviceheight(context,0.22),
-                                                  width: deviceWidth(context),
-                                                  color: colorWhite,
-                                                  child: Stack(
-                                                    children: [
-                                                      Container(
-                                                        height: deviceheight(context,0.22),
-                                                        width: deviceWidth(context),
-                                                        child:ClipRRect(
-                                                          borderRadius: BorderRadius.circular(5.0),
-                                                          child: Image.network(mealsModel.select_tab_data_list![index].image??"",fit: BoxFit.fill,
-                                                            loadingBuilder: (BuildContext context, Widget child,
-                                                                ImageChunkEvent? loadingProgress) {
-                                                              if (loadingProgress == null) return child;
-                                                              return Center(
-                                                                child: CircularProgressIndicator(
-                                                                  value: loadingProgress.expectedTotalBytes != null
-                                                                      ? loadingProgress.cumulativeBytesLoaded /
-                                                                      loadingProgress.expectedTotalBytes!
-                                                                      : null,
-                                                                ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: deviceheight(context,0.22),
-                                                        width: deviceWidth(context),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(20.0),
-                                                          child: Row(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            children: [
+                            child:SingleChildScrollView(
+                              physics: ScrollPhysics(),
+                              child: Column(
+                                children: [
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: mealsModel.select_tab_data_list!.length,
+                                      itemBuilder: (BuildContext context,int index){
+                                        // final itam = recipeModel.select_tab_data_list![index];
+                                        final recipe_model = Provider.of<RecipeData_Provider>(context, listen: false);
+                                        return  Container(
+                                          width: deviceWidth(context),
+                                          color: colorWhite,
+                                          padding: const EdgeInsets.only(bottom: 10),
+                                          child: SingleChildScrollView(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    if(mealsModel.notes){
+                                                      PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                                                        context,
+                                                        settings: const RouteSettings(name: "/Recipes_Screen"),
+                                                        screen:  Recipes_Description_Screen(rec_id:mealsModel.select_tab_data_list![index].recId,rec_index:index,txt_search:txt_search.text.toString(),fav_filter:'0',screen:"meals"),
+                                                      );
+                                                    }
+                                                    else{
+                                                      warning_popup();
+                                                    }
 
-                                                              InkWell(
-                                                                onTap: (){
-                                                                  setState(() {
-                                                                    if(mealsModel.select_tab_data_list![index].favStatus == 0){
-                                                                      mealsModel.select_tab_data_list![index].favStatus = 1;
-                                                                      recipe_model.likeRecipeData1(context,mealsModel.select_tab_data_list![index].recId);
-                                                                    }
-                                                                    else if(mealsModel.select_tab_data_list![index].favStatus == 1){
-                                                                      mealsModel.select_tab_data_list![index].favStatus = 0;
-                                                                      recipe_model.unlikeRecipeData1(context,mealsModel.select_tab_data_list![index].recId,'','0');
-                                                                    }
-                                                                  });
-                                                                },
-                                                                child: Container(
-                                                                  height: 28,width: 28,
-                                                                  alignment: Alignment.topRight,
-                                                                  child:mealsModel.select_tab_data_list![index].favStatus==1?
-                                                                  Center(child: SvgPicture.asset('assets/image/Heart_lick.svg',height: 26,)):
-                                                                  Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg',height: 26,)),
-                                                                ),
-                                                              ),
-                                                            ],
+                                                  },
+                                                  child: Container(
+                                                    height:deviceheight(context,0.22),
+                                                    width: deviceWidth(context),
+                                                    color: colorWhite,
+                                                    child: Stack(
+                                                      children: [
+                                                        Container(
+                                                          height: deviceheight(context,0.22),
+                                                          width: deviceWidth(context),
+                                                          child:ClipRRect(
+                                                            borderRadius: BorderRadius.circular(5.0),
+                                                            child: Image.network(mealsModel.select_tab_data_list![index].image??"",fit: BoxFit.fill,
+                                                              loadingBuilder: (BuildContext context, Widget child,
+                                                                  ImageChunkEvent? loadingProgress) {
+                                                                if (loadingProgress == null) return child;
+                                                                return Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    value: loadingProgress.expectedTotalBytes != null
+                                                                        ? loadingProgress.cumulativeBytesLoaded /
+                                                                        loadingProgress.expectedTotalBytes!
+                                                                        : null,
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),
                                                           ),
                                                         ),
+                                                        SizedBox(
+                                                          height: deviceheight(context,0.22),
+                                                          width: deviceWidth(context),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(right: 15.0,top: 12),
+                                                            child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              children: [
+
+                                                                InkWell(
+                                                                  onTap: (){
+                                                                    setState(() {
+                                                                      if(mealsModel.select_tab_data_list![index].favStatus == 0){
+                                                                        mealsModel.select_tab_data_list![index].favStatus = 1;
+                                                                        recipe_model.likeRecipeData1(context,mealsModel.select_tab_data_list![index].recId);
+                                                                      }
+                                                                      else if(mealsModel.select_tab_data_list![index].favStatus == 1){
+                                                                        mealsModel.select_tab_data_list![index].favStatus = 0;
+                                                                        recipe_model.unlikeRecipeData1(context,mealsModel.select_tab_data_list![index].recId,'','0');
+                                                                      }
+                                                                    });
+                                                                  },
+                                                                  child: Container(
+                                                                    height: 28,width: 28,
+                                                                    alignment: Alignment.topRight,
+                                                                    child:mealsModel.select_tab_data_list![index].favStatus==1?
+                                                                    Center(child: SvgPicture.asset('assets/image/Heart_lick.svg',height: 26,)):
+                                                                    Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg',height: 26,)),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                sizedboxheight(10.0),
+                                                Text(mealsModel.select_tab_data_list![index].recTitle??"",
+                                                  style:  TextStyle(
+                                                    fontSize: 24,
+                                                    fontFamily: fontFamilyText,
+                                                    color: colorRichblack,
+                                                    fontWeight: fontWeight600,
+                                                  ),),
+                                                Container(
+                                                  width: deviceWidth(context),
+                                                  height: 40,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      /// meals remove button
+                                                      remove_meals_button(index),
+
+                                                      sizedboxwidth(10.0),
+                                                      InkWell(
+                                                        onTap: (){
+                                                          if(mealsModel.notes){
+                                                            if(mealsModel.select_tab_data_list![index].logged == '0'){
+                                                              final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+
+                                                              recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.select_tab_data_list![index].mtId);
+                                                              recipeModel.selectedDay_data(mealsModel.selectedDay);
+                                                              recipeModel.focusedDay_data(mealsModel.selectedDay);
+
+                                                              recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(mealsModel.selectedDay!));
+
+                                                              add_meals_bottom_sheet(mealsModel.select_tab_data_list,index);
+                                                            }
+                                                            else{
+                                                              FlutterToast_message('Recipe Logged');
+                                                            }
+                                                          }
+                                                          else{
+                                                            warning_popup();
+                                                          }
+
+
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            SvgPicture.asset('assets/image/chenge.svg',width: 18,height: 18,color: colorShadowBlue),
+                                                            sizedboxwidth(5.0),
+                                                            Text('Change',style:  TextStyle(
+                                                              fontSize: 14,
+                                                              fontFamily: fontFamilyText,
+                                                              color: colorShadowBlue,
+                                                              fontWeight: fontWeight600,
+                                                            ),),
+
+                                                          ],
+                                                        ),
                                                       ),
+                                                      sizedboxwidth(10.0),
+
+                                                      /// log logged checkbox button
+                                                      LogUnloggrd_checkbox(index),
+
                                                     ],
                                                   ),
                                                 ),
-                                              ),
-                                              sizedboxheight(10.0),
-                                              Text(mealsModel.select_tab_data_list![index].recTitle??"",
-                                                style:  TextStyle(
-                                                  fontSize: 24,
-                                                  fontFamily: fontFamilyText,
-                                                  color: colorRichblack,
-                                                  fontWeight: fontWeight600,
-                                                ),),
-                                              Container(
-                                                width: deviceWidth(context),
-                                                height: 40,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    /// meals remove button
-                                                    remove_meals_button(index),
+                                                Container(
+                                                  width: deviceWidth(context),
+                                                 // height: 80,
+                                                  decoration: BoxDecoration(
+                                                      color: HexColor('#F5F7FB'),
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      border: Border.all(color: index == mealsModel.selectedIdx?colorBluePigment:HexColor('#F5F7FB'))
+                                                  ),
 
-                                                    sizedboxwidth(10.0),
-                                                    InkWell(
-                                                      onTap: (){
-                                                        if(mealsModel.select_tab_data_list![index].logged == '0'){
-                                                          final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
-                                                          recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.select_tab_data_list![index].mtId);
-                                                          recipeModel.selectedDay_data(mealsModel.selectedDay);
-                                                          recipeModel.focusedDay_data(mealsModel.selectedDay);
-
-                                                          recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(mealsModel.selectedDay!));
-
-                                                          add_meals_bottom_sheet(mealsModel.select_tab_data_list,index);
-                                                        }
-                                                        else{
-                                                          FlutterToast_message('Recipe Logged');
-                                                        }
-                                                      },
-                                                      child: Row(
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          SvgPicture.asset('assets/image/chenge.svg',width: 18,height: 18,color: colorShadowBlue),
-                                                          sizedboxwidth(5.0),
-                                                          Text('Change',style:  TextStyle(
-                                                            fontSize: 14,
-                                                            fontFamily: fontFamilyText,
-                                                            color: colorShadowBlue,
-                                                            fontWeight: fontWeight600,
+                                                          Text('Notes',style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: colorRichblack,
+                                                              fontFamily: fontFamilyText,
+                                                              fontWeight: fontWeight400
                                                           ),),
+                                                          index == mealsModel.selectedIdx?Container(height: 10):SelectableContainer(
+                                                              isSelected: index == mealsModel.selectedIdx,
+                                                              onTap: () {
+                                                                if(mealsModel.notes){
+                                                                  mealsModel.handleTap(index);
+                                                                  mealsModel.notes_fuction(false);
+                                                                  mealsModel.updateItem(index,true);
+                                                                  txt_search.text = mealsModel.select_tab_data_list![index].note.toString();
+                                                                }
+                                                               else{
+                                                                  warning_popup();
+                                                                }
+
+                                                              }
+                                                          ),
 
                                                         ],
+                                                      ).paddingOnly(left: 10,right: 10,top: 8),
+                                                      index == mealsModel.selectedIdx?AllInputDesign(
+                                                        higthtextfield: 54.0,
+
+                                                        // inputHeaderName: 'Email',
+                                                        // key: Key("email1"),
+                                                        textCapitalization:TextCapitalization.sentences,
+                                                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                                                        hintText: 'Add a recipe note',
+                                                        hintTextStyleColor: colorShadowBlue,
+                                                        controller: txt_search,
+                                                        textStyleColors:HexColor('#3B4250'),
+
+                                                        fillColor:HexColor('#F5F7FB'),
+                                                        autofillHints: const [AutofillHints.name],
+                                                        textInputAction: TextInputAction.newline,
+                                                        minLines: 1,
+                                                        maxLines: 2,
+
+                                                        // allow user to enter 5 line in textfield
+                                                        keyboardType: TextInputType.multiline,
+                                                        validatorFieldValue: 'notes',
+
+
+                                                      ).paddingOnly(bottom: 1): Container(
+                                                          width: deviceWidth(context),
+                                                          color: HexColor('#F5F7FB'),
+                                                          alignment: Alignment.topLeft,
+                                                          child:ReadMoreText(
+                                                            mealsModel.select_tab_data_list![index].note==""?'\nAdd a recipe note':mealsModel.select_tab_data_list![index].note??"",
+                                                            trimLines: 2,
+
+                                                            //  colorClickableText: Colors.pink,
+
+                                                            trimMode: TrimMode.Line,
+                                                            trimCollapsedText: ' read more',
+                                                            trimExpandedText: ' read less',
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: colorShadowBlue,
+                                                                fontFamily: fontFamilyText,
+                                                                fontWeight: fontWeight400
+                                                            ),
+                                                            lessStyle: TextStyle(
+                                                                fontSize: 14,
+                                                                color: colorBluePigment,
+                                                                fontFamily: fontFamilyText,
+                                                                fontWeight: fontWeight400
+                                                            ),
+                                                            moreStyle: TextStyle(
+                                                                fontSize: 14,
+                                                                color: colorBluePigment,
+                                                                fontFamily: fontFamilyText,
+                                                                fontWeight: fontWeight400,
+                                                            ),
+                                                          )
+
+                                                      ).paddingOnly(left: 10,right: 10,bottom: 8)
+
+                                                    ],
+                                                  ),
+                                                ),
+                                                sizedboxheight(15.0),
+                                                index == mealsModel.selectedIdx? Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    // cancelBtn(context,recipeModel,index),
+                                                    Container(
+                                                      alignment: Alignment.center,
+                                                      child: Button(
+                                                        buttonName: 'Cancel',
+                                                        textColor: colorWhite,
+                                                        borderRadius: BorderRadius.circular(8.00),
+                                                        btnWidth: deviceWidth(context,0.45),
+                                                        btnColor: colorBluePigment,
+                                                        btnHeight: 40,
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            mealsModel.handleTap(mealsModel.select_tab_data_list!.length+10);
+                                                            mealsModel.notes_fuction(true);
+                                                            mealsModel.updateItem(index,false);
+
+                                                          });
+
+                                                        },
                                                       ),
                                                     ),
-                                                    sizedboxwidth(10.0),
+                                                    Container(
+                                                      alignment: Alignment.center,
+                                                      child: Button(
+                                                        buttonName: 'Save note',
+                                                        textColor: colorWhite,
+                                                        borderRadius: BorderRadius.circular(8.00),
+                                                        btnWidth: deviceWidth(context,0.45),
+                                                        btnColor: colorBluePigment,
+                                                        btnHeight: 40,
+                                                        onPressed: () {
+                                                          setState(() {
 
-                                                    /// log logged checkbox button
-                                                    LogUnloggrd_checkbox(index),
-
-                                                  ],
-                                                ),
-                                              ),
-                                              Container(
-                                                width: deviceWidth(context),
-                                                //height: 80,
-                                                decoration: BoxDecoration(
-                                                    color: HexColor('#F5F7FB'),
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    border: Border.all(color: index == selectedIdx?colorBluePigment:HexColor('#F5F7FB'))
-                                                ),
-
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text('Notes',style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: colorRichblack,
-                                                            fontFamily: fontFamilyText,
-                                                            fontWeight: fontWeight400
-                                                        ),),
-                                                        index == selectedIdx?Container(height: 18):SelectableContainer(
-                                                            isSelected: index == selectedIdx,
-                                                            onTap: () {
-
-                                                                handleTap(index);
-                                                                mealsModel.notes_fuction(false);
-                                                                mealsModel.updateItem(index,true);
-                                                                txt_search.text = mealsModel.select_tab_data_list![index].note.toString();
-
-
+                                                            for(int i=0;i<mealsModel.mealData!.length;i++){
+                                                              if(mealsModel.mealData![i].mtId==mealsModel.select_tab_data_list![index].mtId&&mealsModel.mealData![i].recId==mealsModel.select_tab_data_list![index].recId){
+                                                                mealsModel.handleTap(mealsModel.select_tab_data_list!.length+10);
+                                                                mealsModel.notes_fuction(true);
+                                                                mealsModel.updateItem(index,false);
+                                                                update_json_create_fuction(context,
+                                                                    mealsModel.selectedDay!.year.toString(),
+                                                                    mealsModel.selectedDay!.month.toString(),
+                                                                    mealsModel.selectedDay!.day.toString(),
+                                                                    mealsModel.select_tab_data_list![index].recId.toString(),
+                                                                    mealsModel.select_tab_data_list![index].mtId.toString(),
+                                                                    mealsModel.select_tab_data_list![index].logged.toString(),
+                                                                    i,
+                                                                    txt_search.text.toString(),
+                                                                    int.parse(mealsModel.select_mealplanID.toString())-1
+                                                                );
+                                                              }
                                                             }
-                                                        ),
 
-                                                      ],
-                                                    ).paddingOnly(left: 10,right: 10,top: 8,bottom:3),
-                                                    index == selectedIdx?AllInputDesign(
-                                                      higthtextfield: 35.0,
-                                                      // inputHeaderName: 'Email',
-                                                      // key: Key("email1"),
-                                                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                                                      hintText: 'Add a recipe note',
-                                                      hintTextStyleColor: colorShadowBlue,
-                                                      controller: txt_search,
-                                                      textStyleColors:HexColor('#3B4250'),
+                                                          });
 
-                                                      fillColor:HexColor('#F5F7FB'),
-                                                      autofillHints: const [AutofillHints.name],
-                                                      textInputAction: TextInputAction.done,
-                                                      keyBoardType: TextInputType.text,
-                                                      validatorFieldValue: 'notes',
-
-
-                                                    ).paddingOnly(bottom: 2): Container(
-                                                        width: deviceWidth(context),
-                                                        color: HexColor('#F5F7FB'),
-                                                        alignment: Alignment.topLeft,
-                                                        child:ReadMoreText(
-                                                          mealsModel.select_tab_data_list![index].note??'Add a recipe note',
-                                                          trimLines: 2,
-                                                          //  colorClickableText: Colors.pink,
-
-                                                          trimMode: TrimMode.Line,
-                                                          trimCollapsedText: ' read more',
-                                                          trimExpandedText: ' read less',
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: colorShadowBlue,
-                                                              fontFamily: fontFamilyText,
-                                                              fontWeight: fontWeight400
-                                                          ),
-                                                          lessStyle: TextStyle(
-                                                              fontSize: 14,
-                                                              color: colorBluePigment,
-                                                              fontFamily: fontFamilyText,
-                                                              fontWeight: fontWeight400
-                                                          ),
-                                                          moreStyle: TextStyle(
-                                                              fontSize: 14,
-                                                              color: colorBluePigment,
-                                                              fontFamily: fontFamilyText,
-                                                              fontWeight: fontWeight400
-                                                          ),
-                                                        )
-                                                      // Text('Add a recipe note',style: TextStyle(
-                                                      //     fontSize: 14,
-                                                      //     color: colorShadowBlue,
-                                                      //     fontFamily: fontFamilyText,
-                                                      //     fontWeight: fontWeight400
-                                                      // ),)
-                                                    ).paddingOnly(left: 10,right: 10,bottom: 8)
-
+                                                        },
+                                                      ),
+                                                    ),
                                                   ],
-                                                ),
-                                              ),
-                                              sizedboxheight(15.0),
-                                              index == selectedIdx? Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  // cancelBtn(context,recipeModel,index),
-                                                  Container(
-                                                    alignment: Alignment.center,
-                                                    child: Button(
-                                                      buttonName: 'Cancel',
-                                                      textColor: colorWhite,
-                                                      borderRadius: BorderRadius.circular(8.00),
-                                                      btnWidth: deviceWidth(context,0.45),
-                                                      btnColor: colorBluePigment,
-                                                      btnHeight: 40,
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          handleTap(mealsModel.select_tab_data_list!.length+10);
-                                                          mealsModel.notes_fuction(true);
-                                                          mealsModel.updateItem(index,false);
-
-                                                        });
-                                                        // Get.to(() => Signup_type());
-                                                        // Navigator.push(
-                                                        //   context,
-                                                        //   PageTransition(duration:Duration(milliseconds: 400) ,
-                                                        //     type: PageTransitionType.bottomToTop,
-                                                        //     child: Signup_type(),
-                                                        //   ),
-                                                        // );
-                                                      },
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    alignment: Alignment.center,
-                                                    child: Button(
-                                                      buttonName: 'Save note',
-                                                      textColor: colorWhite,
-                                                      borderRadius: BorderRadius.circular(8.00),
-                                                      btnWidth: deviceWidth(context,0.45),
-                                                      btnColor: colorBluePigment,
-                                                      btnHeight: 40,
-                                                      onPressed: () {
-                                                        setState(() {
-
-
-                                                          for(int i=0;i<mealsModel.mealData!.length;i++){
-                                                            if(mealsModel.mealData![i].mtId==mealsModel.select_tab_data_list![index].mtId&&mealsModel.mealData![i].recId==mealsModel.select_tab_data_list![index].recId){
-                                                              handleTap(mealsModel.select_tab_data_list!.length+10);
-                                                              mealsModel.notes_fuction(true);
-                                                              mealsModel.updateItem(index,false);
-                                                              update_json_create_fuction(context,
-                                                                  mealsModel.selectedDay!.year.toString(),
-                                                                  mealsModel.selectedDay!.month.toString(),
-                                                                  mealsModel.selectedDay!.day.toString(),
-                                                                  mealsModel.select_tab_data_list![index].recId.toString(),
-                                                                  mealsModel.select_tab_data_list![index].mtId.toString(),
-                                                                  mealsModel.select_tab_data_list![index].logged.toString(),
-                                                                  i,
-                                                                  txt_search.text.toString(),
-                                                                  int.parse(mealsModel.select_mealplanID.toString())-1
-                                                              );
-                                                            }
-                                                          }
-
-                                                        });
-                                                        // Get.to(() => Signup_type());
-                                                        // Navigator.push(
-                                                        //   context,
-                                                        //   PageTransition(duration:Duration(milliseconds: 400) ,
-                                                        //     type: PageTransitionType.bottomToTop,
-                                                        //     child: Signup_type(),
-                                                        //   ),
-                                                        // );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              ):Container(),
-                                            ],
+                                                ):Container(),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    }),
-                                    mealsModel.notes?Positioned(
-                                    bottom: mealsModel.select_tab_data_list!.isEmpty?(Platform.isAndroid?deviceheight(context,0.30):deviceheight(context,0.26)): 5,
-                                    left: 0,right: 0,
-                                    child: add_mealsbuttonBtn(context)):Container(),
-                              ],
+                                        );
+                                      }),
+                                      mealsModel.notes?(mealsModel.select_tab_data_list!.isEmpty?add_mealsbuttonBtn(context).paddingOnly(top: deviceheight(context,0.30)):add_mealsbuttonBtn(context)):Container()
+                                      // Positioned(
+                                      // bottom: mealsModel.select_tab_data_list!.isEmpty?(Platform.isAndroid?deviceheight(context,0.30):deviceheight(context,0.26)): 5,
+                                      // left: 0,right: 0,
+                                      // child:  mealsModel.notes?add_mealsbuttonBtn(context):Container()),
+                                ],
+                              ),
                             )
                         ),
                       ]
@@ -611,7 +631,15 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         ),),
 
       actions: [
-        IconButton(onPressed: (){}, 
+        IconButton(
+        onPressed: (){
+
+          // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+          //   context,
+          //   settings: const RouteSettings(name: "/Recipes_Screen"),
+          //   screen:  ShoppingListScreen(),
+          // );
+        },
             icon: SvgPicture.asset('assets/image/basket-shopping.svg',color: colorCharcoal,))
       ],
       backgroundColor: colorWhite,
@@ -958,7 +986,12 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
         calendarStyle: CalendarStyle(
 
-            markersAnchor: 0,
+            markersAnchor: -1,
+
+            markerDecoration: BoxDecoration(
+              color: colorLightGray,
+              borderRadius: BorderRadius.circular(5),
+            ),
             canMarkersOverflow: true,
             outsideTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
             cellMargin: const EdgeInsets.all(14),
@@ -1024,52 +1057,58 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
           });
         },
         onDaySelected: (selectedDay, focusedDay) {
-          setState(() {
-            /// single data date select
-            mealsModel.singlecalendar_selectedDay(selectedDay);
-            mealsModel.singlecalendar_focuseday(focusedDay);
+          if(mealsModel.notes){
+            setState(() {
+              /// single data date select
+              mealsModel.singlecalendar_selectedDay(selectedDay);
+              mealsModel.singlecalendar_focuseday(focusedDay);
 
-            /// get months calendar meals api
-            mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0");
-            /// single day data api
-            mealsModel.singal_day_data_gate_api(selectedDay,true,0);
-            //  _selectedDay = selectedDay;
-            mealsModel.select_tab_data_list!.clear();
-            mealsModel.boolDataList.clear();
-            // for(var item in mealsModel.mealData!){
-            //   print(item);
-            //   print(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId);
-            //   if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
-            //     print('value6');
-            //     print(item.mtId.toString());
-            //     mealsModel.boolDataList.add(false);
-            //     mealsModel.select_tab_data_list!.add(item);
-            //     print(mealsModel.select_tab_data_list!.length.toString());
-            //   }
-            // }
-            /// tab controller ///
-            _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
-            mealsModel.selecttab_fuction(0);
-            mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+              /// get months calendar meals api
+              mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0");
+              /// single day data api
+              mealsModel.singal_day_data_gate_api(selectedDay,true,0);
+              //  _selectedDay = selectedDay;
+              mealsModel.select_tab_data_list!.clear();
+              mealsModel.boolDataList.clear();
+              // for(var item in mealsModel.mealData!){
+              //   print(item);
+              //   print(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId);
+              //   if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
+              //     print('value6');
+              //     print(item.mtId.toString());
+              //     mealsModel.boolDataList.add(false);
+              //     mealsModel.select_tab_data_list!.add(item);
+              //     print(mealsModel.select_tab_data_list!.length.toString());
+              //   }
+              // }
+              /// tab controller ///
+              _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
+              mealsModel.selecttab_fuction(0);
+              mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
 
-            /// day check ///
-            final aDate = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
-            if(aDate == today) {
-              mealsModel.userSelectDay_set('Today');
-              today_check = today;
-            } else if(aDate == yesterday) {
-              today_check = yesterday;
-              mealsModel.userSelectDay_set('Yesterday');
-            } else if(aDate == tomorrow) {
-              today_check = tomorrow;
-              mealsModel.userSelectDay_set('Tomorrow');
-            }
-            else{
-              today_check = mealsModel.selectedDay;
-              mealsModel.userSelectDay_set(DateFormat('EEEE d MMMM').format(mealsModel.selectedDay!).toString());
-            }
+              /// day check ///
+              final aDate = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+              if(aDate == today) {
+                mealsModel.userSelectDay_set('Today');
+                today_check = today;
+              } else if(aDate == yesterday) {
+                today_check = yesterday;
+                mealsModel.userSelectDay_set('Yesterday');
+              } else if(aDate == tomorrow) {
+                today_check = tomorrow;
+                mealsModel.userSelectDay_set('Tomorrow');
+              }
+              else{
+                today_check = mealsModel.selectedDay;
+                mealsModel.userSelectDay_set(DateFormat('EEEE d MMMM').format(mealsModel.selectedDay!).toString());
+              }
 
-          });
+            });
+          }
+          else{
+            warning_popup();
+          }
+
         },
       ),
     );
@@ -1109,32 +1148,48 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         onTap: (value){
           print('value');
           print(value);
-          setState(() {
-            _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: value);
+          if(mealsModel.notes){
+            setState(() {
+              _controller!.index = value;
+              //_controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: value);
 
-            mealsModel.selecttab_fuction(value);
+              mealsModel.selecttab_fuction(value);
 
-            mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![value].mtId.toString());
+              mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![value].mtId.toString());
 
-            print(mealsModel.get_meals_planlist_data![value].mtId.toString());
+              print(mealsModel.get_meals_planlist_data![value].mtId.toString());
 
-            mealsModel.select_tab_data_list!.clear();
-            mealsModel.boolDataList.clear();
-            for(var item in mealsModel.mealData!){
-              if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![value].mtId){
-               setState(() {
-                 mealsModel.boolDataList.add(false);
-                 mealsModel.select_tab_data_list!.add(item);
+              mealsModel.select_tab_data_list!.clear();
+              mealsModel.boolDataList.clear();
+              for(var item in mealsModel.mealData!){
+                if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![value].mtId){
+                  setState(() {
+                    mealsModel.boolDataList.add(false);
+                    mealsModel.select_tab_data_list!.add(item);
 
-               });
+                  });
 
-                print(mealsModel.select_tab_data_list!.length.toString());
+                  print(mealsModel.select_tab_data_list!.length.toString());
+                }
               }
-            }
-            _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: value);
+              _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: value);
 
-            //  selecttab = value;
-          });
+              //  selecttab = value;
+            });
+          }
+          else{
+            _controller!.index = mealsModel.selecttab!;
+            if(value == mealsModel.selecttab){
+
+            }else{
+              warning_popup();
+            }
+
+          }
+
+
+
+
         },
 
         labelPadding: const EdgeInsets.only(right: 20),
@@ -1169,41 +1224,47 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
       width: 100,
       child: InkWell(
         onTap: (){
-          setState(() {
-            for(int i=0;i<mealsModel.mealData!.length;i++){
-              if(mealsModel.mealData![i].mtId==mealsModel.select_tab_data_list![index].mtId&&mealsModel.mealData![i].recId==mealsModel.select_tab_data_list![index].recId){
-                if(mealsModel.select_tab_data_list![index].logged == '1'){
-                  mealsModel.select_tab_data_list![index].logged = '0';
+          if(mealsModel.notes){
+            setState(() {
+              for(int i=0;i<mealsModel.mealData!.length;i++){
+                if(mealsModel.mealData![i].mtId==mealsModel.select_tab_data_list![index].mtId&&mealsModel.mealData![i].recId==mealsModel.select_tab_data_list![index].recId){
+                  if(mealsModel.select_tab_data_list![index].logged == '1'){
+                    mealsModel.select_tab_data_list![index].logged = '0';
 
-                  update_json_create_fuction(context,
-                      mealsModel.selectedDay!.year.toString(),
-                      mealsModel.selectedDay!.month.toString(),
-                      mealsModel.selectedDay!.day.toString(),
-                      mealsModel.select_tab_data_list![index].recId.toString(),
-                      mealsModel.select_tab_data_list![index].mtId.toString(),
-                      '0',
-                      i,
-                      mealsModel.select_tab_data_list![index].note.toString(),
-                      int.parse(mealsModel.select_mealplanID.toString())-1);
-                  // remove_meals_fuction(context,recipeModel.selectedDay!.year.toString(),recipeModel.selectedDay!.month.toString(),recipeModel.selectedDay!.day.toString(),itam.recId.toString(),itam.mtId.toString(),recipeModel.selectedDay!);
-                }else if(mealsModel.select_tab_data_list![index].logged == '0'){
-                  mealsModel.select_tab_data_list![index].logged = '1';
+                    update_json_create_fuction(context,
+                        mealsModel.selectedDay!.year.toString(),
+                        mealsModel.selectedDay!.month.toString(),
+                        mealsModel.selectedDay!.day.toString(),
+                        mealsModel.select_tab_data_list![index].recId.toString(),
+                        mealsModel.select_tab_data_list![index].mtId.toString(),
+                        '0',
+                        i,
+                        mealsModel.select_tab_data_list![index].note.toString(),
+                        int.parse(mealsModel.select_mealplanID.toString())-1);
+                    // remove_meals_fuction(context,recipeModel.selectedDay!.year.toString(),recipeModel.selectedDay!.month.toString(),recipeModel.selectedDay!.day.toString(),itam.recId.toString(),itam.mtId.toString(),recipeModel.selectedDay!);
+                  }else if(mealsModel.select_tab_data_list![index].logged == '0'){
+                    mealsModel.select_tab_data_list![index].logged = '1';
 
-                  update_json_create_fuction(context,
-                      mealsModel.selectedDay!.year.toString(),
-                      mealsModel.selectedDay!.month.toString(),
-                      mealsModel.selectedDay!.day.toString(),
-                      mealsModel.select_tab_data_list![index].recId.toString(),
-                      mealsModel.select_tab_data_list![index].mtId.toString(),
-                      '1',
-                      i,
-                      mealsModel.select_tab_data_list![index].note.toString(),
-                      int.parse(mealsModel.select_mealplanID.toString())-1
-                  );
+                    update_json_create_fuction(context,
+                        mealsModel.selectedDay!.year.toString(),
+                        mealsModel.selectedDay!.month.toString(),
+                        mealsModel.selectedDay!.day.toString(),
+                        mealsModel.select_tab_data_list![index].recId.toString(),
+                        mealsModel.select_tab_data_list![index].mtId.toString(),
+                        '1',
+                        i,
+                        mealsModel.select_tab_data_list![index].note.toString(),
+                        int.parse(mealsModel.select_mealplanID.toString())-1
+                    );
+                  }
                 }
               }
-            }
-          });
+            });
+          }
+          else{
+            warning_popup();
+          }
+
         },
         child: Container(
           height: 50,
@@ -1248,43 +1309,49 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
     return InkWell(
       onTap: (){
-        if(mealsModel.select_tab_data_list![index].logged == '0'){
-          showCupertinoDialog(
-              context: context,
-              builder: (BuildContext ctx) {
-                return CupertinoAlertDialog(
-                  title: const Text('Please Confirm'),
-                  content: const Text('Are you sure to remove the Recipe?'),
-                  actions: [
-                    CupertinoDialogAction(
-                      onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pop("Discard");
-                      },
-
-                      child:  Text('No',style: TextStyle(color: colorBluePigment ),),
-                    ),
-                    // The "Yes" button
-                    CupertinoDialogAction(
-                      onPressed: () {
-                        setState(() {
-                          remove_meals_fuction(context,mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),mealsModel.selectedDay!.day.toString(),mealsModel.select_tab_data_list![index].recId.toString(),mealsModel.select_tab_data_list![index].mtId.toString(),mealsModel.selectedDay!,int.parse(mealsModel.select_mealplanID.toString())-1);
+        if(mealsModel.notes){
+          if(mealsModel.select_tab_data_list![index].logged == '0'){
+            showCupertinoDialog(
+                context: context,
+                builder: (BuildContext ctx) {
+                  return CupertinoAlertDialog(
+                    title: const Text('Remove Recipe'),
+                    content: const Text('Are you sure you want to remove this recipe?'),
+                    actions: [
+                      CupertinoDialogAction(
+                        onPressed: () {
                           Navigator.of(context, rootNavigator: true).pop("Discard");
-                        });
-                      },
-                      isDefaultAction: true,
-                      isDestructiveAction: true,
-                      child:  Text('Yes',style: TextStyle(color: colorBluePigment ),),
-                    ),
-                    // The "No" butt
+                        },
 
-                  ],
-                );
-              }
-          );
+                        child:  Text('No',style: TextStyle(color: colorBluePigment ),),
+                      ),
+                      // The "Yes" button
+                      CupertinoDialogAction(
+                        onPressed: () {
+                          setState(() {
+                            remove_meals_fuction(context,mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),mealsModel.selectedDay!.day.toString(),mealsModel.select_tab_data_list![index].recId.toString(),mealsModel.select_tab_data_list![index].mtId.toString(),mealsModel.selectedDay!,int.parse(mealsModel.select_mealplanID.toString())-1);
+                            Navigator.of(context, rootNavigator: true).pop("Discard");
+                          });
+                        },
+                        isDefaultAction: true,
+                        isDestructiveAction: true,
+                        child:  Text('Yes',style: TextStyle(color: colorBluePigment ),),
+                      ),
+                      // The "No" butt
+
+                    ],
+                  );
+                }
+            );
+          }
+          else{
+            FlutterToast_message('Recipe Logged');
+          }
         }
         else{
-          FlutterToast_message('Recipe Logged');
+          warning_popup();
         }
+
 
       },
       child: Row(
@@ -1788,6 +1855,30 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
           // }
         },
       ),
+    );
+  }
+  Future warning_popup(){
+    return   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+
+            content: const Text('you can’t navigate away from the open note without saving or cancelling'),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop("Discard");
+                },
+
+                child:  Text('Ok',style: TextStyle(color: colorBluePigment ),),
+              ),
+              // The "Yes" button
+
+              // The "No" butt
+
+            ],
+          );
+        }
     );
   }
 }

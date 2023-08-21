@@ -1,5 +1,6 @@
 import "package:aylahealth/common/new_bottombar_screen/screens.dart";
 import "package:aylahealth/common/styles/const.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:hexcolor/hexcolor.dart";
@@ -74,8 +75,8 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
   List<Widget> _buildScreens() => [
         const Home(),
-      //  const Home(),
-        const Modules_Screen(),
+        const Home(),
+       // const Modules_Screen(),
         const My_Meals_Screen(),
         const Recipes_Screen(),
         const Home(),
@@ -84,6 +85,17 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   List<PersistentBottomNavBarItem> _navBarsItems() => [
 
         PersistentBottomNavBarItem(
+          onPressed: (value){
+            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+
+            if(mealsModel.notes){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(0);
+              recipe_screen_tap();
+            }
+            else{
+              warning_popup();
+            }
+          },
             icon: Column(
               children: [
                 SvgPicture.asset(
@@ -112,7 +124,17 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             inactiveColorPrimary: HexColor('#79879C'),
             ),
         PersistentBottomNavBarItem(
+          onPressed: (value){
+            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
+            if(mealsModel.notes){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(1);
+              recipe_screen_tap();
+            }
+            else{
+              warning_popup();
+            }
+          },
           icon: Column(
             children: [
               SvgPicture.asset(
@@ -177,8 +199,15 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
            recipe_screen_tap();
           },
           onPressed: (value){
-            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
-            recipe_screen_tap();
+            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+
+            if(mealsModel.notes){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+              recipe_screen_tap();
+            }
+            else{
+              warning_popup();
+            }
           },
           icon: Column(
             children: [
@@ -207,6 +236,17 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
         ),
         PersistentBottomNavBarItem(
+          onPressed: (value){
+            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+
+            if(mealsModel.notes){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
+              recipe_screen_tap();
+            }
+            else{
+              warning_popup();
+            }
+          },
           icon: Column(
             children: [
               SvgPicture.asset(
@@ -294,7 +334,30 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
       ),
    );
   }
+  Future warning_popup(){
+    return   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
 
+            content: const Text('you can’t navigate away from the open note without saving or cancelling'),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop("Discard");
+                },
+
+                child:  Text('Ok',style: TextStyle(color: colorBluePigment ),),
+              ),
+              // The "Yes" button
+
+              // The "No" butt
+
+            ],
+          );
+        }
+    );
+  }
 }
 
 

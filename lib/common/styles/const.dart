@@ -11,6 +11,7 @@ Color colorBlack = HexColor("#000000");
 Color colorBlackRichBlack = HexColor("#151A26");
 
 Color colorLightYellow = HexColor("#FFFFE1");
+Color colorLightGray = HexColor("#D0D4DB");
 
 Color colorButtonText = HexColor("#1C2B4D");
 Color colorDisabledButton = HexColor("#79879C");

@@ -54,6 +54,7 @@ class AllInputDesign extends StatefulWidget {
   final inputHeaderTextStyle;
   final inputLableColor;
   final focusNode;
+  final onExpands;
 
 
   const AllInputDesign({
@@ -105,6 +106,7 @@ class AllInputDesign extends StatefulWidget {
     this.inputHeaderTextStyle,
     this.inputLableColor,
     this.focusNode,
+    this.onExpands,
   }) : super(key: key);
 
   @override
@@ -146,7 +148,7 @@ class _AllInputDesignState extends State<AllInputDesign> {
                     ]),
             child: TextFormField(
               focusNode: widget.focusNode,
-              // expands: true,
+               expands: widget.onExpands?? false,
               onFieldSubmitted: widget.onSubmitted,
               minLines: widget.maxLines ?? 1,
               maxLines: widget.maxLines ?? 1,

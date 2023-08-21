@@ -45,7 +45,7 @@ class Pagination_screen extends StatefulWidget {
 
 class _Pagination_screenState extends State<Pagination_screen> {
 
-
+  final focusKey=FocusNode();
   DateTime? _selectedDate;
 
   Future? _future;
@@ -611,6 +611,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
                                             color: colorWhite
                                         ),
                                         maxSelectedItems: food_data_list!.length,
+                                        textFieldFocus: focusKey,
                                       ),
                                     );
                                   } else {

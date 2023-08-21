@@ -7,6 +7,7 @@ import 'package:aylahealth/screens/profile_settings/personal_setting/personal_se
 import 'package:aylahealth/screens/subscription_screens/subscription_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/home.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/My_Meals_Provider.dart';
+import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/ShoppingListScreen.dart';
 import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_description/Recipe_Description_DataProvider.dart';
 import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_screen/RecipeData_Provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_screen/recipes_screen.dart';
@@ -88,6 +89,7 @@ class MyApp extends StatelessWidget {
            'Home': (context) => Home(),
            'Recipes_Screen': (context) => Recipes_Screen(),
            'apple_login_demo': (context) => apple_login_demo(),
+           'ShoppingListScreen': (context) => ShoppingListScreen(),
            // 'CalendarApp': (context) => CalendarApp(),
 
 
