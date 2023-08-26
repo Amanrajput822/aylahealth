@@ -50,18 +50,21 @@ class RecipeData_Provider with ChangeNotifier {
     _focusedDay = newMessage;
     notifyListeners();
   }
+
   String? _selectedDate;
   String? get selectedDate => _selectedDate;
   void selectedDate_string( newMessage) {
     _selectedDate = newMessage;
     notifyListeners();
   }
+
   bool _meals_screen = false;
   bool get meals_screen => _meals_screen;
   void select_screen_data( newMessage) {
     _meals_screen = newMessage;
     notifyListeners();
   }
+
   /// data reloading params ///
   int _page = 0 ;
   int get page => _page;

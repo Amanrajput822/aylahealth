@@ -42,7 +42,7 @@ class MyMeals_Provider with ChangeNotifier {
   bool _loading1 = false;
   bool get loading1 => _loading1;
 
-  int? _selectedIdx = null;
+  int? _selectedIdx;
   int? get selectedIdx => _selectedIdx;
 
   void handleTap(int index) {
@@ -249,7 +249,7 @@ class MyMeals_Provider with ChangeNotifier {
         map["mlp_month"] = month.toString();
         return map;
       }
-      print('aman1');
+      print('get_meals_calendardata_api111');
       print(toMap());
       print(beasurl + customerMealPlanData);
       var response = await http.post(
@@ -260,12 +260,14 @@ class MyMeals_Provider with ChangeNotifier {
             'Accept': 'application/json'
           }
       );
+      print('get_meals_calendardata_api222');
+      print(response.body);
       if(loader=="1"){
         _loading1 = false;
       }
      // _loading1 = false;
       _success = (Get_Meals_Plane_model.fromJson(json.decode(response.body)).status);
-      print("json.decode(response.body)${json.decode(response.body)}");
+      print("get_meals_calendardata_api${json.decode(response.body)}");
       if (success == 200) {
         final item = json.decode(response.body);
         result = (Get_Meals_Plane_model.fromJson(item));
@@ -280,7 +282,7 @@ class MyMeals_Provider with ChangeNotifier {
 
         _kEventSource = { for (var item in dataList!)
           DateTime.utc(result.data!.mlpYear!, result.data!.mlpMonth!, int.parse(item['date'])) : List.generate(
-              item['mealData'].isEmpty? 0:1, (index) => Event('Event')) };
+              item['mealData'].isEmpty? 0:1, (index) => const Event('Event')) };
 
         print(dataList.runtimeType);
         print('person.toString()${dataList}');

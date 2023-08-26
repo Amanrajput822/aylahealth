@@ -66,7 +66,9 @@ class _LogInState extends State<LogIn> {
       divece_type= '1';
 
     }
-
+   else{
+      divece_type= '1';
+    }
   }
 
   Future<user_login_model> signin() async {
@@ -90,12 +92,12 @@ class _LogInState extends State<LogIn> {
 print(response.body.toString());
     success = (user_login_model.fromJson(json.decode(response.body)).status);
     message = (user_login_model.fromJson(json.decode(response.body)).message);
-    print("success 123 ==${success}");
+    print("success 123 ==${success??""}");
     if (success == 200) {
       if (success == 200) {
         Navigator.pop(context);
 
-        FlutterToast_message(message);
+        FlutterToast_message(message??"");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool("isLoggedIn", true);
         prefs.setString(
@@ -140,11 +142,11 @@ print(response.body.toString());
         Get.offAll(() => New_Bottombar_Screen());
         txt_email.clear();
         txt_pass.clear();
-        FlutterToast_message(message);
+        FlutterToast_message(message??"");
       }
     } else {
       Navigator.pop(context);
-      error_dialog(message);
+      error_dialog(message??"");
     }
     return user_login_model.fromJson(json.decode(response.body));
   }

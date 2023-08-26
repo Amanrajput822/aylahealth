@@ -418,7 +418,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
 
       recipeModel.isFirstLoadRunning
           ? const Center(
-        child: const CircularProgressIndicator(),
+        child: CircularProgressIndicator(),
       )
           : Column(
             children: [
@@ -428,7 +428,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                 color: HexColor('#F6F7FB'),
 
                 child: ListView.builder(
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(),
                   controller: recipeModel.controller,
                   scrollDirection: Axis.vertical,
                   itemCount: (recipeModel.recipe_data_List!.length % 2 == 0 ? recipeModel.recipe_data_List!.length ~/ 2 : recipeModel.recipe_data_List!.length ~/ 2 + 1),

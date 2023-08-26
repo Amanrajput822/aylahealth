@@ -38,8 +38,8 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   @override
   void initState() {
     super.initState();
-    final recipeModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);
-    recipeModel.setcontrollervalue(0);
+    final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);
+    BottomNavBarProviderModel.setcontrollervalue(0);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     mealsModel.get_meals_plantypelist_api();
    // _controller = PersistentTabController(initialIndex: 0);
@@ -275,17 +275,34 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
           inactiveColorPrimary: HexColor('#79879C'),
         ),
       ];
+
   Future<bool> backdb() async {
     return true;
   }
+
+  Future<bool> _willPopCallback() async {
+    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+    bool screen_back = true;
+    if(mealsModel.notes){
+      backdb();
+      screen_back = true;
+    }
+    else{
+      warning_popup();
+      screen_back = false;
+    }
+    // await showDialog or Show add banners or whatever
+    // then
+    return screen_back; // return true if the route to be popped
+  }
   @override
   Widget build(final BuildContext context) {
-    final recipeModel = Provider.of<Bottom_NavBar_Provider>(context);
+    final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context);
    return WillPopScope(
      onWillPop: () {
-       return recipeModel.controller!.index == 0
+       return BottomNavBarProviderModel.controller!.index == 2?_willPopCallback():(BottomNavBarProviderModel.controller!.index == 0
            ? onWillPop(context)
-           : backdb();
+           : backdb());
      },
      child: Scaffold(
         body: PersistentTabView(
@@ -299,7 +316,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
           popActionScreens: PopActionScreensType.all,
           navBarHeight: 60,
           context,
-          controller: recipeModel.controller,
+          controller: BottomNavBarProviderModel.controller,
           screens: _buildScreens(),
           items: _navBarsItems(),
           resizeToAvoidBottomInset: true,
@@ -340,7 +357,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
         builder: (BuildContext ctx) {
           return CupertinoAlertDialog(
 
-            content: const Text('you can’t navigate away from the open note without saving or cancelling'),
+            content: const Text('Please save or cancel before navigating away from the open note.'),
             actions: [
               CupertinoDialogAction(
                 onPressed: () {

@@ -12,6 +12,7 @@ import 'common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import 'home_screen.dart';
 
 class Splesh extends StatefulWidget {
+  static const String route = "/Splesh";
   const Splesh({Key? key}) : super(key: key);
 
   @override

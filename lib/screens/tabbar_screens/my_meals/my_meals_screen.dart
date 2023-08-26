@@ -28,6 +28,7 @@ import '../recipes screens/recipe_screen/RecipeData_Provider.dart';
 import 'My_Meals_Provider.dart';
 import 'SelectableContainer.dart';
 import 'calendar_evryday_json.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class My_Meals_Screen extends StatefulWidget {
   const My_Meals_Screen({Key? key}) : super(key: key);
@@ -46,19 +47,11 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
   TabController? _controller;
 
-  // int? selectedIdx;
-
-  // void handleTap(int index) {
-  //   setState(() {
-  //     selectedIdx = index;
-  //   });
-  // }
-
 
   /// initState ///
   @override
   void initState() {
-
+    _listenForKeyboardEvents();
     super.initState();
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     daytype_check();
@@ -72,9 +65,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
     });
 
     _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
-    //  recipeModel.add_update_meals_api(context, recipeModel.selectedDay!.year,recipeModel.selectedDay!.month,jsonDataList);
     mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1");
-  //  mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
+    mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
 
 
   }
@@ -115,6 +107,21 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
     return kEvents[day] ?? [];
   }
 
+  /// Key Board Height Function ///
+  double _keyboardHeight = 0;
+  void _listenForKeyboardEvents() {
+    KeyboardVisibilityController().onChange.listen((bool visible) {
+      if (visible) {
+        setState(() {
+          _keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+        });
+      } else {
+        setState(() {
+          _keyboardHeight = 0;
+        });
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final mealsModel = Provider.of<MyMeals_Provider>(context);
@@ -128,7 +135,10 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         body:
         /// all Months calendar ///
         mealsModel.calendar_listview?all_months_calendar():
-        Container(
+        mealsModel.loading1
+            ? Container(
+          child: const Center(child: CircularProgressIndicator()),
+        ): Container(
           height: deviceheight(context),
           width: deviceWidth(context),
           padding: EdgeInsets.only(bottom: 15),
@@ -466,7 +476,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                                                       ).paddingOnly(left: 10,right: 10,top: 8),
                                                       index == mealsModel.selectedIdx?AllInputDesign(
                                                         higthtextfield: 54.0,
-
+                                                       scrollPadding: const EdgeInsets.only(bottom: 100.0),
                                                         // inputHeaderName: 'Email',
                                                         // key: Key("email1"),
                                                         textCapitalization:TextCapitalization.sentences,
@@ -593,7 +603,10 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                                           ),
                                         );
                                       }),
-                                      mealsModel.notes?(mealsModel.select_tab_data_list!.isEmpty?add_mealsbuttonBtn(context).paddingOnly(top: deviceheight(context,0.30)):add_mealsbuttonBtn(context)):Container()
+                                  SizedBox(height: _keyboardHeight), // Gap for keyboard
+
+                                  mealsModel.notes?(mealsModel.select_tab_data_list!.isEmpty?add_mealsbuttonBtn(context).paddingOnly(top: deviceheight(context,0.30)):add_mealsbuttonBtn(context)):Container(),
+                                     sizedboxheight(100.0)
                                       // Positioned(
                                       // bottom: mealsModel.select_tab_data_list!.isEmpty?(Platform.isAndroid?deviceheight(context,0.30):deviceheight(context,0.26)): 5,
                                       // left: 0,right: 0,
@@ -633,7 +646,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
       actions: [
         IconButton(
         onPressed: (){
-
+          //
           // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
           //   context,
           //   settings: const RouteSettings(name: "/Recipes_Screen"),
@@ -886,8 +899,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                     DateTime  firstDay =DateTime(dateNow.year, index+1, 1);
                     DateTime  lastDay =DateTime(dateNow.year, dateNow.month + index+1, 0);
 
-                      return TableCalendar(
-                        eventLoader: _getEventsForDay,
+                      return  mealsModel.kEventSource != null?TableCalendar(
+                        eventLoader:  _getEventsForDay,
                         rowHeight:48,
                         daysOfWeekHeight: 48,
 
@@ -918,8 +931,14 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                           weekendStyle:TextStyle(color: colorBluePigment ,fontSize: 18, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
                         ),
                         calendarStyle: CalendarStyle(
+                          markersAnchor: -0.5,
+
+                          markerDecoration: BoxDecoration(
+                            color: colorLightGray,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                           outsideDaysVisible: false,
-                          markersAnchor: 0,
+
                           cellMargin: const EdgeInsets.all(8),
                           weekendTextStyle: TextStyle(color: colorBluePigment ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
                           defaultTextStyle:TextStyle(color: colorRichblack ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
@@ -950,6 +969,77 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                            //   recipeModel.listviewCalendar_hideShow(false);
                           });
                         },
+                      ).paddingOnly(bottom: 30):
+                      TableCalendar(
+
+                        rowHeight:48,
+                        daysOfWeekHeight: 48,
+
+                        startingDayOfWeek: StartingDayOfWeek.monday,
+                        headerStyle: HeaderStyle(
+
+                            rightChevronVisible: false,
+                            titleCentered: true,
+                            leftChevronVisible: false,
+                            formatButtonVisible : false,
+                            titleTextStyle: TextStyle(
+                              color: colorRichblack,
+                              fontSize: 20,
+                              fontWeight: fontWeight600,
+                              fontFamily: fontFamilyText,
+                            )
+                        ),
+                        daysOfWeekStyle: DaysOfWeekStyle(
+                          decoration: BoxDecoration(
+
+                              border: Border( bottom: BorderSide(
+                                color: HexColor('#F6F8F9'),
+                                width: 1,
+                              ),)
+                          ),
+                          dowTextFormatter: (date, locale) => DateFormat.E(locale).format(date)[0],
+                          weekdayStyle: TextStyle(color: colorRichblack ,fontSize: 18, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
+                          weekendStyle:TextStyle(color: colorBluePigment ,fontSize: 18, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
+                        ),
+                        calendarStyle: CalendarStyle(
+                          markersAnchor: -0.5,
+
+                          markerDecoration: BoxDecoration(
+                            color: colorLightGray,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          outsideDaysVisible: false,
+
+                          cellMargin: const EdgeInsets.all(8),
+                          weekendTextStyle: TextStyle(color: colorBluePigment ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
+                          defaultTextStyle:TextStyle(color: colorRichblack ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
+                          disabledTextStyle:TextStyle(color: HexColor('#9E9E9E') ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
+                          selectedTextStyle: TextStyle(color: colorWhite ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+                          todayTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+
+                          // weekendTextStyle: TextStyle(color: colorBluePigment ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+                          // selectedTextStyle: TextStyle(color: colorWhite ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+                          selectedDecoration:BoxDecoration(color: (mealsModel.selectedDays!.year == DateTime.now().year&&mealsModel.selectedDays!.month == DateTime.now().month&&mealsModel.selectedDays!.day == DateTime.now().day)?colorBluePigment:colorRichblack, shape: BoxShape.circle),
+                          todayDecoration: BoxDecoration(color:HexColor('#EDEDED'), shape: BoxShape.circle),
+                          // todayTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 18, fontWeight: fontWeight400, fontFamily: fontFamilyText,)
+                        ),
+                        availableGestures: AvailableGestures.none,
+                        selectedDayPredicate: (day) => isSameDay(mealsModel.selectedDays, day),
+                        firstDay: firstDay,
+                        lastDay: lastDay,
+                        focusedDay: firstDay,
+
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            mealsModel.multiple_calender_selected(selectedDay);
+
+                            // _selectedDays = selectedDay;
+                            //  recipeModel.singlecalendar_focuseday(selectedDay);
+                            //  recipeModel.singlecalendar_selectedDay(selectedDay);
+                            //  today_check = recipeModel.selectedDay;
+                            //   recipeModel.listviewCalendar_hideShow(false);
+                          });
+                        },
                       ).paddingOnly(bottom: 30);
                     },
                   ),
@@ -974,7 +1064,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
     return Container(
       color: colorWhite,
-      child: TableCalendar(
+      child: mealsModel.kEventSource != null?TableCalendar(
         eventLoader: _getEventsForDay,
         firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month-2),
         lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month+3),
@@ -1054,6 +1144,143 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
             mealsModel.singlecalendar_focuseday(focusedDay);
             mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
           //  print(focusedDay.toString());
+          });
+        },
+        onDaySelected: (selectedDay, focusedDay) {
+          if(mealsModel.notes){
+            setState(() {
+              /// single data date select
+              mealsModel.singlecalendar_selectedDay(selectedDay);
+              mealsModel.singlecalendar_focuseday(focusedDay);
+
+              /// get months calendar meals api
+              mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0");
+              /// single day data api
+              mealsModel.singal_day_data_gate_api(selectedDay,true,0);
+              //  _selectedDay = selectedDay;
+              mealsModel.select_tab_data_list!.clear();
+              mealsModel.boolDataList.clear();
+              // for(var item in mealsModel.mealData!){
+              //   print(item);
+              //   print(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId);
+              //   if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
+              //     print('value6');
+              //     print(item.mtId.toString());
+              //     mealsModel.boolDataList.add(false);
+              //     mealsModel.select_tab_data_list!.add(item);
+              //     print(mealsModel.select_tab_data_list!.length.toString());
+              //   }
+              // }
+              /// tab controller ///
+              _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
+              mealsModel.selecttab_fuction(0);
+              mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+
+              /// day check ///
+              final aDate = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+              if(aDate == today) {
+                mealsModel.userSelectDay_set('Today');
+                today_check = today;
+              } else if(aDate == yesterday) {
+                today_check = yesterday;
+                mealsModel.userSelectDay_set('Yesterday');
+              } else if(aDate == tomorrow) {
+                today_check = tomorrow;
+                mealsModel.userSelectDay_set('Tomorrow');
+              }
+              else{
+                today_check = mealsModel.selectedDay;
+                mealsModel.userSelectDay_set(DateFormat('EEEE d MMMM').format(mealsModel.selectedDay!).toString());
+              }
+
+            });
+          }
+          else{
+            warning_popup();
+          }
+
+        },
+      ):
+      TableCalendar(
+
+        firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month-2),
+        lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month+3),
+
+        focusedDay: mealsModel.focusedDay!,
+        startingDayOfWeek: StartingDayOfWeek.monday,
+        selectedDayPredicate: (day) => isSameDay(mealsModel.selectedDay!, day),
+        calendarFormat: mealsModel.calendarFormat,
+
+        calendarStyle: CalendarStyle(
+
+          markersAnchor: -1,
+
+          markerDecoration: BoxDecoration(
+            color: colorLightGray,
+            borderRadius: BorderRadius.circular(5),
+          ),
+          canMarkersOverflow: true,
+          outsideTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+          cellMargin: const EdgeInsets.all(14),
+          selectedTextStyle: TextStyle(color: colorWhite ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+          selectedDecoration:BoxDecoration(color: (mealsModel.selectedDay!.year == DateTime.now().year&&mealsModel.selectedDay!.month == DateTime.now().month&&mealsModel.selectedDay!.day == DateTime.now().day)?colorBluePigment:colorBlackRichBlack, shape: BoxShape.circle),
+          todayDecoration: const BoxDecoration(color: Colors.black26, shape: BoxShape.circle),
+          todayTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+
+        ),
+
+        daysOfWeekVisible: true,
+        headerVisible: false,
+        // headerStyle: HeaderStyle(
+        //
+        //     leftChevronMargin: EdgeInsets.only(left: 0),
+        //     leftChevronIcon: Icon(Icons.chevron_left,color: colorBluePigment,),
+        //     rightChevronIcon: Icon(Icons.chevron_right,color: colorBluePigment,),
+        //     rightChevronVisible: false,
+        //     titleTextFormatter: (date, locale) => DateFormat.MMMM(locale).format(date),
+        //     formatButtonVisible : false,
+        //     titleTextStyle: TextStyle(
+        //       color: colorBluePigment,
+        //       fontSize: 16,
+        //       fontWeight: fontWeight400,
+        //       fontFamily: fontFamilyText,
+        //     )
+        // ),
+
+        daysOfWeekStyle: DaysOfWeekStyle(
+          dowTextFormatter: (date, locale) => DateFormat.E(locale).format(date)[0],
+          weekdayStyle: TextStyle(color: colorShadowBlue ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText, ),
+          weekendStyle:TextStyle(color: colorShadowBlue ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText, ),
+        ),
+
+        // onFormatChanged: (format) {
+        //   setState(() {
+        //     _calendarFormat = format;
+        //   });
+        // },
+        // onHeaderTapped: (_) {
+        //   setState(() {
+        //
+        //     recipeModel.listviewCalendar_hideShow(true);
+        //     recipeModel.selectDate(DateTime.now());
+        //     recipeModel.listviwe_months_set(36);
+        //     recipeModel.listviwe_controller(ScrollController());
+        //     WidgetsBinding.instance.addPostFrameCallback((_) {
+        //       // Calculate the initial scroll offset to center the list
+        //       double itemHeight = 350.0; // Set the height of each list item
+        //       int initialIndex = 12; // Set the index of the item you want to center on
+        //       double initialOffset = (initialIndex * itemHeight) -
+        //           (MediaQuery.of(context).size.height / 2) +
+        //           (itemHeight / 2);
+        //       recipeModel.scrollController!.jumpTo(initialOffset);
+        //     });
+        //   });
+        // },
+        onPageChanged: (focusedDay) {
+          setState(() {
+            mealsModel.singlecalendar_focuseday(focusedDay);
+            mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
+            //  print(focusedDay.toString());
           });
         },
         onDaySelected: (selectedDay, focusedDay) {
@@ -1863,11 +2090,12 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         builder: (BuildContext ctx) {
           return CupertinoAlertDialog(
 
-            content: const Text('you can’t navigate away from the open note without saving or cancelling'),
+            content: const Text('Please save or cancel before navigating away from the open note.'),
             actions: [
               CupertinoDialogAction(
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop("Discard");
+                  FocusManager.instance.primaryFocus?.unfocus();
                 },
 
                 child:  Text('Ok',style: TextStyle(color: colorBluePigment ),),
@@ -1891,3 +2119,4 @@ class Event {
   @override
   String toString() => title;
 }
+

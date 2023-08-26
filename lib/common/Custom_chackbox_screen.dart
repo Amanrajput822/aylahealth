@@ -69,15 +69,14 @@ class _Custom_chackboxState extends State<Custom_chackbox> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-
                   height:widget.boxheight??25,
-                  width: widget.boxwidth??deviceWidth(context,0.06),
+                  width: widget.boxwidth??25,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     color:chaeckbutton? widget.chackboxchackcolor??Colors.blue:widget.chackboxunchackcolor??Colors.white,
                       border: Border.all(color: chaeckbutton?widget.chackborderclor??Colors.white:widget.unchackborderclor??Colors.blue,width: 2)
                   ),
-                  child:chaeckbutton?(widget.chackboxicon==null?const Center(child: Icon(Icons.done,size: 14,)):Center(child: Text(widget.chackboxicon.toString()))):Container(),
+                  child:chaeckbutton?(widget.chackboxicon==null? Center(child: Icon(Icons.done,size: 14,color: widget.chackborderclor,)):Center(child: Text(widget.chackboxicon.toString()))):Container(),
                 ),
                 sizedboxwidth(deviceWidth(context,0.02)),
                 Container(

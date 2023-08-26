@@ -55,6 +55,7 @@ class AllInputDesign extends StatefulWidget {
   final inputLableColor;
   final focusNode;
   final onExpands;
+  final scrollPadding;
 
 
   const AllInputDesign({
@@ -107,6 +108,7 @@ class AllInputDesign extends StatefulWidget {
     this.inputLableColor,
     this.focusNode,
     this.onExpands,
+    this.scrollPadding,
   }) : super(key: key);
 
   @override
@@ -147,13 +149,14 @@ class _AllInputDesignState extends State<AllInputDesign> {
                       )
                     ]),
             child: TextFormField(
+              scrollPadding: widget.scrollPadding??const EdgeInsets.only(bottom: 0.0),
               focusNode: widget.focusNode,
                expands: widget.onExpands?? false,
               onFieldSubmitted: widget.onSubmitted,
               minLines: widget.maxLines ?? 1,
               maxLines: widget.maxLines ?? 1,
               textCapitalization:
-                  widget.textCapitalization ?? TextCapitalization.none,
+                  widget.textCapitalization ?? TextCapitalization.sentences,
               cursorColor: widget.cursorColor ?? colorgrey,
               key: Key(cf.convertKey(widget.labelText)),
               //onSaved: widget.onSaved,
@@ -165,6 +168,7 @@ class _AllInputDesignState extends State<AllInputDesign> {
                   fontWeight: FontWeight.w400,
                   fontSize: screensize <= 350 ? 14 : 16),
               keyboardType: widget.keyBoardType,
+
              // validator: widget.validator,
               controller: widget.controller,
               maxLength: widget.maxLength,

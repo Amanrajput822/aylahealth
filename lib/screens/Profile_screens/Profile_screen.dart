@@ -77,7 +77,7 @@ class _Profile_screenState extends State<Profile_screen> {
       Navigator.of(context).pushAndRemoveUntil(
         // the new route
         MaterialPageRoute(
-          builder: (BuildContext context) => LogIn(),
+          builder: (BuildContext context) => const LogIn(),
         ), (Route route) => false,
       );
       SharedPreferences prefs =  await SharedPreferences.getInstance();
@@ -85,6 +85,8 @@ class _Profile_screenState extends State<Profile_screen> {
       prefs.remove("login_user_token");
       prefs.remove("login_user_name");
       prefs.remove("login_user_email");
+      prefs.remove("login_user_name");
+      prefs.remove("login_user_id");
       ///calendar json data remove function ///
       removeDataFromFile(DateTime.now().year.toString());
       ///
@@ -170,7 +172,7 @@ class _Profile_screenState extends State<Profile_screen> {
                             uerdatamodal.loading
                                 ? Container(
                               child: Center(),
-                            ) : Text(uerdatamodal.user_details_data!.custFirstname!=null?"${uerdatamodal.user_details_data!.custFirstname!} ${uerdatamodal.user_details_data!.custLastname!}":"User Name",
+                            ) : Text(uerdatamodal.user_details_data!.custFirstname!=null?"${uerdatamodal.user_details_data!.custFirstname??""} ${uerdatamodal.user_details_data!.custLastname??""}":"User Name",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: fontFamilyText,

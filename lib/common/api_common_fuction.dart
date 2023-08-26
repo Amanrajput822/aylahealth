@@ -34,3 +34,7 @@ String addOrUpdateMealPlan = 'addOrUpdateMealPlan';
 String customerMealPlanData = 'customerMealPlanData';
 String mealTimeList = 'mealTimeList';
 String customerMealOfDay = 'customerMealOfDay';
+
+
+String sendCustomerContactEmail = 'sendCustomerContactEmail';
+String faqList = 'faqList';
