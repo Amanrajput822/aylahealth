@@ -76,27 +76,28 @@ class ShoppingListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // DateTime? _selectdate = DateTime.now();
-  // DateTime? get selectdate => _selectdate;
-  // void selectDate_function( newMessage) {
-  //   _selectdate = newMessage;
-  //   notifyListeners();
-  // }
+  /// normal calendar
+  DateTime? _selectdate = DateTime.now();
+  DateTime? get selectdate => _selectdate;
+  void selectDate_function( newMessage) {
+    _selectdate = newMessage;
+    notifyListeners();
+  }
 
-  // DateTime _focusedDay = DateTime.now();
-  // DateTime get focusedDay => _focusedDay;
-  //
-  // void focusedDay_function( newMessage) {
-  //   _focusedDay = newMessage;
-  //   notifyListeners();
-  // }
+  DateTime _focusedDay = DateTime.now();
+  DateTime get focusedDay => _focusedDay;
 
-  // String? _selectDayString ;
-  // String? get selectDayString  => _selectDayString ;
-  // void selectDayString_function( newMessage) {
-  //   _selectDayString = newMessage;
-  //   notifyListeners();
-  // }
+  void focusedDay_function( newMessage) {
+    _focusedDay = newMessage;
+    notifyListeners();
+  }
+
+  String? _selectDayString ;
+  String? get selectDayString  => _selectDayString ;
+  void selectDayString_function( newMessage) {
+    _selectDayString = newMessage;
+    notifyListeners();
+  }
   /// calendar controller
   PageController? _pageController;
   PageController? get pageController => _pageController;

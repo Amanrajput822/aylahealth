@@ -646,12 +646,12 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
       actions: [
         IconButton(
         onPressed: (){
-          //
-          // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-          //   context,
-          //   settings: const RouteSettings(name: "/Recipes_Screen"),
-          //   screen:  ShoppingListScreen(),
-          // );
+
+          PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+            context,
+            settings: const RouteSettings(name: "/Recipes_Screen"),
+            screen:  ShoppingListScreen(),
+          );
         },
             icon: SvgPicture.asset('assets/image/basket-shopping.svg',color: colorCharcoal,))
       ],

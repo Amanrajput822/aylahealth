@@ -1,6 +1,7 @@
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/shoping_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -244,7 +245,124 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               ),
               sizedboxheight(30.0),
               view_list_Btn(context),
-
+              // Card(
+              //   elevation: 5,
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(10.0),
+              //   ),
+              //   child: Container(
+              //    // margin: const EdgeInsets.all(20.0),
+              //    // padding: const EdgeInsets.all(16.0),
+              //     child: Column(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           children: [
+              //             IconButton(
+              //                 onPressed: (){
+              //
+              //                   shoppingListModel.pageController!.previousPage(
+              //                     duration: const Duration(milliseconds: 300),
+              //                     curve: Curves.easeOut,
+              //                   );
+              //                   shoppingListModel.focusedDay_function(shoppingListModel.focusedDay.subtract(const Duration(days: 30)));
+              //
+              //
+              //                   setState((){});
+              //
+              //                 },
+              //                 icon: Icon(Icons.chevron_left,color: colorRichblack,)),
+              //
+              //             TextButton(
+              //                 onPressed: (){
+              //                   yearpicker();
+              //                 },
+              //                 child: Row(
+              //                   children: [
+              //                     Text(DateFormat('yMMM').format(shoppingListModel.focusedDay).toString(),style: TextStyle(
+              //                       color: colorRichblack,
+              //                       fontSize: 14,
+              //                       fontWeight: fontWeight600,
+              //                       fontFamily: fontFamilyText,
+              //                     )),
+              //                     Icon(Icons.keyboard_arrow_down,color: colorRichblack,size: 18),
+              //                   ],
+              //                 )),
+              //             IconButton(
+              //                 onPressed: (){
+              //                   shoppingListModel.pageController!.nextPage(
+              //                     duration: const Duration(milliseconds: 300),
+              //                     curve: Curves.easeOut,
+              //                   );
+              //                   shoppingListModel.focusedDay_function(shoppingListModel.focusedDay.add(const Duration(days: 30)));
+              //                   setState((){});
+              //
+              //                 },
+              //                 icon: Icon(Icons.chevron_right,color: colorRichblack,)),
+              //           ],
+              //         ),
+              //         Container(
+              //           margin: const EdgeInsets.symmetric(horizontal: 20.0),
+              //           padding: const EdgeInsets.only(bottom: 10),
+              //           child: TableCalendar(
+              //             rowHeight: 35,
+              //             firstDay: DateTime(2022),
+              //             lastDay: DateTime(2050),
+              //             focusedDay:shoppingListModel.focusedDay,
+              //             startingDayOfWeek: StartingDayOfWeek.monday,
+              //             selectedDayPredicate: (day) => isSameDay(shoppingListModel.selectdate, day),
+              //             calendarFormat: CalendarFormat.month,
+              //             calendarStyle: CalendarStyle(
+              //               outsideDaysVisible: false,
+              //               weekendTextStyle: TextStyle(color: HexColor('#3B4250') ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
+              //               defaultTextStyle:TextStyle(color: HexColor('#3B4250') ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
+              //               disabledTextStyle:TextStyle(color: HexColor('#9E9E9E') ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
+              //               selectedTextStyle: TextStyle(color: colorWhite ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+              //               todayTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
+              //
+              //               selectedDecoration: BoxDecoration(shape: BoxShape.rectangle, color: colorBluePigment, borderRadius: BorderRadius.circular(5),),
+              //               defaultDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5),),
+              //               weekendDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
+              //               disabledDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
+              //               todayDecoration: BoxDecoration(color: Colors.black26,borderRadius: BorderRadius.circular(5)),
+              //
+              //             ),
+              //
+              //             headerVisible: false,
+              //
+              //             onCalendarCreated: (controller) => shoppingListModel.calendarController_function(controller) ,
+              //             daysOfWeekStyle: DaysOfWeekStyle(
+              //               weekdayStyle: TextStyle(color: colorSlateGray ,fontSize: 11, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
+              //               weekendStyle:TextStyle(color: colorSlateGray ,fontSize: 11, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
+              //             ),
+              //
+              //             // onFormatChanged: (format) {
+              //             //   setState(() {
+              //             //     _calendarFormat = format;
+              //             //   });
+              //             // },
+              //
+              //             onPageChanged: (focusedDay) {
+              //               setState(() {
+              //                 // recipeModel.focusedDay_data(focusedDay);
+              //                 shoppingListModel.focusedDay_function(focusedDay);
+              //
+              //               });
+              //             },
+              //
+              //             onDaySelected: (selectedDay, focusedDay) {
+              //               shoppingListModel.selectDate_function(selectedDay);
+              //               shoppingListModel.focusedDay_function(focusedDay);
+              //               //   recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(selectedDay));
+              //               shoppingListModel.selectDayString_function(DateFormat('EEEE d MMM').format(selectedDay));
+              //             },
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ).paddingOnly(top: 30)
             ],
           ),
         ),
