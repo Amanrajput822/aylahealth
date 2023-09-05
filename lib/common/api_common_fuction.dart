@@ -38,3 +38,6 @@ String customerMealOfDay = 'customerMealOfDay';
 
 String sendCustomerContactEmail = 'sendCustomerContactEmail';
 String faqList = 'faqList';
+
+String customerShoppingList = 'customerShoppingList';
+String createShoppingList = 'createShoppingList';

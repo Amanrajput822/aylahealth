@@ -9,6 +9,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../common/Custom_chackbox_screen.dart';
 import '../../../../common/commonwidgets/button.dart';
+import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../common/styles/const.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -26,13 +27,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   void initState() {
     super.initState();
     final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
-    shoppingListModel.selectStartDayString_function( null);
-    shoppingListModel.selectEndDayString_function( null);
-    shoppingListModel.viewListFunction(false);
-    shoppingListModel.selectStartDate_function(DateTime.now());
-    shoppingListModel.selectEndDate_function(DateTime.now());
-    shoppingListModel.focusedStartDay_function(DateTime.now());
-    shoppingListModel.focusedEndDay_function(DateTime.now());
+
+    shoppingListModel.customerShoppingList_api(context);
+    // shoppingListModel.selectStartDayString_function( null);
+    // shoppingListModel.selectEndDayString_function( null);
+    // shoppingListModel.viewListFunction(false);
+    // shoppingListModel.selectStartDate_function(DateTime.now());
+    // shoppingListModel.selectEndDate_function(DateTime.now());
+    // shoppingListModel.focusedStartDay_function(DateTime.now());
+    // shoppingListModel.focusedEndDay_function(DateTime.now());
   }
 
 
@@ -42,10 +45,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     return Scaffold(
       backgroundColor: colorWhite,
       appBar: _appbar(),
-      body:shoppingListModel.viewList_function? Container(
+      body:shoppingListModel.loading
+          ? Container(
+        child: const Center(child: CircularProgressIndicator()),
+      ):
+      shoppingListModel.viewList_function? Container(
         width: deviceWidth(context),
         height: deviceheight(context),
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +67,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                   padding: const EdgeInsets.only(left: 18,right: 18,top: 6,bottom: 6),
 
-                  child: Text("Wed 20 June - Thu 21 June",
+                  child: Text( "${DateFormat("EE d MMMM").format(DateTime.parse(shoppingListModel.sl_startdate??""))}" "  -  " "${DateFormat("EE d MMMM").format(DateTime.parse(shoppingListModel.sl_enddate??""))}",
+                  //Text("Wed 20 June - Thu 21 June",
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: fontFamilyText,
@@ -72,51 +80,66 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
               ),
               sizedboxheight(10.0),
-              Text("Dairy & Alternatives",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: fontFamilyText,
-                  color: colorRichblack,
-                  fontWeight: fontWeight600,
-                ),
-              ),
-
               ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount:shoppingListModel.dairy_list.length,
+                  itemCount:shoppingListModel.customerShoppingList_data!.length,
                   shrinkWrap: true,
-                  itemBuilder: (BuildContext context, int index1)
-                  {return  Container(
-                    height: 40,
-                    width: deviceWidth(context),
-                    child: ShopingList_chackbox(
-                      action:(){
-                        setState(() {
-                         // qustion_data_list![index].optionData![index1].isSelected = !qustion_data_list![index].optionData![index1].isSelected!;
-                         //_itemChange(qustion_data_list![index].optionData![index1].opsId.toString(), qustion_data_list![index].optionData![index1].isSelected!);
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(shoppingListModel.customerShoppingList_data![index].scName??"",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: fontFamilyText,
+                              color: colorRichblack,
+                              fontWeight: fontWeight600,
+                            ),
+                          ),
+
+                          ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount:shoppingListModel.customerShoppingList_data![index].ingData!.length,
+                              shrinkWrap: true,
+                              itemBuilder: (BuildContext context, int index1)
+                              {return  Container(
+                                height: 40,
+                                width: deviceWidth(context),
+                                child: ShopingList_chackbox(
+                                  action:(){
+                                    setState(() {
+                                      // qustion_data_list![index].optionData![index1].isSelected = !qustion_data_list![index].optionData![index1].isSelected!;
+                                      //_itemChange(qustion_data_list![index].optionData![index1].opsId.toString(), qustion_data_list![index].optionData![index1].isSelected!);
 //
-                        });
-                      },
-                      screentype: 1,
-                      // buttoninout: chaeckbutton,
-                      buttontext:"${shoppingListModel.dairy_list[index1].toString().split(" ")[0]} ",
-                      button_sub_text:shoppingListModel.dairy_list[index1].toString().split(" ")[1],
-                      unchackborderclor: HexColor('#CCCCCC'),
-                      chackborderclor: colorBluePigment,
-                      chackboxunchackcolor: colorWhite,
-                      chackboxchackcolor: colorWhite,
-                      titel_textstyle: TextStyle(
-                        fontSize: 14,
-                        fontFamily: fontFamilyText,
-                        color: colorRichblack,
-                        fontWeight: fontWeight400,
+                                    });
+                                  },
+                                  screentype: 1,
+                                   buttoninout: shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus==0?false:true,
+                                  buttontext:shoppingListModel.customerShoppingList_data![index].ingData![index1].ingName??"",
+                                  button_sub_text:" ${shoppingListModel.customerShoppingList_data![index].ingData![index1].slQuantity??""}" "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingUnit??""}",
+                                  unchackborderclor: HexColor('#CCCCCC'),
+                                  chackborderclor: colorBluePigment,
+                                  chackboxunchackcolor: colorWhite,
+                                  chackboxchackcolor: colorWhite,
+                                  titel_textstyle: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: fontFamilyText,
+                                    color: colorRichblack,
+                                    fontWeight: fontWeight400,
+                                  ),
+                                ),
+                              );})
+                        ],
                       ),
-                    ),
-                  );})
+                    );}),
+
+              sizedboxheight(50.0),
             ],
           ),
         ),
-      ):Container(
+      ):
+      Container(
         width: deviceWidth(context),
         height: deviceheight(context),
         decoration: BoxDecoration(
@@ -169,18 +192,18 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         borderRadius: BorderRadius.circular(10),
                         color: HexColor('#F6F7FB')
                       ),
-                      padding: EdgeInsets.only(left: 10,right: 10),
+                      padding: const EdgeInsets.only(left: 10,right: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          SvgPicture.asset('assets/Search.svg',color: colorShadowBlue,),
+                          SvgPicture.asset('assets/Search.svg',color: shoppingListModel.startDayString==null? colorShadowBlue:colorRichblack,),
                           Container(
                             width: deviceWidth(context,0.48),
                             child: Text(shoppingListModel.startDayString??'DD/MM/YYYY',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontFamily: fontFamilyText,
-                                  color: colorShadowBlue,
+                                  color: shoppingListModel.startDayString==null? colorShadowBlue:colorRichblack,
                                   fontWeight: fontWeight400,
                                   overflow: TextOverflow.ellipsis
                               ),),
@@ -218,18 +241,18 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                           borderRadius: BorderRadius.circular(10),
                           color: HexColor('#F6F7FB')
                       ),
-                      padding: EdgeInsets.only(left: 10,right: 10),
+                      padding: const EdgeInsets.only(left: 10,right: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          SvgPicture.asset('assets/Search.svg',color: colorShadowBlue,),
+                          SvgPicture.asset('assets/Search.svg',color: shoppingListModel.endtDayString==null? colorShadowBlue:colorRichblack,),
                           Container(
                             width: deviceWidth(context,0.48),
                             child: Text(shoppingListModel.endtDayString??'DD/MM/YYYY',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontFamily: fontFamilyText,
-                                  color: colorShadowBlue,
+                                  color: shoppingListModel.endtDayString==null? colorShadowBlue:colorRichblack,
                                   fontWeight: fontWeight400,
                                   overflow: TextOverflow.ellipsis
                               ),),
@@ -371,6 +394,15 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
   /// appbar ///////////////////
 
+
+  PopupMenuItem _buildPopupMenuItem(
+      String title,Function action) {
+    return PopupMenuItem(
+      onTap: () => action() ,
+      child:  Text(title),
+    );
+  }
+
   AppBar _appbar(){
     return AppBar(
       elevation: 0,
@@ -392,10 +424,33 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         ),),
 
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 15),
-          child: SvgPicture.asset('assets/image/menu_icon.svg',width: 18,height: 5,
-            color: HexColor('#131A29'),),
+
+        PopupMenuButton(
+          padding: const EdgeInsets.only(right: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          icon: SvgPicture.asset('assets/image/menu_icon.svg',width: 18,height: 5,
+          color: HexColor('#131A29'),),
+
+          itemBuilder: (ctx) => [
+
+            _buildPopupMenuItem('Regenerate',(){}),
+
+            _buildPopupMenuItem('Reset',(){}),
+
+            _buildPopupMenuItem('Exit',(){
+              final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
+              shoppingListModel.viewListFunction( false);
+              shoppingListModel.selectStartDayString_function( null);
+              shoppingListModel.selectEndDayString_function( null);
+              shoppingListModel.viewListFunction(false);
+              shoppingListModel.selectStartDate_function(DateTime.now());
+              shoppingListModel.selectEndDate_function(DateTime.now());
+              shoppingListModel.focusedStartDay_function(DateTime.now());
+              shoppingListModel.focusedEndDay_function(DateTime.now());
+            }),
+          ],
         )
       ],
       backgroundColor: colorWhite,
@@ -420,9 +475,21 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         onPressed: () {
           setState(() {
             if(shoppingListModel.startDayString!=null&&shoppingListModel.endtDayString!=null){
-              shoppingListModel.viewListFunction(true);
-            }
+            print(DateFormat('yyyy/MM/dd').format(shoppingListModel.selectEnddate!));
 
+            int daysBetween(DateTime from, DateTime to) {
+              from = DateTime(from.year, from.month, from.day);
+              to = DateTime(to.year, to.month, to.day);
+              return (to.difference(from).inHours / 24).round();
+            }
+            final data = daysBetween(shoppingListModel.selectStartdate!, shoppingListModel.selectEnddate!);
+            if(data<8){
+              shoppingListModel.viewListFunction(true);
+              shoppingListModel.createShoppingList_api(context,DateFormat('yyyy-MM-dd').format(shoppingListModel.selectStartdate!), DateFormat('yyyy-MM-dd').format(shoppingListModel.selectEnddate!) );
+            }else{
+              FlutterToast_message('Maximum Select 7 Days.');
+            }
+            }
           });
         },
       ),

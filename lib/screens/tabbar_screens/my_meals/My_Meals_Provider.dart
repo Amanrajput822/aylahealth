@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -95,7 +96,7 @@ class MyMeals_Provider with ChangeNotifier {
     notifyListeners();
   }
 
-  String?  _user_select_day ;
+  String?  _user_select_day = DateFormat('EEEE d MMMM').format(DateTime.now()).toString();
   String? get user_select_day => _user_select_day;
   void userSelectDay_set( newMessage) {
     _user_select_day = newMessage;

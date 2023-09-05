@@ -41,9 +41,9 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
   TextEditingController txt_search = TextEditingController();
 
 
-  final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  final yesterday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
-  final tomorrow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+   DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+   DateTime yesterday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
+   DateTime tomorrow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
 
   TabController? _controller;
 
@@ -58,13 +58,13 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
    // recipeModel.selecttab_fuction(0);
     check().then((intenet) async {
-      if (intenet != null && intenet) {
+      if (intenet) {
         mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+        _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
 
       } else {FlutterToast_Internet();}
     });
 
-    _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
     mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1");
     mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
 
@@ -74,7 +74,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
 
   /// day type check ///
-   DateTime? today_check;
+  DateTime? today_check;
   void daytype_check(){
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
@@ -88,8 +88,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
     } else if(aDate == tomorrow) {
       today_check = tomorrow;
       mealsModel.userSelectDay_set('Tomorrow');
-    }
-    else{
+    } else{
       today_check = mealsModel.selectedDay;
       mealsModel.userSelectDay_set(DateFormat('EEEE d MMMM').format(mealsModel.selectedDay!).toString());
     }
@@ -141,7 +140,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         ): Container(
           height: deviceheight(context),
           width: deviceWidth(context),
-          padding: EdgeInsets.only(bottom: 15),
+          padding: const EdgeInsets.only(bottom: 15),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,6 +197,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                               mealsModel.singlecalendarstartdate_set(DateTime.now());
                               mealsModel.singlecalendar_selectedDay(DateTime.now());
                               final aDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+                              today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
                               if(aDate == today) {
                                 mealsModel.userSelectDay_set('Today');
                                 today_check = today;
@@ -732,7 +733,9 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
           _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
           mealsModel.selecttab_fuction(0);
           mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
-
+           today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+           yesterday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
+           tomorrow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
 
           final aDate = DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day);
           if(aDate == today) {
@@ -1047,7 +1050,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
               ],
             ),
           ),
-          (mealsModel.selectedDays!.year == DateTime.now().year&&mealsModel.selectedDays!.month == DateTime.now().month&&mealsModel.selectedDays!.day == DateTime.now().day)?Container(): Positioned(
+          (mealsModel.selectedDays == null)?Container(): Positioned(
               bottom: 50,
               right: deviceWidth(context,0.055),
               left: deviceWidth(context,0.055),
@@ -1177,6 +1180,11 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
               mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
 
               /// day check ///
+
+              today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+              yesterday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
+              tomorrow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+
               final aDate = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
               if(aDate == today) {
                 mealsModel.userSelectDay_set('Today');
@@ -1314,6 +1322,11 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
               mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
 
               /// day check ///
+
+              today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+              yesterday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
+              tomorrow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+
               final aDate = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
               if(aDate == today) {
                 mealsModel.userSelectDay_set('Today');

@@ -1,9 +1,19 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../common/api_common_fuction.dart';
+import '../../../../common/check_screen.dart';
+import '../../../../common/styles/Fluttertoast_internet.dart';
+import '../../../../models/meals plans/Meals_Update_MealsPlane_nodel.dart';
+import '../../../../models/shopping_list/customerShoppingListModel.dart';
 
 class ShoppingListProvider with ChangeNotifier {
+  String error = '';
 
   int? _success ;
   int? get success => _success;
@@ -76,28 +86,28 @@ class ShoppingListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// normal calendar
-  DateTime? _selectdate = DateTime.now();
-  DateTime? get selectdate => _selectdate;
-  void selectDate_function( newMessage) {
-    _selectdate = newMessage;
-    notifyListeners();
-  }
-
-  DateTime _focusedDay = DateTime.now();
-  DateTime get focusedDay => _focusedDay;
-
-  void focusedDay_function( newMessage) {
-    _focusedDay = newMessage;
-    notifyListeners();
-  }
-
-  String? _selectDayString ;
-  String? get selectDayString  => _selectDayString ;
-  void selectDayString_function( newMessage) {
-    _selectDayString = newMessage;
-    notifyListeners();
-  }
+  // /// normal calendar
+  // DateTime? _selectdate = DateTime.now();
+  // DateTime? get selectdate => _selectdate;
+  // void selectDate_function( newMessage) {
+  //   _selectdate = newMessage;
+  //   notifyListeners();
+  // }
+  //
+  // DateTime _focusedDay = DateTime.now();
+  // DateTime get focusedDay => _focusedDay;
+  //
+  // void focusedDay_function( newMessage) {
+  //   _focusedDay = newMessage;
+  //   notifyListeners();
+  // }
+  //
+  // String? _selectDayString ;
+  // String? get selectDayString  => _selectDayString ;
+  // void selectDayString_function( newMessage) {
+  //   _selectDayString = newMessage;
+  //   notifyListeners();
+  // }
   /// calendar controller
   PageController? _pageController;
   PageController? get pageController => _pageController;
@@ -107,10 +117,6 @@ class ShoppingListProvider with ChangeNotifier {
   }
 
 
-
-
-
-
   String? _dayTypeString ;
   String? get dayTypeString  => _dayTypeString ;
   void selectDayType_function( newMessage) {
@@ -118,9 +124,133 @@ class ShoppingListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  final List<String> _dairy_list = [ 'milk 100ml','yoghurt 2tbsp'];
-  List<String> get dairy_list => _dairy_list;
+  List<customerShoppingListResponse>? _customerShoppingList_data;
+  List<customerShoppingListResponse>? get customerShoppingList_data => _customerShoppingList_data;
+
+  var _sl_startdate;
+   get sl_startdate => _sl_startdate;
+
+  var _sl_enddate;
+  get sl_enddate => _sl_enddate;
+  /// create Shopping List Api
+  Future<customerShoppingListModel?> createShoppingList_api(context, startDate, endDate ) async {
+    customerShoppingListModel? result;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      _tokanget = prefs.getString('login_user_token');
+      _tokanget = tokanget!.replaceAll('"', '');
+      print(tokanget.toString());
+
+      check().then((intenet) async {
+        if (intenet != null && intenet) {
+
+        } else {
+          FlutterToast_Internet();
+        }
+      });
+      Map toMap() {
+        var map = Map<String, dynamic>();
+        map["sl_startdate"] = startDate.toString();
+        map["sl_enddate"] = endDate.toString();
+
+        return map;
+      }
+      print('aman1???????????????');
+      print(toMap());
+      print(beasurl + createShoppingList);
+      var response = await http.post(
+          Uri.parse(beasurl + createShoppingList),
+          body: toMap(),
+          headers: {
+            'Authorization': 'Bearer $tokanget',
+            'Accept': 'application/json',
+          }
+      );
+      print(response.body);
+      _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
+      print(json.decode(response.body));
+      if (success == 200) {
+        final item = json.decode(response.body);
+        result = (customerShoppingListModel.fromJson(item));
+        _customerShoppingList_data = result.data;
+        _sl_startdate = result.slStartdate;
+        _sl_enddate = result.slEnddate;
+        FlutterToast_message('Add Shopping List Data');
+        notifyListeners();
+
+      } else {
+        // Navigator.pop(context);
+        print('else==============');
+        FlutterToast_message('No Data');
+      }
+    } catch (e) {
+      error = e.toString();
+    }
+    return result;
+  }
 
 
+  /// customer Shopping List Api
+
+  Future<customerShoppingListModel?> customerShoppingList_api(context ) async {
+    customerShoppingListModel? result;
+    try {
+      _loading = true;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      _tokanget = prefs.getString('login_user_token');
+      _tokanget = tokanget!.replaceAll('"', '');
+      print(tokanget.toString());
+
+      check().then((intenet) async {
+        if (intenet) {
+
+        } else {
+          FlutterToast_Internet();
+        }
+      });
+
+      print(beasurl + customerShoppingList);
+      var response = await http.post(
+          Uri.parse(beasurl + customerShoppingList),
+
+          headers: {
+            'Authorization': 'Bearer $tokanget',
+            'Accept': 'application/json',
+          }
+      );
+      print(json.decode(response.body));
+      _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
+
+      if (success == 200) {
+        _loading = false;
+        final item = json.decode(response.body);
+        result = (customerShoppingListModel.fromJson(item));
+        _customerShoppingList_data = result.data;
+        _sl_startdate = result.slStartdate;
+        _sl_enddate = result.slEnddate;
+        viewListFunction(true);
+        if(customerShoppingList_data!.isNotEmpty){
+          _viewList_function = true;
+        }else{
+          _viewList_function = false;
+        }
+
+        FlutterToast_message('Shopping List Data');
+        notifyListeners();
+
+      } else {
+        _loading = false;
+        // Navigator.pop(context);
+        print('else==============');
+        FlutterToast_message('No Data');
+      }
+    } catch (e) {
+      _loading = false;
+      error = e.toString();
+    }
+    return result;
+  }
 
 }
