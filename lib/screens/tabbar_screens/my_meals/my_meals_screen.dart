@@ -121,6 +121,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
       }
     });
   }
+  bool selectButton = false;
   @override
   Widget build(BuildContext context) {
     final mealsModel = Provider.of<MyMeals_Provider>(context);
@@ -233,7 +234,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                         else{
                           warning_popup();
                         }
-
+                        selectButton = true;
                       },
                       child: Text('Today',style: TextStyle(
                         color: today_check==today?colorShadowBlue:colorBluePigment,
@@ -710,6 +711,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         btnWidth: deviceWidth(context,0.9),
         btnColor: colorBluePigment,
         onPressed: () {
+          selectButton = false;
           mealsModel.singlecalendarstartdate_set(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
           mealsModel.singlecalendar_selectedDay(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
           mealsModel.singlecalendar_focuseday(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
@@ -864,7 +866,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                     TextButton(onPressed: (){
                       setState(() {
                         mealsModel.listviewCalendar_hideShow(false);
-
+                        selectButton = false;
                       });
                     }, child: Row(
                       children: [
@@ -964,7 +966,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                         onDaySelected: (selectedDay, focusedDay) {
                           setState(() {
                             mealsModel.multiple_calender_selected(selectedDay);
-
+                            selectButton = true;
                             // _selectedDays = selectedDay;
                            //  recipeModel.singlecalendar_focuseday(selectedDay);
                            //  recipeModel.singlecalendar_selectedDay(selectedDay);
@@ -1035,7 +1037,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                         onDaySelected: (selectedDay, focusedDay) {
                           setState(() {
                             mealsModel.multiple_calender_selected(selectedDay);
-
+                            selectButton = true;
                             // _selectedDays = selectedDay;
                             //  recipeModel.singlecalendar_focuseday(selectedDay);
                             //  recipeModel.singlecalendar_selectedDay(selectedDay);
@@ -1050,11 +1052,11 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
               ],
             ),
           ),
-          (mealsModel.selectedDays == null)?Container(): Positioned(
+          selectButton?Positioned(
               bottom: 50,
               right: deviceWidth(context,0.055),
               left: deviceWidth(context,0.055),
-              child: selectBtn(context ,mealsModel))
+              child: selectBtn(context ,mealsModel)):Container()
         ],
       ),
     );
@@ -1080,10 +1082,10 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         calendarStyle: CalendarStyle(
 
             markersAnchor: -1,
-
+             markerSize: 6,
             markerDecoration: BoxDecoration(
               color: colorLightGray,
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(8),
             ),
             canMarkersOverflow: true,
             outsideTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
@@ -1662,15 +1664,12 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
                             headerStyle: HeaderStyle(
                                 titleCentered: true,
-                                leftChevronMargin: EdgeInsets.only(left: 1),
+                                leftChevronMargin: const EdgeInsets.only(left: 1),
                                 leftChevronIcon: Icon(Icons.chevron_left,color: colorSlateGray,),
                                 rightChevronIcon: Icon(Icons.chevron_right,color: colorSlateGray,),
                                 rightChevronVisible: true,
                                 // titleTextFormatter: (date, locale) => DateFormat.MMMM(locale).format(date),
                                 formatButtonVisible : false,
-                                formatButtonDecoration: BoxDecoration(
-
-                                ),
                                 titleTextStyle: TextStyle(
                                   color: colorRichblack,
                                   fontSize: 14,

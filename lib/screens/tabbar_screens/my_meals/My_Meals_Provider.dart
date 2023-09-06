@@ -219,10 +219,14 @@ class MyMeals_Provider with ChangeNotifier {
 
   List<Map<String, dynamic>>? _dataList;
   List<Map<String, dynamic>>? get dataList => _dataList;
+  void DataList(List<Map<String, dynamic>> event){
+    _dataList = event;
+    notifyListeners();
+  }
 
   Map<DateTime, List<Event>>? _kEventSource ;
   Map<DateTime, List<Event>>? get kEventSource =>_kEventSource;
-  void EventSource(event){
+  void EventSource(Map<DateTime, List<Event>> event){
     _kEventSource = event;
     notifyListeners();
   }
@@ -261,8 +265,9 @@ class MyMeals_Provider with ChangeNotifier {
             'Accept': 'application/json'
           }
       );
-      print('get_meals_calendardata_api222');
+      print('>>>>>>>>>>>>>>>>>>>>>>>>');
       print(response.body);
+      print('>>>>>>>>>>>>>>>>>>>>>>>>');
       if(loader=="1"){
         _loading1 = false;
       }
@@ -270,23 +275,19 @@ class MyMeals_Provider with ChangeNotifier {
       _success = (Get_Meals_Plane_model.fromJson(json.decode(response.body)).status);
       print("get_meals_calendardata_api${json.decode(response.body)}");
       if (success == 200) {
-        final item = json.decode(response.body);
-        result = (Get_Meals_Plane_model.fromJson(item));
-        _get_meals_calendar_data = result.data;
+
+        result = (Get_Meals_Plane_model.fromJson(json.decode(response.body)));
+        _get_meals_calendar_data = (Get_Meals_Plane_model.fromJson(json.decode(response.body))).data;
         String jsondata = Get_Meals_Plane_model.fromJson(json.decode(response.body)).data!.mlpCalenderData!;
 
-        print('person.toString()');
-        print('121212');
-         _dataList = (json.decode(jsondata) as List)
-            .map((item) => item as Map<String, dynamic>)
-            .toList();
+         _dataList = (json.decode(jsondata) as List).map((item) => item as Map<String, dynamic>).toList();
 
         _kEventSource = { for (var item in dataList!)
           DateTime.utc(result.data!.mlpYear!, result.data!.mlpMonth!, int.parse(item['date'])) : List.generate(
               item['mealData'].isEmpty? 0:1, (index) => const Event('Event')) };
 
         print(dataList.runtimeType);
-        print('person.toString()${dataList}');
+        print('person.toString()$dataList');
         // for(int i = 0; i<person.length;i++){
         //   _jsondata.add(Month_all_Date_json_model(date: person[i]['date'], mealData:person[i]['comment'] ,comment: person[i]['mealData']));
         // }

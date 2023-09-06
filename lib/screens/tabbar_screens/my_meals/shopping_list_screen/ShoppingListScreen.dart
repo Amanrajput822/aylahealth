@@ -1,4 +1,5 @@
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/shoping_list_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -79,13 +80,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                 ),
               ),
-              sizedboxheight(10.0),
+
               ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount:shoppingListModel.customerShoppingList_data!.length,
                   shrinkWrap: true,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
+                      padding: const EdgeInsets.only(top: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -97,14 +99,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               fontWeight: fontWeight600,
                             ),
                           ),
-
+                          sizedboxheight(5.0),
                           ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount:shoppingListModel.customerShoppingList_data![index].ingData!.length,
                               shrinkWrap: true,
                               itemBuilder: (BuildContext context, int index1)
                               {return  Container(
-                                height: 40,
+                                height: 35,
                                 width: deviceWidth(context),
                                 child: ShopingList_chackbox(
                                   action:(){
@@ -435,11 +437,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
           itemBuilder: (ctx) => [
 
-            _buildPopupMenuItem('Regenerate',(){}),
-
-            _buildPopupMenuItem('Reset',(){}),
-
-            _buildPopupMenuItem('Exit',(){
+            _buildPopupMenuItem('Regenerate',(){
               final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
               shoppingListModel.viewListFunction( false);
               shoppingListModel.selectStartDayString_function( null);
@@ -450,6 +448,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               shoppingListModel.focusedStartDay_function(DateTime.now());
               shoppingListModel.focusedEndDay_function(DateTime.now());
             }),
+
+            _buildPopupMenuItem('Reset',(){}),
+
+            _buildPopupMenuItem('Exit',(){}),
           ],
         )
       ],
@@ -487,7 +489,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               shoppingListModel.viewListFunction(true);
               shoppingListModel.createShoppingList_api(context,DateFormat('yyyy-MM-dd').format(shoppingListModel.selectStartdate!), DateFormat('yyyy-MM-dd').format(shoppingListModel.selectEnddate!) );
             }else{
-              FlutterToast_message('Maximum Select 7 Days.');
+             // FlutterToast_message('Maximum Select 7 Days.');
+              warning_popup();
             }
             }
           });
@@ -723,6 +726,31 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         );
       },
+    );
+  }
+  Future warning_popup(){
+    return   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+
+            content: const Text('The end date cannot be more than 7 days from the start date.'),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop("Discard");
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+
+                child:  Text('Ok',style: TextStyle(color: colorBluePigment ),),
+              ),
+              // The "Yes" button
+
+              // The "No" butt
+
+            ],
+          );
+        }
     );
   }
 }
