@@ -198,13 +198,23 @@ void apidata_lode_calendar_json_fuction(context,String year, String month,List<M
       }
     } else{}
   }
+   // print('????????????????????');
+   // print(monthsData.toString());
+   // List<Map<String, dynamic>>?  dataList1 = [];
+   // for(var item in monthsData){
+   //  // List<Map<String, dynamic>>?  _dataList = (item['days']).toList();
+   //
+   //  dataList1.addAll(item['days'].toList());
+   //  mealsModel.DataList(dataList1);
+   //  print('????????????????????');
+   //  print(dataList1[0]['mealData']);
+   //  print(dataList1.length.toString());
+   //  mealsModel.EventSource( { for (int i=0;i< dataList1.length;i++)
+   //    DateTime.utc(int.parse(year), 1, i+1) : List.generate(
+   //        dataList1[i]['mealData'].isEmpty? 0:1, (index) => const Event('Event')) });
+   // }
 
-  // for(int m=0;m<monthsData.length;m++){
-  //   mealsModel.EventSource( { for (var item in monthsData[int.parse(month)-1]['days'])
-  //     DateTime.utc(int.parse(year), int.parse(month), int.parse(item['date'])) : List.generate(
-  //         item['mealData'].isEmpty? 0:1, (index) => Event('Event')) });
-  //
-  // }
+
 
 
   String jsonData = jsonEncode(monthsData[int.parse(month)-1]['days']);

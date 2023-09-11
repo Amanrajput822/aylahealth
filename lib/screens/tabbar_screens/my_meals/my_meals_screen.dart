@@ -47,7 +47,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
   TabController? _controller;
 
-
+bool internet_conection = false;
   /// initState ///
   @override
   void initState() {
@@ -59,14 +59,17 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
    // recipeModel.selecttab_fuction(0);
     check().then((intenet) async {
       if (intenet) {
+        internet_conection = true;
         mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
         _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
 
-      } else {FlutterToast_Internet();}
+      } else {FlutterToast_Internet(); internet_conection = false;}
     });
 
-    mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1");
+    mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1",mealsModel.selectedDay);
+    mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,0);
     mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
+
 
 
   }
@@ -99,13 +102,15 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
     final kEvents = LinkedHashMap<DateTime, List<Event>>(
-      equals: isSameDay,
-      //  hashCode: getHashCode,
+        equals: isSameDay,
+        hashCode: getHashCode,
     )..addAll(mealsModel.kEventSource!);
 
     return kEvents[day] ?? [];
   }
-
+  int getHashCode(DateTime key) {
+    return key.day * 1000000 + key.month * 10000 + key.year;
+  }
   /// Key Board Height Function ///
   double _keyboardHeight = 0;
   void _listenForKeyboardEvents() {
@@ -126,7 +131,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
   Widget build(BuildContext context) {
     final mealsModel = Provider.of<MyMeals_Provider>(context);
 
-    return  DefaultTabController(
+    return internet_conection? DefaultTabController(
       length: mealsModel.get_meals_planlist_data!.length,
       child: Scaffold(
         backgroundColor: colorWhite,
@@ -226,6 +231,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                               _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
                               mealsModel.selecttab_fuction(0);
                               mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+                              mealsModel.get_meals_calendardata_multiple_months_api(context,DateTime.now(),0);
                             });
                           }
                           mealsModel.multiple_calender_selected(DateTime.now());
@@ -264,7 +270,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                 mealsModel.loading
                     ? Container(
                   child: Center(child: CircularProgressIndicator()),
-                ) : Container(
+                ) :
+                Container(
                   height:Platform.isAndroid?deviceheight(context,0.62):deviceheight(context,0.55),
                   child: TabBarView(
                     physics: const NeverScrollableScrollPhysics(),
@@ -628,6 +635,11 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
           ),
         ),
       ),
+    ):
+    Scaffold(
+      body: Container(child: const Center(
+        child: Text('Please check your Internet connection!!!!'),
+      ),),
     );
   }
   /// appbar ///////////////////
@@ -680,7 +692,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         /// tab bar tab controller
         Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
        /// calendar data save api
-        mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0");
+        mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0", mealsModel.selectedDay);
+        mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,int.parse(mealsModel.select_mealplanID.toString())-1);
        /// select day and focused day save
         recipeModel.selectedDay_data( mealsModel.selectedDay);
         recipeModel.focusedDay_data( mealsModel.selectedDay);
@@ -717,6 +730,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
           mealsModel.singlecalendar_focuseday(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
 
           mealsModel.singal_day_data_gate_api(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day),true,0);
+          mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDays,0);
           //  _selectedDay = selectedDay;
           mealsModel.select_tab_data_list!.clear();
           mealsModel.boolDataList.clear();
@@ -1071,8 +1085,10 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
       color: colorWhite,
       child: mealsModel.kEventSource != null?TableCalendar(
         eventLoader: _getEventsForDay,
+        // firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month==3?mealsModel.singlecalendar_startdate!.month-2:mealsModel.singlecalendar_startdate!.month==2?mealsModel.singlecalendar_startdate!.month-1:mealsModel.singlecalendar_startdate!.month==1?mealsModel.singlecalendar_startdate!.month:mealsModel.singlecalendar_startdate!.month-2),
+        // lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month==10?mealsModel.singlecalendar_startdate!.month+3:mealsModel.singlecalendar_startdate!.month==11?mealsModel.singlecalendar_startdate!.month+2:mealsModel.singlecalendar_startdate!.month==12?mealsModel.singlecalendar_startdate!.month+1:mealsModel.singlecalendar_startdate!.month+3,0),
         firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month-2),
-        lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month+3),
+        lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month+3,0),
 
         focusedDay: mealsModel.focusedDay!,
         startingDayOfWeek: StartingDayOfWeek.monday,
@@ -1080,7 +1096,6 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         calendarFormat: mealsModel.calendarFormat,
 
         calendarStyle: CalendarStyle(
-
             markersAnchor: -1,
              markerSize: 6,
             markerDecoration: BoxDecoration(
@@ -1147,7 +1162,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         onPageChanged: (focusedDay) {
           setState(() {
             mealsModel.singlecalendar_focuseday(focusedDay);
-            mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
+           // mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
+           // mealsModel.get_meals_calendardata_multiple_months_api(context);
           //  print(focusedDay.toString());
           });
         },
@@ -1159,7 +1175,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
               mealsModel.singlecalendar_focuseday(focusedDay);
 
               /// get months calendar meals api
-              mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0");
+              mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0",focusedDay);
+              //mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
               /// single day data api
               mealsModel.singal_day_data_gate_api(selectedDay,true,0);
               //  _selectedDay = selectedDay;
@@ -1202,16 +1219,16 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                 today_check = mealsModel.selectedDay;
                 mealsModel.userSelectDay_set(DateFormat('EEEE d MMMM').format(mealsModel.selectedDay!).toString());
               }
-
             });
           }
           else{
             warning_popup();
           }
-
         },
       ):
       TableCalendar(
+        // firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month==3?mealsModel.singlecalendar_startdate!.month-2:mealsModel.singlecalendar_startdate!.month==2?mealsModel.singlecalendar_startdate!.month-1:mealsModel.singlecalendar_startdate!.month==1?mealsModel.singlecalendar_startdate!.month:mealsModel.singlecalendar_startdate!.month-2),
+        // lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month==10?mealsModel.singlecalendar_startdate!.month+3:mealsModel.singlecalendar_startdate!.month==11?mealsModel.singlecalendar_startdate!.month+2:mealsModel.singlecalendar_startdate!.month==12?mealsModel.singlecalendar_startdate!.month+1:mealsModel.singlecalendar_startdate!.month+3,0),
 
         firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month-2),
         lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month+3),
@@ -1289,7 +1306,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
         onPageChanged: (focusedDay) {
           setState(() {
             mealsModel.singlecalendar_focuseday(focusedDay);
-            mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
+           // mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
+           // mealsModel.get_meals_calendardata_multiple_months_api(context);
             //  print(focusedDay.toString());
           });
         },
@@ -1301,7 +1319,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
               mealsModel.singlecalendar_focuseday(focusedDay);
 
               /// get months calendar meals api
-              mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0");
+              mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0",focusedDay);
+            //  mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
               /// single day data api
               mealsModel.singal_day_data_gate_api(selectedDay,true,0);
               //  _selectedDay = selectedDay;
@@ -1548,6 +1567,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
   }
   Widget remove_meals_button(int index){
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+    final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
     return InkWell(
       onTap: (){
@@ -1573,6 +1593,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                           setState(() {
                             remove_meals_fuction(context,mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),mealsModel.selectedDay!.day.toString(),mealsModel.select_tab_data_list![index].recId.toString(),mealsModel.select_tab_data_list![index].mtId.toString(),mealsModel.selectedDay!,int.parse(mealsModel.select_mealplanID.toString())-1);
                             Navigator.of(context, rootNavigator: true).pop("Discard");
+                            mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",mealsModel.selectedDay!);
+
                           });
                         },
                         isDefaultAction: true,
@@ -1711,7 +1733,8 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
                                 Navigator.pop(context);
                                 DateFormat('EEEE d MMM yyyy').format(selectedDay);
                                 print(DateFormat('EE d MMM').format(selectedDay));
-                                mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0");
+                                mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",selectedDay);
+                                mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                                 // only_year_json_create_fuction(selectedDay.year.toString(), selectedDay.month.toString(),selectedDay.day.toString());
 
                                 // int s = getTotalDaysInMonth(_selectedDay!.year, _selectedDay!.month);

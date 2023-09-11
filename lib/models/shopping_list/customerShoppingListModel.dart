@@ -63,14 +63,21 @@ class IngData {
   String? ingName;
   String? slQuantity;
   String? ingUnit;
+  int? slId;
   int? slItemStatus;
 
-  IngData({this.ingName, this.slQuantity, this.ingUnit, this.slItemStatus});
+  IngData(
+      {this.ingName,
+        this.slQuantity,
+        this.ingUnit,
+        this.slId,
+        this.slItemStatus});
 
   IngData.fromJson(Map<String, dynamic> json) {
     ingName = json['ing_name'];
     slQuantity = json['sl_quantity'];
     ingUnit = json['ing_unit'];
+    slId = json['sl_id'];
     slItemStatus = json['sl_item_status'];
   }
 
@@ -79,6 +86,7 @@ class IngData {
     data['ing_name'] = this.ingName;
     data['sl_quantity'] = this.slQuantity;
     data['ing_unit'] = this.ingUnit;
+    data['sl_id'] = this.slId;
     data['sl_item_status'] = this.slItemStatus;
     return data;
   }

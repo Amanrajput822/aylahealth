@@ -11,6 +11,7 @@ import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../models/meals plans/Meals_Update_MealsPlane_nodel.dart';
 import '../../../../models/shopping_list/customerShoppingListModel.dart';
+import '../../../../models/shopping_list/updateShoppingItemStatus_Model.dart';
 
 class ShoppingListProvider with ChangeNotifier {
   String error = '';
@@ -178,7 +179,7 @@ class ShoppingListProvider with ChangeNotifier {
         _sl_enddate = result.slEnddate;
         FlutterToast_message('Add Shopping List Data');
         notifyListeners();
-
+        customerShoppingList_api(context );
       } else {
         // Navigator.pop(context);
         print('else==============');
@@ -252,5 +253,62 @@ class ShoppingListProvider with ChangeNotifier {
     }
     return result;
   }
+
+  /// update Shopping Item Status Api
+  Future<updateShoppingItemStatus_Model?> updateShoppingItemStatus_api(context, slId, slItemStatus ) async {
+    updateShoppingItemStatus_Model? result;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      _tokanget = prefs.getString('login_user_token');
+      _tokanget = tokanget!.replaceAll('"', '');
+      print(tokanget.toString());
+
+      check().then((intenet) async {
+        if (intenet != null && intenet) {
+
+        } else {
+          FlutterToast_Internet();
+        }
+      });
+      Map toMap() {
+        var map = Map<String, dynamic>();
+        map["sl_id"] = slId.toString();
+        map["sl_item_status"] = slItemStatus.toString();
+
+        return map;
+      }
+      print('aman1???????????????');
+      print(toMap());
+      print(beasurl + updateShoppingItemStatus);
+      var response = await http.post(
+          Uri.parse(beasurl + updateShoppingItemStatus),
+          body: toMap(),
+          headers: {
+            'Authorization': 'Bearer $tokanget',
+            'Accept': 'application/json',
+          }
+      );
+      print(response.body);
+      _success = (updateShoppingItemStatus_Model.fromJson(json.decode(response.body)).status);
+      _message = (updateShoppingItemStatus_Model.fromJson(json.decode(response.body)).message);
+      print(json.decode(response.body));
+      if (success == 200) {
+        final item = json.decode(response.body);
+        result = (updateShoppingItemStatus_Model.fromJson(item));
+
+        FlutterToast_message(message);
+        notifyListeners();
+      } else {
+        // Navigator.pop(context);
+        print('else==============');
+        FlutterToast_message('No Data');
+      }
+    } catch (e) {
+      error = e.toString();
+    }
+    return result;
+  }
+
 
 }

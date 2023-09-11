@@ -32,6 +32,7 @@ String recipeCategoryList = 'recipeCategoryList';
 
 String addOrUpdateMealPlan = 'addOrUpdateMealPlan';
 String customerMealPlanData = 'customerMealPlanData';
+String customerFiveMonthMealPlanData = 'customerFiveMonthMealPlanData';
 String mealTimeList = 'mealTimeList';
 String customerMealOfDay = 'customerMealOfDay';
 
@@ -41,3 +42,4 @@ String faqList = 'faqList';
 
 String customerShoppingList = 'customerShoppingList';
 String createShoppingList = 'createShoppingList';
+String updateShoppingItemStatus = 'updateShoppingItemStatus';

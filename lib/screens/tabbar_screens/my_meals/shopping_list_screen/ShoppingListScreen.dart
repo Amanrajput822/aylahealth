@@ -30,13 +30,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
 
     shoppingListModel.customerShoppingList_api(context);
-    // shoppingListModel.selectStartDayString_function( null);
-    // shoppingListModel.selectEndDayString_function( null);
-    // shoppingListModel.viewListFunction(false);
-    // shoppingListModel.selectStartDate_function(DateTime.now());
-    // shoppingListModel.selectEndDate_function(DateTime.now());
-    // shoppingListModel.focusedStartDay_function(DateTime.now());
-    // shoppingListModel.focusedEndDay_function(DateTime.now());
+    shoppingListModel.selectStartDayString_function( null);
+    shoppingListModel.selectEndDayString_function( null);
+    shoppingListModel.viewListFunction(false);
+    shoppingListModel.selectStartDate_function(DateTime.now());
+    shoppingListModel.selectEndDate_function(DateTime.now());
+    shoppingListModel.focusedStartDay_function(DateTime.now());
+    shoppingListModel.focusedEndDay_function(DateTime.now());
   }
 
 
@@ -58,7 +58,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(
+              shoppingListModel.loading?Container() :Align(
                 alignment: Alignment.center,
                 child: Container(
                 //  height: 30,
@@ -68,7 +68,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                   padding: const EdgeInsets.only(left: 18,right: 18,top: 6,bottom: 6),
 
-                  child: Text( "${DateFormat("EE d MMMM").format(DateTime.parse(shoppingListModel.sl_startdate??""))}" "  -  " "${DateFormat("EE d MMMM").format(DateTime.parse(shoppingListModel.sl_enddate??""))}",
+                  child: Text( "${DateFormat("EE d MMMM").format(DateTime.parse(shoppingListModel.sl_startdate??"${DateTime.now()}"))}""  -  ""${DateFormat("EE d MMMM").format(DateTime.parse(shoppingListModel.sl_enddate??"${DateTime.now()}"))}",
                   //Text("Wed 20 June - Thu 21 June",
                     style: TextStyle(
                         fontSize: 14,
@@ -81,7 +81,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
               ),
 
-              ListView.builder(
+              shoppingListModel.customerShoppingList_data!.isEmpty?SizedBox(
+                height: deviceheight(context,0.6),
+                child: const Center(
+                  child: Text('No Shopping List Data'),
+                ),
+              ):ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount:shoppingListModel.customerShoppingList_data!.length,
                   shrinkWrap: true,
@@ -111,9 +116,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                 child: ShopingList_chackbox(
                                   action:(){
                                     setState(() {
+                                      if(shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus==0){
+                                        shoppingListModel.updateShoppingItemStatus_api(context, shoppingListModel.customerShoppingList_data![index].ingData![index1].slId, 1 );
+                                        shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus=1;
+                                      }else{
+                                        shoppingListModel.updateShoppingItemStatus_api(context, shoppingListModel.customerShoppingList_data![index].ingData![index1].slId, 0 );
+                                        shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus=0;
+                                      }
                                       // qustion_data_list![index].optionData![index1].isSelected = !qustion_data_list![index].optionData![index1].isSelected!;
                                       //_itemChange(qustion_data_list![index].optionData![index1].opsId.toString(), qustion_data_list![index].optionData![index1].isSelected!);
-//
+
+
                                     });
                                   },
                                   screentype: 1,

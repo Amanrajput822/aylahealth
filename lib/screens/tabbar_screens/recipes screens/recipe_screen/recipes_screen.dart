@@ -1141,7 +1141,8 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                               Navigator.pop(context);
                               DateFormat('EEEE d MMM yyyy').format(selectedDay);
                               print(DateFormat('EE d MMM').format(selectedDay));
-                              mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0");
+                              mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",selectedDay);
+                              mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                              // only_year_json_create_fuction(selectedDay.year.toString(), selectedDay.month.toString(),selectedDay.day.toString());
 
                               // int s = getTotalDaysInMonth(_selectedDay!.year, _selectedDay!.month);
@@ -1438,7 +1439,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
 
          recipeModel.select_screen_data(false);
          mealsModel.singleDayMeals_change(false);
-
+         mealsModel.get_meals_calendardata_api(context, recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",recipeModel.selectedDay);
         },
       ),
     );

@@ -11,6 +11,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
+import '../../../models/meals plans/Get_Meals_Plane_multipl_months_model.dart';
 import '../../../models/recipelist/recipe_like_unlike_data_model.dart';
 import 'calendar_evryday_json.dart';
 import '../../../models/meals plans/Get_Meals_Plane_model.dart';
@@ -219,19 +220,19 @@ class MyMeals_Provider with ChangeNotifier {
 
   List<Map<String, dynamic>>? _dataList;
   List<Map<String, dynamic>>? get dataList => _dataList;
-  void DataList(List<Map<String, dynamic>> event){
+  void DataList(List<Map<String, dynamic>>? event){
     _dataList = event;
     notifyListeners();
   }
 
   Map<DateTime, List<Event>>? _kEventSource ;
   Map<DateTime, List<Event>>? get kEventSource =>_kEventSource;
-  void EventSource(Map<DateTime, List<Event>> event){
+  void EventSource(Map<DateTime, List<Event>>? event){
     _kEventSource = event;
     notifyListeners();
   }
 
-  Future<Get_Meals_Plane_model?> get_meals_calendardata_api(context, year,month,index, loader) async {
+  Future<Get_Meals_Plane_model?> get_meals_calendardata_api(context, year,month,index, loader,DateTime? datetime) async {
     if(loader=="1"){
       _loading1 = true;
     }
@@ -265,9 +266,7 @@ class MyMeals_Provider with ChangeNotifier {
             'Accept': 'application/json'
           }
       );
-      print('>>>>>>>>>>>>>>>>>>>>>>>>');
       print(response.body);
-      print('>>>>>>>>>>>>>>>>>>>>>>>>');
       if(loader=="1"){
         _loading1 = false;
       }
@@ -280,18 +279,16 @@ class MyMeals_Provider with ChangeNotifier {
         _get_meals_calendar_data = (Get_Meals_Plane_model.fromJson(json.decode(response.body))).data;
         String jsondata = Get_Meals_Plane_model.fromJson(json.decode(response.body)).data!.mlpCalenderData!;
 
-         _dataList = (json.decode(jsondata) as List).map((item) => item as Map<String, dynamic>).toList();
+         _dataList = (json.decode(jsondata) as List)
+            .map((item) => item as Map<String, dynamic>)
+            .toList();
 
-        _kEventSource = { for (var item in dataList!)
-          DateTime.utc(result.data!.mlpYear!, result.data!.mlpMonth!, int.parse(item['date'])) : List.generate(
-              item['mealData'].isEmpty? 0:1, (index) => const Event('Event')) };
+        // _kEventSource = { for (var item in dataList!)
+        //   DateTime.utc(result.data!.mlpYear!, result.data!.mlpMonth!, int.parse(item['date'])) : List.generate(
+        //       item['mealData'].isEmpty? 0:1, (index) => const Event('Event')) };
 
-        print(dataList.runtimeType);
-        print('person.toString()$dataList');
-        // for(int i = 0; i<person.length;i++){
-        //   _jsondata.add(Month_all_Date_json_model(date: person[i]['date'], mealData:person[i]['comment'] ,comment: person[i]['mealData']));
-        // }
         apidata_lode_calendar_json_fuction(context,get_meals_calendar_data!.mlpYear.toString(), get_meals_calendar_data!.mlpMonth.toString(),dataList!);
+        get_meals_calendardata_multiple_months_api(context,datetime, index,);
       if(loader !="2"){
         singal_day_data_gate_api(selectedDay!,true,index);
       }
@@ -310,6 +307,113 @@ class MyMeals_Provider with ChangeNotifier {
       if(loader=="1"){
         _loading1 = false;
       }
+      error = e.toString();
+    }
+    return result;
+  }
+
+/// meals plan multiple months data api
+
+  int? _monthday;
+  int? get monthday =>_monthday;
+  int getDaysInMonth(int year, int month) {
+    final date = DateTime(year, month + 1, 0);
+    _monthday = int.parse(date.day.toString());
+    print('++++++++++++++++');
+    print(date.day);
+    return date.day;
+  }
+
+  List<Map<String, dynamic>>?  _dataList1 = [];
+  List<Map<String, dynamic>>?get  dataList1 => _dataList1;
+
+  Future<Get_Meals_Plane_multipl_months_model?> get_meals_calendardata_multiple_months_api(context,DateTime? selectdate, index,) async {
+    _dataList1!.clear();
+    _dataList1!= null;
+
+    _monthday = null;
+
+    Get_Meals_Plane_multipl_months_model? result;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _tokanget = prefs.getString('login_user_token');
+      _tokanget = tokanget!.replaceAll('"', '');
+      print(tokanget);
+      check().then((intenet) async {
+        if (intenet != null && intenet) {
+
+        } else {FlutterToast_Internet();}
+      });
+      Map toMap() {
+        var map = Map<String, dynamic>();
+       map["dateRange"] = selectdate.toString().split(" ")[0];
+
+        return map;
+      }
+      print("get_meals_calendardata_multiple_months_api");
+
+      print(toMap());
+      print(beasurl + customerFiveMonthMealPlanData);
+      var response = await http.post(
+          Uri.parse(beasurl + customerFiveMonthMealPlanData),
+          body: toMap(),
+          headers: {
+            'Authorization': 'Bearer $tokanget',
+            'Accept': 'application/json'
+          }
+      );
+      print("get_meals_calendardata_multiple_months_api${json.decode(response.body)}");
+      _success = (Get_Meals_Plane_multipl_months_model.fromJson(json.decode(response.body)).status);
+      print("get_meals_calendardata_multiple_months_api${json.decode(response.body)}");
+      if (success == 200) {
+
+        result = (Get_Meals_Plane_multipl_months_model.fromJson(json.decode(response.body)));
+
+        for(var item in result.data!){
+          print(item.mlpCalenderData == "");
+         if(item.mlpCalenderData == ""){
+           getDaysInMonth(item.mlpYear, item.mlpMonth);
+
+           print('????????????????????2222');
+           print(monthday.toString());
+           List<Map<String, dynamic>> daysData = [];
+           for (int day = 1; day <= monthday!; day++) {
+             Map<String, dynamic> dayData = {
+               'date': day.toString(),
+               'mealData': [],
+             };
+             daysData.add(dayData);
+
+           }
+           print('????????????????????00000');
+           print(dataList.toString());
+           _dataList = daysData;
+         }
+         else{
+           _dataList = (json.decode(item.mlpCalenderData!) as List)
+               .map((item) => item as Map<String, dynamic>).toList();
+         }
+
+          print('????????????????????');
+          print(dataList!.length.toString());
+         _dataList1!.addAll(dataList!.toList());
+
+         print('????????????????????');
+         print(dataList1![0]['mealData']);
+         print(dataList1!.length.toString());
+          _kEventSource = { for (int i=0;i< dataList1!.length;i++)
+
+            DateTime.utc(result.data!.first.mlpYear,result.data!.first.mlpMonth, i+1) :
+            List.generate(dataList1![i]['mealData'].isEmpty? 0:1, (index) => const Event('Event')) };
+        }
+
+        notifyListeners();
+      } else {
+        // Navigator.pop(context);
+        print('else==============');
+        FlutterToast_message('No Data');
+      }
+    } catch (e) {
       error = e.toString();
     }
     return result;
@@ -653,5 +757,18 @@ class MyMeals_Provider with ChangeNotifier {
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
   }
+
+}
+
+class mealdata{
+ var days;
+ var mealData;
+ mealdata({this.days, this.mealData});
+ mealdata.fromJson(Map<String, dynamic> json) {
+   days = json['days'];
+   mealData = json['mealData'];
+ }
+  // "days": '',
+  // "mealData": '',
 
 }
