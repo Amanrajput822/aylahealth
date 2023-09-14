@@ -330,7 +330,6 @@ class MyMeals_Provider with ChangeNotifier {
   Future<Get_Meals_Plane_multipl_months_model?> get_meals_calendardata_multiple_months_api(context,DateTime? selectdate, index,) async {
     _dataList1!.clear();
     _dataList1!= null;
-
     _monthday = null;
 
     Get_Meals_Plane_multipl_months_model? result;
@@ -340,7 +339,7 @@ class MyMeals_Provider with ChangeNotifier {
       _tokanget = tokanget!.replaceAll('"', '');
       print(tokanget);
       check().then((intenet) async {
-        if (intenet != null && intenet) {
+        if (intenet) {
 
         } else {FlutterToast_Internet();}
       });
@@ -707,7 +706,7 @@ class MyMeals_Provider with ChangeNotifier {
 
     print(_tokanget.toString());
     check().then((intenet) async {
-      if (intenet != null && intenet) {
+      if (intenet) {
 
       } else {
         FlutterToast_Internet();
@@ -757,18 +756,5 @@ class MyMeals_Provider with ChangeNotifier {
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
   }
-
-}
-
-class mealdata{
- var days;
- var mealData;
- mealdata({this.days, this.mealData});
- mealdata.fromJson(Map<String, dynamic> json) {
-   days = json['days'];
-   mealData = json['mealData'];
- }
-  // "days": '',
-  // "mealData": '',
 
 }

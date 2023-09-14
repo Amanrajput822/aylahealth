@@ -45,7 +45,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     final shoppingListModel = Provider.of<ShoppingListProvider>(context);
     return Scaffold(
       backgroundColor: colorWhite,
-      appBar: _appbar(),
+      appBar: _appbar(shoppingListModel),
       body:shoppingListModel.loading
           ? Container(
         child: const Center(child: CircularProgressIndicator()),
@@ -58,7 +58,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              shoppingListModel.loading?Container() :Align(
+              shoppingListModel.customerShoppingList_data!.isEmpty?SizedBox(
+                height: deviceheight(context),
+
+              ) :Align(
                 alignment: Alignment.center,
                 child: Container(
                 //  height: 30,
@@ -82,10 +85,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               ),
 
               shoppingListModel.customerShoppingList_data!.isEmpty?SizedBox(
-                height: deviceheight(context,0.6),
-                child: const Center(
-                  child: Text('No Shopping List Data'),
-                ),
+                height: deviceheight(context),
+
               ):ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount:shoppingListModel.customerShoppingList_data!.length,
@@ -125,7 +126,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                       }
                                       // qustion_data_list![index].optionData![index1].isSelected = !qustion_data_list![index].optionData![index1].isSelected!;
                                       //_itemChange(qustion_data_list![index].optionData![index1].opsId.toString(), qustion_data_list![index].optionData![index1].isSelected!);
-
 
                                     });
                                   },
@@ -418,7 +418,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
-  AppBar _appbar(){
+  AppBar _appbar(shoppingListModel){
     return AppBar(
       elevation: 0,
       leading:IconButton(
@@ -440,7 +440,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
       actions: [
 
-        PopupMenuButton(
+        shoppingListModel.customerShoppingList_data!.isNotEmpty? PopupMenuButton(
           padding: const EdgeInsets.only(right: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
@@ -451,22 +451,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           itemBuilder: (ctx) => [
 
             _buildPopupMenuItem('Regenerate',(){
-              final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
-              shoppingListModel.viewListFunction( false);
-              shoppingListModel.selectStartDayString_function( null);
-              shoppingListModel.selectEndDayString_function( null);
-              shoppingListModel.viewListFunction(false);
-              shoppingListModel.selectStartDate_function(DateTime.now());
-              shoppingListModel.selectEndDate_function(DateTime.now());
-              shoppingListModel.focusedStartDay_function(DateTime.now());
-              shoppingListModel.focusedEndDay_function(DateTime.now());
+              conformationPopup();
             }),
-
-            _buildPopupMenuItem('Reset',(){}),
-
-            _buildPopupMenuItem('Exit',(){}),
           ],
-        )
+        ):Container()
       ],
       backgroundColor: colorWhite,
     );
@@ -489,23 +477,31 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         btnColor:shoppingListModel.startDayString==null||shoppingListModel.endtDayString==null?colorDisabledButton: colorEnabledButton,
         onPressed: () {
           setState(() {
-            if(shoppingListModel.startDayString!=null&&shoppingListModel.endtDayString!=null){
-            print(DateFormat('yyyy/MM/dd').format(shoppingListModel.selectEnddate!));
+            if (shoppingListModel.selectEnddate!.isBefore(shoppingListModel.selectStartdate!)) {
+              warningPopup('You can only select a start date that is before the end date and not vice-versa. Please select a different date range.');
 
-            int daysBetween(DateTime from, DateTime to) {
-              from = DateTime(from.year, from.month, from.day);
-              to = DateTime(to.year, to.month, to.day);
-              return (to.difference(from).inHours / 24).round();
             }
-            final data = daysBetween(shoppingListModel.selectStartdate!, shoppingListModel.selectEnddate!);
-            if(data<8){
-              shoppingListModel.viewListFunction(true);
-              shoppingListModel.createShoppingList_api(context,DateFormat('yyyy-MM-dd').format(shoppingListModel.selectStartdate!), DateFormat('yyyy-MM-dd').format(shoppingListModel.selectEnddate!) );
-            }else{
-             // FlutterToast_message('Maximum Select 7 Days.');
-              warning_popup();
+            else{
+              if(shoppingListModel.startDayString!=null&&shoppingListModel.endtDayString!=null){
+                print(DateFormat('yyyy/MM/dd').format(shoppingListModel.selectEnddate!));
+
+                int daysBetween(DateTime from, DateTime to) {
+                  from = DateTime(from.year, from.month, from.day);
+                  to = DateTime(to.year, to.month, to.day);
+                  return (to.difference(from).inHours / 24).round();
+                }
+                final data = daysBetween(shoppingListModel.selectStartdate!, shoppingListModel.selectEnddate!);
+                if(data<8){
+                  shoppingListModel.viewListFunction(true);
+                  shoppingListModel.createShoppingList_api(context,DateFormat('yyyy-MM-dd').format(shoppingListModel.selectStartdate!), DateFormat('yyyy-MM-dd').format(shoppingListModel.selectEnddate!) );
+                }else{
+                  // FlutterToast_message('Maximum Select 7 Days.');
+                  warningPopup('You can only generate a shopping list for a maximum of 7 days. Please select a different date range.');
+                }
+              }
             }
-            }
+
+
           });
         },
       ),
@@ -548,7 +544,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                     shoppingListModel.focusedStartDay_function(shoppingListModel.focusedStartDay.subtract(const Duration(days: 30)));
                                   }
                                   else if(shoppingListModel.dayTypeString =="End"){
-                                    shoppingListModel.focusedEndDay_function(shoppingListModel.focusedEndDay.subtract(const Duration(days: 30)));
+                                    shoppingListModel.focusedEndDay_function(shoppingListModel.focusedEndDay!.subtract(const Duration(days: 30)));
                                   }
 
                                   setState((){});
@@ -562,7 +558,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                 },
                                 child: Row(
                                   children: [
-                                    Text(DateFormat('yMMM').format(shoppingListModel.dayTypeString =="Start"?shoppingListModel.focusedStartDay:shoppingListModel.focusedEndDay).toString(),style: TextStyle(
+                                    Text(DateFormat('yMMM').format(shoppingListModel.dayTypeString =="Start"?shoppingListModel.focusedStartDay:shoppingListModel.focusedEndDay!).toString(),style: TextStyle(
                                       color: colorRichblack,
                                       fontSize: 14,
                                       fontWeight: fontWeight600,
@@ -582,7 +578,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                     shoppingListModel.focusedStartDay_function(shoppingListModel.focusedStartDay.add(const Duration(days: 30)));
                                   }
                                   else if(shoppingListModel.dayTypeString =="End"){
-                                    shoppingListModel.focusedEndDay_function(shoppingListModel.focusedEndDay.add(const Duration(days: 30)));
+                                    shoppingListModel.focusedEndDay_function(shoppingListModel.focusedEndDay!.add(const Duration(days: 30)));
                                   }
 
                                   setState((){});
@@ -598,7 +594,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                             rowHeight: 35,
                             firstDay: DateTime(2022),
                             lastDay: DateTime(2050),
-                            focusedDay:shoppingListModel.dayTypeString =="Start"?shoppingListModel.focusedStartDay:shoppingListModel.focusedEndDay,
+                            focusedDay:shoppingListModel.dayTypeString =="Start"?shoppingListModel.focusedStartDay:shoppingListModel.focusedEndDay!,
                             startingDayOfWeek: StartingDayOfWeek.monday,
                             selectedDayPredicate: (day) => isSameDay(shoppingListModel.dayTypeString =="Start"?shoppingListModel.selectStartdate:shoppingListModel.selectEnddate, day),
                             calendarFormat: CalendarFormat.month,
@@ -741,13 +737,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       },
     );
   }
-  Future warning_popup(){
+
+  Future warningPopup(warningMessage){
     return   showCupertinoDialog(
         context: context,
         builder: (BuildContext ctx) {
           return CupertinoAlertDialog(
 
-            content: const Text('The end date cannot be more than 7 days from the start date.'),
+            content:  Text(warningMessage),
             actions: [
               CupertinoDialogAction(
                 onPressed: () {
@@ -756,6 +753,49 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 },
 
                 child:  Text('Ok',style: TextStyle(color: colorBluePigment ),),
+              ),
+
+              // The "Yes" button
+
+              // The "No" butt
+
+            ],
+          );
+        }
+    );
+  }
+
+  Future conformationPopup(){
+    return   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
+
+            content:  const Text('Are you sure you want to regenerate the shopping list? This will replace the current list.'),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop("Discard");
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+
+                child:  Text('cancel',style: TextStyle(color: colorBluePigment ),),
+              ),
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop("Discard");
+                  final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
+                  shoppingListModel.viewListFunction( false);
+                  shoppingListModel.selectStartDayString_function( null);
+                  shoppingListModel.selectEndDayString_function( null);
+                  shoppingListModel.viewListFunction(false);
+                  shoppingListModel.selectStartDate_function(DateTime.now());
+                  shoppingListModel.selectEndDate_function(DateTime.now());
+                  shoppingListModel.focusedStartDay_function(DateTime.now());
+                  shoppingListModel.focusedEndDay_function(DateTime.now());
+                },
+
+                child:  Text('continue',style: TextStyle(color: colorBluePigment ),),
               ),
               // The "Yes" button
 

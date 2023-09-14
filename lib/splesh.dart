@@ -45,14 +45,34 @@ class _SpleshState extends State<Splesh> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: deviceheight(context),
-        width: deviceWidth(context),
-        child: Center(
-          child:Image.asset('assets/image/Light_Mode_SecondaryLogo_Small 1.png',width: 185,height: 185,) ,
+    double width = deviceheight(context) * 0.2;
+    double height = deviceheight(context) * 0.2;
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          height: deviceheight(context),
+          width: deviceheight(context),
+
+          child: Center(
+            child: Hero(
+              tag: 'Light_Mode_SecondaryLogo_Small',
+              child: Image.asset('assets/image/Light_Mode_SecondaryLogo_Small.png',
+                width: 185,height: 185,)
+
+            ),
+          ),
         ),
       ),
     );
+
+    // return Scaffold(
+    //   body: Container(
+    //     height: deviceheight(context),
+    //     width: deviceWidth(context),
+    //     child: Center(
+    //       child:Image.asset('assets/image/Light_Mode_SecondaryLogo_Small.png',width: 185,height: 185,) ,
+    //     ),
+    //   ),
+    // );
   }
 }

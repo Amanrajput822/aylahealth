@@ -19,15 +19,26 @@ import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 
+import 'FlutterNativeSplash.dart';
 import 'common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
 import 'common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import 'demo/appleLogin_demo.dart';
 import 'demo/deno.dart';
 import 'home_screen.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    FlutterNativeSplash.remove();
+    super.initState();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

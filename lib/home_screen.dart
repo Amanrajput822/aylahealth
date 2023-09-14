@@ -124,9 +124,9 @@ class HomeScreen extends StatelessWidget {
           // Get.to(() => LogIn())
            Navigator.push(
              context,
-             PageTransition(duration:Duration(milliseconds: 400) ,
+             PageTransition(duration:const Duration(milliseconds: 500) ,
                type: PageTransitionType.bottomToTop,
-               child: LogIn(),
+               child: const LogIn(),
              ),
            );
         },

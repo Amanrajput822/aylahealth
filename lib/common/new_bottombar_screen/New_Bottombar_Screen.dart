@@ -52,8 +52,8 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
     recipeModel.select_screen_data(false);
     mealsModel.singleDayMeals_change(false);
     recipeModel.getRecipeData1(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
-    final Duration duration = Duration(milliseconds: 400);
-    final Curve curve = Curves.ease;
+    const Duration duration = Duration(milliseconds: 400);
+    const Curve curve = Curves.ease;
 
     if (recipeModel.controller!.hasClients) {
       var scrollPosition = recipeModel.controller!.position;
@@ -90,7 +90,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
             if(mealsModel.notes){
               Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(0);
-              recipe_screen_tap();
+             // recipe_screen_tap();
             }
             else{
               warning_popup();
@@ -129,7 +129,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
             if(mealsModel.notes){
               Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(1);
-              recipe_screen_tap();
+             // recipe_screen_tap();
             }
             else{
               warning_popup();
@@ -164,9 +164,20 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
         ),
         PersistentBottomNavBarItem(
-          onPressed: (value){
+          onSelectedTabPressWhenNoScreensPushed: (){
             Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
-           // meals_screen_tap();
+          },
+          onPressed: (value){
+            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+
+            if(mealsModel.notes){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
+
+             // recipe_screen_tap();
+            }
+            else{
+              warning_popup();
+            }
           },
           icon: Column(
             children: [
@@ -241,7 +252,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
             if(mealsModel.notes){
               Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
-              recipe_screen_tap();
+            //  recipe_screen_tap();
             }
             else{
               warning_popup();

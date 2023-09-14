@@ -22,6 +22,7 @@ import '../../../common/formtextfield/mytextfield.dart';
 import '../../../common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
 import '../../../common/styles/const.dart';
+import '../../../inetrnet_connection_interupt.dart';
 import '../../../models/month_json_model.dart';
 import '../recipes screens/recipe_description/recipes_description_screen.dart';
 import '../recipes screens/recipe_screen/RecipeData_Provider.dart';
@@ -63,7 +64,9 @@ bool internet_conection = false;
         mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
         _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
 
-      } else {FlutterToast_Internet(); internet_conection = false;}
+      } else {
+        FlutterToast_Internet();
+        internet_conection = false;}
     });
 
     mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1",mealsModel.selectedDay);

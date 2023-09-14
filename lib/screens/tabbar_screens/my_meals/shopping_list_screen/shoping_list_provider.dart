@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
+import '../../../../common/styles/const.dart';
 import '../../../../models/meals plans/Meals_Update_MealsPlane_nodel.dart';
 import '../../../../models/shopping_list/customerShoppingListModel.dart';
 import '../../../../models/shopping_list/updateShoppingItemStatus_Model.dart';
@@ -67,16 +69,16 @@ class ShoppingListProvider with ChangeNotifier {
 
   DateTime? _selectEnddate = DateTime.now();
   DateTime? get selectEnddate => _selectEnddate;
-  void selectEndDate_function( newMessage) {
+  void selectEndDate_function(DateTime? newMessage) {
     _selectEnddate = newMessage;
     notifyListeners();
   }
 
-  DateTime _focusedEndDay = DateTime.now();
-  DateTime get focusedEndDay => _focusedEndDay;
+  DateTime? _focusedEndDay = DateTime.now();
+  DateTime? get focusedEndDay => _focusedEndDay;
 
-  void focusedEndDay_function( newMessage) {
-    _focusedEndDay = newMessage;
+  void focusedEndDay_function(DateTime? newMessage) {
+    _focusedEndDay = newMessage!;
     notifyListeners();
   }
 
@@ -87,28 +89,6 @@ class ShoppingListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // /// normal calendar
-  // DateTime? _selectdate = DateTime.now();
-  // DateTime? get selectdate => _selectdate;
-  // void selectDate_function( newMessage) {
-  //   _selectdate = newMessage;
-  //   notifyListeners();
-  // }
-  //
-  // DateTime _focusedDay = DateTime.now();
-  // DateTime get focusedDay => _focusedDay;
-  //
-  // void focusedDay_function( newMessage) {
-  //   _focusedDay = newMessage;
-  //   notifyListeners();
-  // }
-  //
-  // String? _selectDayString ;
-  // String? get selectDayString  => _selectDayString ;
-  // void selectDayString_function( newMessage) {
-  //   _selectDayString = newMessage;
-  //   notifyListeners();
-  // }
   /// calendar controller
   PageController? _pageController;
   PageController? get pageController => _pageController;
@@ -125,7 +105,7 @@ class ShoppingListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<customerShoppingListResponse>? _customerShoppingList_data;
+  List<customerShoppingListResponse>? _customerShoppingList_data = [];
   List<customerShoppingListResponse>? get customerShoppingList_data => _customerShoppingList_data;
 
   var _sl_startdate;
@@ -135,6 +115,7 @@ class ShoppingListProvider with ChangeNotifier {
   get sl_enddate => _sl_enddate;
   /// create Shopping List Api
   Future<customerShoppingListModel?> createShoppingList_api(context, startDate, endDate ) async {
+    _customerShoppingList_data = [];
     customerShoppingListModel? result;
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -177,9 +158,15 @@ class ShoppingListProvider with ChangeNotifier {
         _customerShoppingList_data = result.data;
         _sl_startdate = result.slStartdate;
         _sl_enddate = result.slEnddate;
-        FlutterToast_message('Add Shopping List Data');
+
+       if(customerShoppingList_data!.isEmpty){
+         warning_popup(context);
+       }else{
+         customerShoppingList_api(context );
+       }
+       //0 FlutterToast_message('Add Shopping List Data');
         notifyListeners();
-        customerShoppingList_api(context );
+
       } else {
         // Navigator.pop(context);
         print('else==============');
@@ -238,7 +225,7 @@ class ShoppingListProvider with ChangeNotifier {
           _viewList_function = false;
         }
 
-        FlutterToast_message('Shopping List Data');
+      //  FlutterToast_message('Shopping List Data');
         notifyListeners();
 
       } else {
@@ -297,7 +284,7 @@ class ShoppingListProvider with ChangeNotifier {
         final item = json.decode(response.body);
         result = (updateShoppingItemStatus_Model.fromJson(item));
 
-        FlutterToast_message(message);
+      //  FlutterToast_message(message);
         notifyListeners();
       } else {
         // Navigator.pop(context);
@@ -310,5 +297,33 @@ class ShoppingListProvider with ChangeNotifier {
     return result;
   }
 
+  Future warning_popup(context){
+    return   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
 
+            content: const Text('You do not have any meals or snacks added to your meal planner. Please add in recipes or select a different date range.'),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  viewListFunction( false);
+                  Navigator.of(context, rootNavigator: true).pop("Discard");
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  _viewList_function = false;
+                 _startDayString=null;
+                 _endDayString=null;
+                },
+
+                child:  Text('Ok',style: TextStyle(color: colorBluePigment ),),
+              ),
+              // The "Yes" button
+
+              // The "No" butt
+
+            ],
+          );
+        }
+    );
+  }
 }
