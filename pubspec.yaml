@@ -30,49 +30,80 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  chewie: ^1.7.1
+  cloud_firestore: ^4.9.2
+  connectivity_plus: ^4.0.2
+  cupertino_icons: ^1.0.6
+  custom_cupertino_picker: ^2.0.3
+  dropdown_button2:
+  firebase_auth: ^4.10.0
+  firebase_core: ^2.16.0
+  firebase_messaging: ^14.6.8
+
+  flutter_holo_date_picker: ^1.1.2+1
+  flutter_html: ^3.0.0-beta.2
+  flutter_keyboard_visibility: ^5.4.1
+  flutter_login_facebook: ^1.8.0
+  flutter_svg:
+  fluttertoast: ^8.2.2
+  fraction:
+  function_tree:
+  get: ^4.6.5
+  google_sign_in: ^6.1.5
+  hexcolor: ^3.0.1
+  http:
+  intl: ^0.18.1
+  multiple_search_selection: ^2.5.3
+  page_transition: ^2.1.0
+  page_view_indicators: ^2.0.0
+  path_provider: ^2.1.1
+  persistent_bottom_nav_bar: ^5.0.2
+  provider: ^6.0.5
+  readmore: ^2.2.0
+  shared_preferences: ^2.2.1
+  sign_in_with_apple: ^5.0.0
+  table_calendar: ^3.0.9
+  uuid: ^4.1.0
+  video_player: ^2.7.2
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  get:
+#  cupertino_icons:
+#  get:
+#  flutter_svg:
+#  fluttertoast:
+#  hexcolor:
+#  shared_preferences:
+#  page_view_indicators: ^2.0.0
+#  flutter_holo_date_picker: ^1.1.0
+#  intl: ^0.18.1
+#  multiple_search_selection: ^2.5.0
+#  http:
+#  connectivity_plus:
+#  provider:
+#  firebase_core: ^2.16.0
+#  firebase_auth: ^4.10.0
+#  cloud_firestore: ^4.9.2
+#  firebase_messaging: ^14.6.8
+#  uuid:
+#  google_sign_in:
+#  flutter_login_facebook:
+#  sign_in_with_apple: ^4.3.0
+#  dropdown_button2: ^2.1.3
+#  persistent_bottom_nav_bar:
+#  page_transition: ^2.0.9
+#  function_tree:
+#  fraction:
+#  table_calendar: ^3.0.9
+#  custom_cupertino_picker: ^2.0.3
+#  readmore: ^2.2.0
+#  path_provider: ^2.0.5
+#  video_player: ^2.7.0
+#  chewie: ^1.7.0
+#  flutter_keyboard_visibility: ^5.4.1
+#  flutter_html:
 
-  flutter_svg:
-  fluttertoast:
-  hexcolor:
-  shared_preferences:
-  page_view_indicators: ^2.0.0
-  flutter_holo_date_picker: ^1.1.0
-  intl: ^0.18.1
-  multiple_search_selection: ^2.5.0
-  http:
-  connectivity_plus:
-  provider:
-
-  firebase_core:
-  firebase_auth:
-  google_sign_in:
-
-  flutter_login_facebook:
-  sign_in_with_apple: ^4.3.0
-
-  dropdown_button2: ^2.1.3
-  persistent_bottom_nav_bar:
-
-  page_transition: ^2.0.9
-
-  function_tree:
-  fraction:
-  table_calendar: ^3.0.9
-
-  custom_cupertino_picker: ^2.0.3
-
-  readmore: ^2.2.0
-  path_provider: ^2.0.5
-  video_player: ^2.7.0
-  chewie: ^1.7.0
-  flutter_keyboard_visibility: ^5.4.1
-  flutter_html:
 
 
 

@@ -1,20 +1,25 @@
+import 'package:aylahealth/screens/tabbar_screens/modules/module_description_screen/support_screen/support_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-import '../../../common/commonwidgets/button.dart';
-import '../../../common/styles/const.dart';
-import 'learning_screens.dart';
+import '../../../../common/commonwidgets/button.dart';
+import '../../../../common/styles/const.dart';
 
-class Start_Learning_Screen extends StatefulWidget {
-  const Start_Learning_Screen({Key? key}) : super(key: key);
+import 'applying_screens/applying_screen.dart';
+import 'learning_screen/learning_screens.dart';
+
+
+class ModuleDescriptionScreen extends StatefulWidget {
+  const ModuleDescriptionScreen({Key? key}) : super(key: key);
 
   @override
-  State<Start_Learning_Screen> createState() => _Start_Learning_ScreenState();
+  State<ModuleDescriptionScreen> createState() => _ModuleDescriptionScreenState();
 }
 
-class _Start_Learning_ScreenState extends State<Start_Learning_Screen> {
+class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
+  String? buttonType = 'Start Module';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -136,65 +141,98 @@ class _Start_Learning_ScreenState extends State<Start_Learning_Screen> {
                             fontWeight: fontWeight400,
                           ),),
                           sizedboxheight(10.0),
-                          Container(
-                            height: 50,
-                            color: HexColor('#F6F8F9'),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset('assets/image/play-circle 1.svg',color: colorPrimaryColor,),
-                               sizedboxwidth(10.0),
-                                  Text("Learn",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: fontFamilyText,
-                                      color: colorPrimaryColor,
-                                      fontWeight: fontWeight600,
-                                    ),),
-                                ],
+                          InkWell(
+                            onTap: (){
+                              setState(() {
+                                buttonType = 'Start Module';
+                              });
+                            },
+                            child: Container(
+                              height: 50,
+
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: buttonType == 'Start Module'?HexColor('#F6F8F9'):colorWhite,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset('assets/image/learnIcon.svg',color: buttonType == 'Start Module'?colorPrimaryColor:colorShadowBlue,),
+                                 sizedboxwidth(10.0),
+                                    Text("Learn",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: fontFamilyText,
+                                        color: buttonType == 'Start Module'?colorPrimaryColor:colorShadowBlue,
+                                        fontWeight: fontWeight600,
+                                      ),),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                           sizedboxheight(10.0),
-                          Container(
-                            height: 50,
-                          //  color: HexColor('#F6F8F9'),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset('assets/image/lock_icon.svg'),
-                                  sizedboxwidth(10.0),
-                                  Text("Apply",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: fontFamilyText,
-                                      color: colorShadowBlue,
-                                      fontWeight: fontWeight400,
-                                    ),),
-                                ],
+                          InkWell(
+                            onTap: (){
+                              setState(() {
+                                buttonType = 'Start Applying';
+                              });
+                            },
+                            child: Container(
+                              height: 50,
+
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: buttonType == 'Start Applying'?HexColor('#F6F8F9'):colorWhite,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset('assets/image/play-circle 1.svg',color: buttonType == 'Start Applying'?colorPrimaryColor:colorShadowBlue),
+                                    sizedboxwidth(10.0),
+                                    Text("Apply",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: fontFamilyText,
+                                        color: buttonType == 'Start Applying'?colorPrimaryColor:colorShadowBlue,
+                                        fontWeight: fontWeight400,
+                                      ),),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                           sizedboxheight(10.0),
-                          Container(
-                            height: 50,
-                            color: HexColor('#F6F8F9'),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                children: [
-                                  SvgPicture.asset('assets/image/lock_icon.svg'),
-                                  sizedboxwidth(10.0),
-                                  Text("Get Support",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: fontFamilyText,
-                                      color: colorShadowBlue,
-                                      fontWeight: fontWeight400,
-                                    ),),
-                                ],
+                          InkWell(
+                            onTap: (){
+                              setState(() {
+                                buttonType = 'Get Support';
+                              });
+                            },
+                            child: Container(
+                              height: 50,
+
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: buttonType == 'Get Support'?HexColor('#F6F8F9'):colorWhite,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset('assets/image/lock_icon.svg',color: buttonType == 'Get Support'?colorPrimaryColor:colorShadowBlue),
+                                    sizedboxwidth(10.0),
+                                    Text("Get Support",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: fontFamilyText,
+                                        color: buttonType == 'Get Support'?colorPrimaryColor:colorShadowBlue,
+                                        fontWeight: fontWeight400,
+                                      ),),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -219,17 +257,29 @@ class _Start_Learning_ScreenState extends State<Start_Learning_Screen> {
     return Container(
       alignment: Alignment.center,
       child: Button(
-        buttonName: 'Start Learning',
+        buttonName: buttonType,
         textColor: colorWhite,
         borderRadius: BorderRadius.circular(8.00),
         btnWidth: deviceWidth(context),
         btnHeight: 55,
         btnfontsize: 20,
         btnfontweight: fontWeight400,
-        btnColor: colorBluePigment,
-        borderColor: colorBluePigment,
+        btnColor: buttonType!.isEmpty?colorDisabledButton:colorBluePigment,
+        borderColor: buttonType!.isEmpty?colorDisabledButton:colorBluePigment,
         onPressed: () {
-          Get.to(()=>Learning_Screens());
+          if(buttonType!.isNotEmpty){
+            if(buttonType == 'Start Module'){
+              Get.to(()=>const Learning_Screens());
+            }else if(buttonType == 'Start Applying'){
+              Get.to(()=>const ApplyingScreen());
+            }else if(buttonType == 'Get Support'){
+              Get.to(()=>const SupportScreen());
+            }
+
+          }else{
+
+          }
+
          // Navigator.pop(context);
           // (context as Element).reassemble();
         },

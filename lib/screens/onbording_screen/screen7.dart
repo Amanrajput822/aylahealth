@@ -61,7 +61,7 @@ class _Screen7State extends State<Screen7> {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl+ingredientNameList),
+        Uri.parse(baseURL+ingredientNameList),
         headers: {
           'Authorization': 'Bearer $tokanget',
         }

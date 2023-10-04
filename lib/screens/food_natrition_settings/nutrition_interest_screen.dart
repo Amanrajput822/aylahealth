@@ -80,7 +80,7 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
     }
     print(toMap());
     var response = await http.post(
-        Uri.parse(beasurl+customerFoodSettingData),
+        Uri.parse(baseURL+customerFoodSettingData),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -142,7 +142,7 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
     print(toMap().toString());
     print(json.encode(toMap()).toString());
     var response = await http.post(
-        Uri.parse(beasurl+addOrUpdateCustomerAnswer),
+        Uri.parse(baseURL+addOrUpdateCustomerAnswer),
         body:(quetype == 'MULTIPLE'|| quetype == 'INDEXING')?json.encode(toMap()):toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',

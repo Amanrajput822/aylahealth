@@ -459,15 +459,15 @@ int tab_value = 0;
                   },
                   body:  recipeDescreptioModel.loading
                       ? Container(
-                    child: Center(child: CircularProgressIndicator()),
+                    child: const Center(child: CircularProgressIndicator()),
                   ) :
                   Container(
 
                     width: deviceWidth(context),
                     height: deviceheight(context),
-                    padding: EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 50),
+                    padding: const EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 50),
                     child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                       children: [
                         ingredients_container(recipeDescreptioModel:recipeDescreptioModel),
                         method_container(),
@@ -524,7 +524,7 @@ int tab_value = 0;
                             fontWeight: fontWeight400,
                           ),),
 
-                          Text(item.varName!=null?('${item.varName??""} ${item.ingredientRecipeDescription??""}'):('${item.ingredientRecipeDescription??""}'),style: TextStyle(
+                          Text(item.varName!=null?('${item.varName??""} ${item.ingredientRecipeDescription??""}'):(item.ingredientRecipeDescription??""),style: TextStyle(
                             fontSize: 12,
                             fontFamily: fontFamilyText,
                             color: colorShadowBlue,

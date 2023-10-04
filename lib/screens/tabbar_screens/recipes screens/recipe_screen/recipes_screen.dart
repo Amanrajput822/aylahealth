@@ -94,44 +94,6 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
   }
 
 
-//   List<Map<String, dynamic>> jsonDataList = [];
-//   List<Month_all_Date_json_model> dayEvent_list = [];
-//   int? totalDays;
-//   void complet_month_json(DateTime datetime){
-//   dayEvent_list.clear();
-//   totalDays =  getTotalDaysInMonth(datetime.year, datetime.month);
-//   for (int i = 1; i <= totalDays!; i++) {
-//     Month_all_Date_json_model data = Month_all_Date_json_model(
-//       date:i,
-//       comment:"",
-//       mealData:[],
-//     );
-//
-//     dayEvent_list.add(data);
-//   }
-//    jsonDataList = dayEvent_list.map((data) => data.toJson()).toList();
-//   print(jsonDataList);
-//   print(jsonDataList.length);
-// }
-//
-//   static int getTotalDaysInMonth(int year, int month) {
-//     DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
-//     return lastDayOfMonth.day;
-//   }
-//   List<MealData>? mealData;
-//   String months_json_fuction(){
-//      String final_json_array = "";
-//     for(int i=0;i<jsonDataList.length;i++){
-//       if(_selectedDay!.day == jsonDataList[i]['date']){
-//        // jsonDataList[i]["mealData"] = [{"rec_id":"4","cat_id":"2","note":"","logged":"1"}];
-//         jsonDataList[i]["mealData"].add({"rec_id":"4","cat_id":"2","note":"","logged":"1"});
-//         print(jsonDataList[i]['date'].toString());
-//         print(_selectedDay!.day.toString());
-//         print(jsonDataList.toString());
-//       }
-//     }
-//     return final_json_array;
-//   }
 
   @override
   void initState() {
@@ -151,12 +113,10 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
       backgroundColor: colorWhite,
       appBar: _appbar(recipeModel:recipeModel),
       body: recipeModel.loading
-          ? Container(
-        child: Center(child: CircularProgressIndicator()),
-      ) : Container(
+          ? const Center(child: CircularProgressIndicator()) : Container(
 
         child: SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child: Column(
             children: [
              // TextButton(onPressed: (){calendar_json_fuction(_selectedDay!.month,_selectedDay!.day,[{"rec_id":"4","cat_id":"2","note":"","logged":"1"}]);},
@@ -1228,6 +1188,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           ),
         ));
   }
+
   Future<void> add_meals_bottom_sheet(recipe_data_List,index){
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
@@ -1334,6 +1295,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           );
         });
   }
+
   Widget feildcontainer(title,heading,showtype){
     return Container(
       decoration: BoxDecoration(

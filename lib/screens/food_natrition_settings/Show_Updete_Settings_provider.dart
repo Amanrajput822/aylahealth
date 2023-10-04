@@ -84,7 +84,7 @@ class Show_Updete_Settings_provider with ChangeNotifier {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl+ingredientNameList),
+        Uri.parse(baseURL+ingredientNameList),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json'
@@ -154,7 +154,7 @@ class Show_Updete_Settings_provider with ChangeNotifier {
     }
     print(toMap());
     var response = await http.post(
-        Uri.parse(beasurl+customerFoodSettingData),
+        Uri.parse(baseURL+customerFoodSettingData),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -256,7 +256,7 @@ class Show_Updete_Settings_provider with ChangeNotifier {
     print(toMap().toString());
     print(json.encode(toMap()).toString());
     var response = await http.post(
-        Uri.parse(beasurl+addOrUpdateCustomerAnswer),
+        Uri.parse(baseURL+addOrUpdateCustomerAnswer),
         body:(quetype == 'MULTIPLE'|| quetype == 'INDEXING')?json.encode(toMap()):toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -311,7 +311,7 @@ class Show_Updete_Settings_provider with ChangeNotifier {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl+customerNutritionArea),
+        Uri.parse(baseURL+customerNutritionArea),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json',

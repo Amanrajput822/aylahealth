@@ -80,7 +80,7 @@ class _Custom_chackboxState extends State<Custom_chackbox> {
                 ),
                 sizedboxwidth(deviceWidth(context,0.02)),
                 Container(
-                  width: widget.checkbox_row_width==null?widget.screentype==1?deviceWidth(context,0.8):deviceWidth(context,0.45):widget.checkbox_row_width,
+                  width: widget.checkbox_row_width ?? (widget.screentype==1?deviceWidth(context,0.8):deviceWidth(context,0.45)),
                   child: Text(widget.buttontext??"",
                     style:widget.titel_textstyle?? TextStyle(
                       fontSize: 16,
@@ -115,6 +115,7 @@ class ShopingList_chackbox extends StatefulWidget {
   final int? screentype;
   final Function action;
   final TextStyle? titel_textstyle;
+  final TextStyle? sub_titel_textstyle;
   bool? buttoninout;
   ShopingList_chackbox({Key? key,
     required this.buttontext,
@@ -130,6 +131,7 @@ class ShopingList_chackbox extends StatefulWidget {
     this.screentype,
     required this.action,
     this.titel_textstyle,
+    this.sub_titel_textstyle,
     this.buttoninout,
 
   });
@@ -183,7 +185,7 @@ class _ShopingList_chackboxState extends State<ShopingList_chackbox> {
                 child: Row(
                   children: [
                     Text(widget.buttontext??"",
-                      style:TextStyle(
+                      style:widget.titel_textstyle??TextStyle(
                           fontSize: 14,
                           fontFamily: fontFamilyText,
                           color: colorRichblack,
@@ -191,7 +193,7 @@ class _ShopingList_chackboxState extends State<ShopingList_chackbox> {
                           overflow: TextOverflow.ellipsis
                       ),maxLines: 1,),
                     Text(widget.button_sub_text??"",
-                      style: TextStyle(
+                      style:widget.sub_titel_textstyle?? TextStyle(
                           fontSize: 12,
                           fontFamily: fontFamilyText,
                           color: colorShadowBlue,

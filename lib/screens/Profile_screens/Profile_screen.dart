@@ -63,7 +63,7 @@ class _Profile_screenState extends State<Profile_screen> {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl+logout),
+        Uri.parse(baseURL+logout),
         headers: {
           'Authorization': 'Bearer $tokanget',
         }

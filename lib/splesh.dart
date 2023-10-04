@@ -27,12 +27,12 @@ class _SpleshState extends State<Splesh> {
     status = prefs.getBool('isLoggedIn') ?? false;
 
     Timer(
-      Duration(seconds: 3),
+      const Duration(seconds: 3),
           () {
         // status ? Get.offAll(() => BottomNavBarPage()) : Get.offAll(() => IntroductionPage());
         status
-            ? Get.offAll(() => New_Bottombar_Screen())
-            : Get.offAll(() => HomeScreen());
+            ? Get.offAll(() => const New_Bottombar_Screen())
+            : Get.offAll(() => const HomeScreen());
       },
     );
   }
@@ -45,21 +45,18 @@ class _SpleshState extends State<Splesh> {
 
   @override
   Widget build(BuildContext context) {
-    double width = deviceheight(context) * 0.2;
-    double height = deviceheight(context) * 0.2;
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          height: deviceheight(context),
-          width: deviceheight(context),
 
-          child: Center(
-            child: Hero(
-              tag: 'Light_Mode_SecondaryLogo_Small',
-              child: Image.asset('assets/image/Light_Mode_SecondaryLogo_Small.png',
-                width: 185,height: 185,)
+    return Scaffold(
+      body: Container(
+        height: deviceheight(context),
+        width: deviceheight(context),
 
-            ),
+        child: Center(
+          child: Hero(
+            tag: 'Light_Mode_SecondaryLogo_Small',
+            child: Image.asset('assets/image/Light_Mode_SecondaryLogo_Small.png',
+              width: 185,height: 185,)
+
           ),
         ),
       ),

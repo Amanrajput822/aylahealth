@@ -6,7 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../../common/commonwidgets/button.dart';
+import '../../../../../common/commonwidgets/button.dart';
 
 class Learning_Screens extends StatefulWidget {
   const Learning_Screens({Key? key}) : super(key: key);
@@ -139,7 +139,7 @@ class _Learning_ScreensState extends State<Learning_Screens> {
         btnColor: colorBluePigment,
         borderColor: colorBluePigment,
         onPressed: () {
-          Get.to(()=>Learning_Screens());
+         // Get.to(()=>Learning_Screens());
           // Navigator.pop(context);
           // (context as Element).reassemble();
         },

@@ -2,6 +2,7 @@ import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fraction/fraction.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
@@ -29,14 +30,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     super.initState();
     final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
 
-    shoppingListModel.customerShoppingList_api(context);
-    shoppingListModel.selectStartDayString_function( null);
-    shoppingListModel.selectEndDayString_function( null);
-    shoppingListModel.viewListFunction(false);
-    shoppingListModel.selectStartDate_function(DateTime.now());
-    shoppingListModel.selectEndDate_function(DateTime.now());
-    shoppingListModel.focusedStartDay_function(DateTime.now());
-    shoppingListModel.focusedEndDay_function(DateTime.now());
+    shoppingListModel.customerShoppingList_api();
+    // shoppingListModel.selectStartDayString_function(null);
+    // shoppingListModel.selectEndDayString_function(null);
+    // shoppingListModel.viewListFunction(false);
+    // shoppingListModel.selectStartDate_function(DateTime.now());
+    // shoppingListModel.selectEndDate_function(DateTime.now());
+    // shoppingListModel.focusedStartDay_function(DateTime.now());
+    // shoppingListModel.focusedEndDay_function(DateTime.now());
   }
 
 
@@ -46,11 +47,9 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     return Scaffold(
       backgroundColor: colorWhite,
       appBar: _appbar(shoppingListModel),
-      body:shoppingListModel.loading
-          ? Container(
-        child: const Center(child: CircularProgressIndicator()),
-      ):
-      shoppingListModel.viewList_function? Container(
+      body:
+      shoppingListModel.loading
+          ? const Center(child: CircularProgressIndicator()):  shoppingListModel.viewList_function? Container(
         width: deviceWidth(context),
         height: deviceheight(context),
         padding: const EdgeInsets.all(20),
@@ -58,10 +57,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              shoppingListModel.customerShoppingList_data!.isEmpty?SizedBox(
-                height: deviceheight(context),
-
-              ) :Align(
+              shoppingListModel.customerShoppingList_data!.isEmpty?const SizedBox() :Align(
                 alignment: Alignment.center,
                 child: Container(
                 //  height: 30,
@@ -84,10 +80,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ),
               ),
 
-              shoppingListModel.customerShoppingList_data!.isEmpty?SizedBox(
-                height: deviceheight(context),
-
-              ):ListView.builder(
+              shoppingListModel.customerShoppingList_data!.isEmpty?const SizedBox():ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount:shoppingListModel.customerShoppingList_data!.length,
                   shrinkWrap: true,
@@ -124,15 +117,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                         shoppingListModel.updateShoppingItemStatus_api(context, shoppingListModel.customerShoppingList_data![index].ingData![index1].slId, 0 );
                                         shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus=0;
                                       }
-                                      // qustion_data_list![index].optionData![index1].isSelected = !qustion_data_list![index].optionData![index1].isSelected!;
-                                      //_itemChange(qustion_data_list![index].optionData![index1].opsId.toString(), qustion_data_list![index].optionData![index1].isSelected!);
 
                                     });
                                   },
                                   screentype: 1,
                                    buttoninout: shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus==0?false:true,
                                   buttontext:shoppingListModel.customerShoppingList_data![index].ingData![index1].ingName??"",
-                                  button_sub_text:" ${shoppingListModel.customerShoppingList_data![index].ingData![index1].slQuantity??""}" "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingUnit??""}",
+                                  button_sub_text:" ${(MixedFraction.fromDouble(double.tryParse(shoppingListModel.customerShoppingList_data![index].ingData![index1].slQuantity!)??0.0).toString().replaceAll("0/1",'')).trim()} " "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingUnit??""}",
+                                //  button_sub_text:" ${Fraction.fromDouble(double.tryParse(shoppingListModel.customerShoppingList_data![index].ingData![index1].slQuantity??"") ?? 0.0)} " "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingUnit??""}",
                                   unchackborderclor: HexColor('#CCCCCC'),
                                   chackborderclor: colorBluePigment,
                                   chackboxunchackcolor: colorWhite,
@@ -142,6 +134,13 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                     fontFamily: fontFamilyText,
                                     color: colorRichblack,
                                     fontWeight: fontWeight400,
+                                  ),
+                                  sub_titel_textstyle: TextStyle(
+                                      fontSize: 14,
+                                      fontFamily: fontFamilyText,
+                                      color: colorShadowBlue,
+                                      fontWeight: fontWeight400,
+                                      overflow: TextOverflow.ellipsis
                                   ),
                                 ),
                               );})
@@ -197,7 +196,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     ),),
                   InkWell(
                     onTap: (){
-                      showBottomAlertDialog(context);
+                      showBottomAlertDialog(context,shoppingListModel);
                       shoppingListModel.selectDayType_function('Start');
                     },
                     child: Container(
@@ -246,7 +245,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     ),),
                   InkWell(
                     onTap: (){
-                      showBottomAlertDialog(context);
+                      showBottomAlertDialog(context,shoppingListModel);
                       shoppingListModel.selectDayType_function('End');
                     },
                     child: Container(
@@ -260,14 +259,14 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          SvgPicture.asset('assets/Search.svg',color: shoppingListModel.endtDayString==null? colorShadowBlue:colorRichblack,),
+                          SvgPicture.asset('assets/Search.svg',color: shoppingListModel.endDayString==null? colorShadowBlue:colorRichblack,),
                           Container(
                             width: deviceWidth(context,0.48),
-                            child: Text(shoppingListModel.endtDayString??'DD/MM/YYYY',
+                            child: Text(shoppingListModel.endDayString??'DD/MM/YYYY',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontFamily: fontFamilyText,
-                                  color: shoppingListModel.endtDayString==null? colorShadowBlue:colorRichblack,
+                                  color: shoppingListModel.endDayString==null? colorShadowBlue:colorRichblack,
                                   fontWeight: fontWeight400,
                                   overflow: TextOverflow.ellipsis
                               ),),
@@ -282,125 +281,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ],
               ),
               sizedboxheight(30.0),
-              view_list_Btn(context),
-              // Card(
-              //   elevation: 5,
-              //   shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(10.0),
-              //   ),
-              //   child: Container(
-              //    // margin: const EdgeInsets.all(20.0),
-              //    // padding: const EdgeInsets.all(16.0),
-              //     child: Column(
-              //       mainAxisSize: MainAxisSize.min,
-              //       children: [
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [
-              //             IconButton(
-              //                 onPressed: (){
-              //
-              //                   shoppingListModel.pageController!.previousPage(
-              //                     duration: const Duration(milliseconds: 300),
-              //                     curve: Curves.easeOut,
-              //                   );
-              //                   shoppingListModel.focusedDay_function(shoppingListModel.focusedDay.subtract(const Duration(days: 30)));
-              //
-              //
-              //                   setState((){});
-              //
-              //                 },
-              //                 icon: Icon(Icons.chevron_left,color: colorRichblack,)),
-              //
-              //             TextButton(
-              //                 onPressed: (){
-              //                   yearpicker();
-              //                 },
-              //                 child: Row(
-              //                   children: [
-              //                     Text(DateFormat('yMMM').format(shoppingListModel.focusedDay).toString(),style: TextStyle(
-              //                       color: colorRichblack,
-              //                       fontSize: 14,
-              //                       fontWeight: fontWeight600,
-              //                       fontFamily: fontFamilyText,
-              //                     )),
-              //                     Icon(Icons.keyboard_arrow_down,color: colorRichblack,size: 18),
-              //                   ],
-              //                 )),
-              //             IconButton(
-              //                 onPressed: (){
-              //                   shoppingListModel.pageController!.nextPage(
-              //                     duration: const Duration(milliseconds: 300),
-              //                     curve: Curves.easeOut,
-              //                   );
-              //                   shoppingListModel.focusedDay_function(shoppingListModel.focusedDay.add(const Duration(days: 30)));
-              //                   setState((){});
-              //
-              //                 },
-              //                 icon: Icon(Icons.chevron_right,color: colorRichblack,)),
-              //           ],
-              //         ),
-              //         Container(
-              //           margin: const EdgeInsets.symmetric(horizontal: 20.0),
-              //           padding: const EdgeInsets.only(bottom: 10),
-              //           child: TableCalendar(
-              //             rowHeight: 35,
-              //             firstDay: DateTime(2022),
-              //             lastDay: DateTime(2050),
-              //             focusedDay:shoppingListModel.focusedDay,
-              //             startingDayOfWeek: StartingDayOfWeek.monday,
-              //             selectedDayPredicate: (day) => isSameDay(shoppingListModel.selectdate, day),
-              //             calendarFormat: CalendarFormat.month,
-              //             calendarStyle: CalendarStyle(
-              //               outsideDaysVisible: false,
-              //               weekendTextStyle: TextStyle(color: HexColor('#3B4250') ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
-              //               defaultTextStyle:TextStyle(color: HexColor('#3B4250') ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
-              //               disabledTextStyle:TextStyle(color: HexColor('#9E9E9E') ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,) ,
-              //               selectedTextStyle: TextStyle(color: colorWhite ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
-              //               todayTextStyle: TextStyle(color: colorBlackRichBlack ,fontSize: 14, fontWeight: fontWeight400, fontFamily: fontFamilyText,),
-              //
-              //               selectedDecoration: BoxDecoration(shape: BoxShape.rectangle, color: colorBluePigment, borderRadius: BorderRadius.circular(5),),
-              //               defaultDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5),),
-              //               weekendDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
-              //               disabledDecoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(5)),
-              //               todayDecoration: BoxDecoration(color: Colors.black26,borderRadius: BorderRadius.circular(5)),
-              //
-              //             ),
-              //
-              //             headerVisible: false,
-              //
-              //             onCalendarCreated: (controller) => shoppingListModel.calendarController_function(controller) ,
-              //             daysOfWeekStyle: DaysOfWeekStyle(
-              //               weekdayStyle: TextStyle(color: colorSlateGray ,fontSize: 11, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
-              //               weekendStyle:TextStyle(color: colorSlateGray ,fontSize: 11, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
-              //             ),
-              //
-              //             // onFormatChanged: (format) {
-              //             //   setState(() {
-              //             //     _calendarFormat = format;
-              //             //   });
-              //             // },
-              //
-              //             onPageChanged: (focusedDay) {
-              //               setState(() {
-              //                 // recipeModel.focusedDay_data(focusedDay);
-              //                 shoppingListModel.focusedDay_function(focusedDay);
-              //
-              //               });
-              //             },
-              //
-              //             onDaySelected: (selectedDay, focusedDay) {
-              //               shoppingListModel.selectDate_function(selectedDay);
-              //               shoppingListModel.focusedDay_function(focusedDay);
-              //               //   recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(selectedDay));
-              //               shoppingListModel.selectDayString_function(DateFormat('EEEE d MMM').format(selectedDay));
-              //             },
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ).paddingOnly(top: 30)
+              view_list_Btn(context,shoppingListModel),
+
             ],
           ),
         ),
@@ -461,8 +343,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
   /// View List /////////////
 
-  Widget view_list_Btn(context) {
-    final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
+  Widget view_list_Btn(context,shoppingListModel) {
+
 
     return Container(
       alignment: Alignment.center,
@@ -474,7 +356,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         btnfontweight: fontWeight400,
         borderRadius: BorderRadius.circular(8.00),
         btnWidth: deviceWidth(context),
-        btnColor:shoppingListModel.startDayString==null||shoppingListModel.endtDayString==null?colorDisabledButton: colorEnabledButton,
+        btnColor:shoppingListModel.startDayString==null||shoppingListModel.endDayString==null?colorDisabledButton: colorEnabledButton,
         onPressed: () {
           setState(() {
             if (shoppingListModel.selectEnddate!.isBefore(shoppingListModel.selectStartdate!)) {
@@ -482,7 +364,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 
             }
             else{
-              if(shoppingListModel.startDayString!=null&&shoppingListModel.endtDayString!=null){
+              if(shoppingListModel.startDayString!=null&&shoppingListModel.endDayString!=null){
                 print(DateFormat('yyyy/MM/dd').format(shoppingListModel.selectEnddate!));
 
                 int daysBetween(DateTime from, DateTime to) {
@@ -509,8 +391,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   }
   /// add meals bottom sheet //////////////////////
 
-  void showBottomAlertDialog(BuildContext context) {
-    final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
+  void showBottomAlertDialog(BuildContext context ,shoppingListModel) {
+
 
     showDialog(
       context: context,
@@ -529,64 +411,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                                onPressed: (){
-                                  print(shoppingListModel.focusedStartDay);
-                                  shoppingListModel.pageController!.previousPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeOut,
-                                  );
 
-                                  if(shoppingListModel.dayTypeString =="Start"){
-                                    shoppingListModel.focusedStartDay_function(shoppingListModel.focusedStartDay.subtract(const Duration(days: 30)));
-                                  }
-                                  else if(shoppingListModel.dayTypeString =="End"){
-                                    shoppingListModel.focusedEndDay_function(shoppingListModel.focusedEndDay!.subtract(const Duration(days: 30)));
-                                  }
-
-                                  setState((){});
-
-                                },
-                                icon: Icon(Icons.chevron_left,color: colorRichblack,)),
-
-                            TextButton(
-                                onPressed: (){
-                                  yearpicker();
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(DateFormat('yMMM').format(shoppingListModel.dayTypeString =="Start"?shoppingListModel.focusedStartDay:shoppingListModel.focusedEndDay!).toString(),style: TextStyle(
-                                      color: colorRichblack,
-                                      fontSize: 14,
-                                      fontWeight: fontWeight600,
-                                      fontFamily: fontFamilyText,
-                                    )),
-                                    Icon(Icons.keyboard_arrow_down,color: colorRichblack,size: 18),
-                                  ],
-                                )),
-                            IconButton(
-                                onPressed: (){
-                                  print(shoppingListModel.dayTypeString =="Start"?shoppingListModel.focusedStartDay:shoppingListModel.focusedEndDay);
-                                  shoppingListModel.pageController!.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeOut,
-                                  );
-                                  if(shoppingListModel.dayTypeString =="Start"){
-                                    shoppingListModel.focusedStartDay_function(shoppingListModel.focusedStartDay.add(const Duration(days: 30)));
-                                  }
-                                  else if(shoppingListModel.dayTypeString =="End"){
-                                    shoppingListModel.focusedEndDay_function(shoppingListModel.focusedEndDay!.add(const Duration(days: 30)));
-                                  }
-
-                                  setState((){});
-
-                                },
-                                icon: Icon(Icons.chevron_right,color: colorRichblack,)),
-                          ],
-                        ),
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20.0),
                           padding: const EdgeInsets.only(bottom: 10),
@@ -613,10 +438,28 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               todayDecoration: BoxDecoration(color: Colors.black26,borderRadius: BorderRadius.circular(5)),
 
                             ),
+                            headerStyle: HeaderStyle(
+                                titleCentered: true,
+                                leftChevronMargin: EdgeInsets.only(left: 1),
+                                leftChevronIcon: Icon(Icons.chevron_left,color: colorSlateGray,),
+                                rightChevronIcon: Icon(Icons.chevron_right,color: colorSlateGray,),
+                                rightChevronVisible: true,
+                                // titleTextFormatter: (date, locale) => DateFormat.MMMM(locale).format(date),
+                                formatButtonVisible : false,
+                                formatButtonDecoration: BoxDecoration(
 
-                            headerVisible: false,
+                                ),
+                                titleTextStyle: TextStyle(
+                                  color: colorRichblack,
+                                  fontSize: 14,
+                                  fontWeight: fontWeight600,
+                                  fontFamily: fontFamilyText,
+                                )
+                            ),
 
-                            onCalendarCreated: (controller) => shoppingListModel.calendarController_function(controller) ,
+                            headerVisible: true,
+
+                         //   onCalendarCreated: (controller) => shoppingListModel.calendarController_function(controller) ,
                             daysOfWeekStyle: DaysOfWeekStyle(
                               weekdayStyle: TextStyle(color: colorSlateGray ,fontSize: 11, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
                               weekendStyle:TextStyle(color: colorSlateGray ,fontSize: 11, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
@@ -680,63 +523,63 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
-  Future yearpicker(){
-    final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
-
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20)
-          ),
-          title: Text('Select Year',style:  TextStyle(
-            color: colorBluePigment,
-            fontSize: 20,
-            fontWeight: fontWeight400,
-            fontFamily: fontFamilyText,
-          )),
-          content: StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState){
-                return Container( // Need to use container to add size constraint.
-                  width: 300,
-                  height:300,
-
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      colorScheme: ColorScheme.light(
-                        primary: colorBluePigment, // header background color
-                        onPrimary: colorWhite, // header text color
-                        onSurface: colorRichblack, // body text color
-                      ),
-                      textButtonTheme: TextButtonThemeData(
-                        style: TextButton.styleFrom(
-                          foregroundColor: Colors.red, // button text color
-                        ),
-                      ),
-                    ),
-                    child: YearPicker(
-                      currentDate:  DateTime(DateTime.now().year,1),
-                      firstDate: DateTime(2023,1),
-                      lastDate: DateTime(2200,1),
-                      initialDate: DateTime(DateTime.now().year,1),
-
-                      selectedDate:shoppingListModel.dayTypeString =="Start"? shoppingListModel.selectStartdate!:shoppingListModel.selectEnddate!,
-                      onChanged: (DateTime dateTime) {
-
-
-                        Navigator.pop(context);
-
-                      },
-                    ),
-                  ),
-                );
-              }
-          ),
-        );
-      },
-    );
-  }
+  // Future yearpicker(){
+  //   final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
+  //
+  //   return showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(20)
+  //         ),
+  //         title: Text('Select Year',style:  TextStyle(
+  //           color: colorBluePigment,
+  //           fontSize: 20,
+  //           fontWeight: fontWeight400,
+  //           fontFamily: fontFamilyText,
+  //         )),
+  //         content: StatefulBuilder(
+  //             builder: (BuildContext context, StateSetter setState){
+  //               return Container( // Need to use container to add size constraint.
+  //                 width: 300,
+  //                 height:300,
+  //
+  //                 child: Theme(
+  //                   data: Theme.of(context).copyWith(
+  //                     colorScheme: ColorScheme.light(
+  //                       primary: colorBluePigment, // header background color
+  //                       onPrimary: colorWhite, // header text color
+  //                       onSurface: colorRichblack, // body text color
+  //                     ),
+  //                     textButtonTheme: TextButtonThemeData(
+  //                       style: TextButton.styleFrom(
+  //                         foregroundColor: Colors.red, // button text color
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   child: YearPicker(
+  //                     currentDate:  DateTime(DateTime.now().year,1),
+  //                     firstDate: DateTime(2023,1),
+  //                     lastDate: DateTime(2200,1),
+  //                     initialDate: DateTime(DateTime.now().year,1),
+  //
+  //                     selectedDate:shoppingListModel.dayTypeString =="Start"? shoppingListModel.selectStartdate!:shoppingListModel.selectEnddate!,
+  //                     onChanged: (DateTime dateTime) {
+  //
+  //
+  //                       Navigator.pop(context);
+  //
+  //                     },
+  //                   ),
+  //                 ),
+  //               );
+  //             }
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Future warningPopup(warningMessage){
     return   showCupertinoDialog(
@@ -785,7 +628,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop("Discard");
                   final  shoppingListModel = Provider.of<ShoppingListProvider>(context, listen: false);
-                  shoppingListModel.viewListFunction( false);
+
                   shoppingListModel.selectStartDayString_function( null);
                   shoppingListModel.selectEndDayString_function( null);
                   shoppingListModel.viewListFunction(false);

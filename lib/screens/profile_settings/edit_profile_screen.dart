@@ -24,6 +24,7 @@ import '../../common/styles/const.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/onboarding_screens_models/Gender_List_Model.dart';
 import '../../models/profile/user_details_model.dart';
+import '../tabbar_screens/message/chat/firebase_services.dart';
 
 class Edite_Profile_Screen extends StatefulWidget {
 
@@ -96,7 +97,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
     });
      print(toMap());
     var response = await http.post(
-        Uri.parse(beasurl+updateCustomer),
+        Uri.parse(baseURL+updateCustomer),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -127,7 +128,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
         FlutterToast_message('Profile updated successfully');
       final uerdatamodal = Provider.of<userprofile_Provider>(context, listen: false);
       uerdatamodal.customer_ditels_api(context);
-
+      FirebaseData.instance.userUpdate();
     } else {
       Navigator.pop(context);
       print('else==============');
@@ -205,7 +206,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
     });
 
     var response = await http.get(
-        Uri.parse(beasurl+genderList),
+        Uri.parse(baseURL+genderList),
         headers: {
           'Authorization': 'Bearer $tokanget',
         }

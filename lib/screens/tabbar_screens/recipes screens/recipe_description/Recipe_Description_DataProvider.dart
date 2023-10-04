@@ -83,9 +83,9 @@ class Recipe_Description_DataProvider with ChangeNotifier {
         return map;
       }
       print(toMap());
-      print(beasurl + recipeDetails);
+      print(baseURL + recipeDetails);
       var response = await http.post(
-          Uri.parse(beasurl + recipeDetails),
+          Uri.parse(baseURL + recipeDetails),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',

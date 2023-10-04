@@ -1,5 +1,6 @@
 import 'package:aylahealth/screens/help_screen/question_answer_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -42,7 +43,7 @@ class _FAQs_screenState extends State<FAQs_screen> {
       body: Container(
         height: deviceheight(context),
         width: deviceWidth(context),
-        padding: const EdgeInsets.all(15),
+       // padding: const EdgeInsets.all(15),
         child: SingleChildScrollView(
           physics: const ScrollPhysics(),
           child: Column(
@@ -57,7 +58,7 @@ class _FAQs_screenState extends State<FAQs_screen> {
                     overflow: TextOverflow.ellipsis
                 ),
                 maxLines: 1,
-              ),
+              ).paddingOnly(top: 15,left: 15,right: 15),
               sizedboxheight(20.0),
               FAQsProviderModel.loading!
                   ? Container(
@@ -84,16 +85,20 @@ class _FAQs_screenState extends State<FAQs_screen> {
   Widget commenlisttile(String _title,String _subtitle, Function action){
     return  ListTile(
       trailing: const Icon(Icons.arrow_forward_ios_rounded),
-      title: Text(_title.toString(),
-        style: TextStyle(
-            fontSize: 16,
-            fontFamily: fontFamilyText,
-            color: colorRichblack,
-            fontWeight: fontWeight400,
-            overflow: TextOverflow.ellipsis
-        ),
-        maxLines: 1,
+      title: Html(
+        data: _title.toString(),
+
       ),
+      // Text(_title.toString(),
+      //   style: TextStyle(
+      //       fontSize: 16,
+      //       fontFamily: fontFamilyText,
+      //       color: colorRichblack,
+      //       fontWeight: fontWeight400,
+      //       overflow: TextOverflow.ellipsis
+      //   ),
+      //   maxLines: 1,
+      // ),
       subtitle: Text(_subtitle.toString(),
         style: TextStyle(
             fontSize: 12,
@@ -103,7 +108,7 @@ class _FAQs_screenState extends State<FAQs_screen> {
             overflow: TextOverflow.ellipsis
         ),
         maxLines: 1,
-      ),
+      ).paddingOnly(left: 8),
       tileColor: colorWhite,
       textColor: colorRichblack,
       onTap: () => action() ,

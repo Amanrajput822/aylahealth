@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../common/SharedPrefHelper.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
@@ -21,6 +22,8 @@ import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/auth model/user_login_model.dart';
 import '../onbording_screen/pre_question_loding_screen.dart';
 import 'package:http/http.dart' as http;
+
+import '../tabbar_screens/message/chat/firebase_services.dart';
 
 class Signup_screen extends StatefulWidget {
   const Signup_screen({Key? key}) : super(key: key);
@@ -78,7 +81,7 @@ class _Signup_screenState extends State<Signup_screen> {
     });
     print(toMap());
     var response = await http.post(
-      Uri.parse(beasurl+Signup),
+      Uri.parse(baseURL+Signup),
       body: toMap(),
     );
     print(response.body.toString());
@@ -90,8 +93,13 @@ class _Signup_screenState extends State<Signup_screen> {
         Navigator.pop(context);
 
         FlutterToast_message(message);
-
+        final user = user_login_model.fromJson(json.decode(response.body)).data!;
         SharedPreferences prefs = await SharedPreferences.getInstance();
+        SharedPrefHelper.userId = int.tryParse(user.custId.toString());
+        SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
+        SharedPrefHelper.email = user.custEmail ?? "";
+        SharedPrefHelper.authToken = user.accessToken ?? "";
+
         prefs.setBool("isLoggedIn", true);
         prefs.setString(
           'login_user_id',
@@ -130,7 +138,7 @@ class _Signup_screenState extends State<Signup_screen> {
           ),
         );
         Get.to(() => Pre_Question_Screen());
-
+        FirebaseData.instance.userRegister();
         FlutterToast_message(message);
 
     } else {

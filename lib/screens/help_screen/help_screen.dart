@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -55,6 +56,7 @@ class _Help_ScreenState extends State<Help_Screen> {
             commenlisttile('Contact us', 'Get in touch for support.', (){
               Get.to(() => Contact_us_screen());
             }),
+
           ],
         ),
       ),

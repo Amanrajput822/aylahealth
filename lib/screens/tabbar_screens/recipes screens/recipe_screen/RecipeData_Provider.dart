@@ -264,9 +264,9 @@ class RecipeData_Provider with ChangeNotifier {
     }
 
     print(toMap().toString());
-    print(beasurl+recipeList.toString());
+    print(baseURL+recipeList.toString());
     var response = await http.post(
-        Uri.parse(beasurl+recipeList),
+        Uri.parse(baseURL+recipeList),
         body: json.encode(toMap()),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -334,11 +334,11 @@ class RecipeData_Provider with ChangeNotifier {
       }
       print('toMap()@@@@@@@@@@@@@@@@');
       print(toMap());
-      print(beasurl+recipeList);
+      print(baseURL+recipeList);
 
       try {
         response = await http.post(
-            Uri.parse(beasurl+recipeList),
+            Uri.parse(baseURL+recipeList),
             body: json.encode(toMap()),
             headers: {
               'Authorization': 'Bearer $_tokanget',
@@ -396,7 +396,7 @@ class RecipeData_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(beasurl + markRecipeFavorite),
+        Uri.parse(baseURL + markRecipeFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -452,7 +452,7 @@ class RecipeData_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(beasurl + unmarkRecipeFromFavorite),
+        Uri.parse(baseURL + unmarkRecipeFromFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -509,7 +509,7 @@ class RecipeData_Provider with ChangeNotifier {
     });
 
     var response = await http.get(
-        Uri.parse(beasurl + allRecipeFiltersList),
+        Uri.parse(baseURL + allRecipeFiltersList),
         headers: {
           'Authorization': 'Bearer $_tokanget',
           'Accept': 'application/json'
@@ -555,7 +555,7 @@ class RecipeData_Provider with ChangeNotifier {
     });
 
     var response = await http.get(
-        Uri.parse(beasurl + recipeCategoryList),
+        Uri.parse(baseURL + recipeCategoryList),
         headers: {
           'Authorization': 'Bearer $_tokanget',
           'Accept': 'application/json'

@@ -50,7 +50,7 @@ class FAQsScreenProvider with ChangeNotifier {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl + faqList),
+        Uri.parse(baseURL + faqList),
         headers: {
           'Authorization': 'Bearer $_tokanget',
           'Accept': 'application/json'

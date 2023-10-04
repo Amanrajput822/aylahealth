@@ -55,7 +55,7 @@ class _Contact_us_screenState extends State<Contact_us_screen> {
     }
     print(toMap());
     var response = await http.post(
-      Uri.parse(beasurl+sendCustomerContactEmail),
+      Uri.parse(baseURL+sendCustomerContactEmail),
       body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',

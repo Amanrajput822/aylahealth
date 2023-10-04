@@ -40,17 +40,21 @@ class _questionAnswerScreenState extends State<questionAnswerScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.faqHeading??"",
-                style: TextStyle(
-                    fontSize: 24,
-                    fontFamily: fontFamilyText,
-                    color: colorPrimaryColor,
-                    fontWeight: fontWeight600,
-                    overflow: TextOverflow.ellipsis
-                ),
-                maxLines: 2,
-              ).paddingAll(15),
-              sizedboxheight(20.0),
+              Html(
+                data: widget.faqHeading??"",
+
+              ).paddingOnly(left: 15,right: 15),
+              // Text(widget.faqHeading??"",
+              //   style: TextStyle(
+              //       fontSize: 24,
+              //       fontFamily: fontFamilyText,
+              //       color: colorPrimaryColor,
+              //       fontWeight: fontWeight600,
+              //       overflow: TextOverflow.ellipsis
+              //   ),
+              //   maxLines: 2,
+              // ).paddingOnly(top: 15,bottom: 15,left: 22,right: 22),
+
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                  shrinkWrap: true,
@@ -68,19 +72,27 @@ class _questionAnswerScreenState extends State<questionAnswerScreen> {
                   backgroundColor: colorWhite,
                   collapsedBackgroundColor: colorWhite,
                   iconColor:  HexColor('#3B4250'),
-                  title: Text(item.fqueText??"",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: fontFamilyText,
-                      color: HexColor('#3B4250'),
-                      fontWeight: fontWeight600,
+                  textColor: HexColor('#3B4250'),
+                  collapsedTextColor: HexColor('#3B4250'),
 
-                    ),),
+                  title:
+                  Html(
+                    data: item.fqueText??"",
+
+                  ),
+                  // Text(item.fqueText??"",
+                  //   style: TextStyle(
+                  //     fontSize: 16,
+                  //     fontFamily: fontFamilyText,
+                  //     color: HexColor('#3B4250'),
+                  //     fontWeight: fontWeight600,
+                  //
+                  //   ),),
                   // Contents
                   children: [
                     item.answerData == null?Container(
                         color: colorWhite,
-                        child:Text("No Answer Data",
+                        child:Text("Answer Not Found",
                           style: TextStyle(
                             fontSize: 14,
                             height: 2,
@@ -92,8 +104,9 @@ class _questionAnswerScreenState extends State<questionAnswerScreen> {
                       color: colorWhite,
                       child: Html(
                           data: item.answerData!.fansText??"",
+
                       ),
-                    ).paddingOnly(left: 8,right: 8)
+                    ).paddingOnly(left: 15,right: 15)
 
 
                   ],

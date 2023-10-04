@@ -1,7 +1,7 @@
 
 
 
-String beasurl = 'https://staging.aylahealth.app/api/auth/';
+String baseURL = 'https://staging.aylahealth.app/api/auth/';
 
 
 String Login = 'login';
@@ -43,3 +43,7 @@ String faqList = 'faqList';
 String customerShoppingList = 'customerShoppingList';
 String createShoppingList = 'createShoppingList';
 String updateShoppingItemStatus = 'updateShoppingItemStatus';
+
+String forgotPassword = 'forgotPassword';
+String verifyForgotPasswordCode = 'verifyForgotPasswordCode';
+String resetPassword = 'resetPassword';

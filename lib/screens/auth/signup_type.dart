@@ -263,7 +263,7 @@ class _Signup_typeState extends State<Signup_type> {
     }
     print(toMap());
     var response = await http.post(
-      Uri.parse(beasurl+socialLogin),
+      Uri.parse(baseURL+socialLogin),
       body: toMap(),
     );
     print(response.body.toString());

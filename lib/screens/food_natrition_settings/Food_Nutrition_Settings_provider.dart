@@ -56,7 +56,7 @@ class Food_Nutrition_Settings_provider with ChangeNotifier {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl+customerFoodSettingHeadingList),
+        Uri.parse(baseURL+customerFoodSettingHeadingList),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json'

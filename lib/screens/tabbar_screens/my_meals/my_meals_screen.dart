@@ -139,7 +139,7 @@ bool internet_conection = false;
       child: Scaffold(
         backgroundColor: colorWhite,
         /// appBar ///
-        appBar: _appbar(),
+        appBar: _appbar(mealsModel),
         body:
         /// all Months calendar ///
         mealsModel.calendar_listview?all_months_calendar():
@@ -647,7 +647,7 @@ bool internet_conection = false;
   }
   /// appbar ///////////////////
 
-  AppBar _appbar(){
+  AppBar _appbar(mealsModel){
     return AppBar(
       elevation: 0,
       centerTitle: true,
@@ -663,12 +663,18 @@ bool internet_conection = false;
       actions: [
         IconButton(
         onPressed: (){
+          if(mealsModel.notes){
+            // Navigator.push(context, MaterialPageRoute(builder: (_)=>const ShoppingListScreen()));
+            PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+              context,
+              settings: const RouteSettings(name: "/Recipes_Screen"),
+              screen:  const ShoppingListScreen(),
+            );
+          }
+          else{
+            warning_popup();
+          }
 
-          PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-            context,
-            settings: const RouteSettings(name: "/Recipes_Screen"),
-            screen:  ShoppingListScreen(),
-          );
         },
             icon: SvgPicture.asset('assets/image/basket-shopping.svg',color: colorCharcoal,))
       ],
@@ -773,14 +779,6 @@ bool internet_conection = false;
           }
           mealsModel.listviewCalendar_hideShow(false);
 
-          // Get.to(() => Signup_type());
-          // Navigator.push(
-          //   context,
-          //   PageTransition(duration:Duration(milliseconds: 400) ,
-          //     type: PageTransitionType.bottomToTop,
-          //     child: Signup_type(),
-          //   ),
-          // );
         },
       ),
     );
@@ -808,7 +806,7 @@ bool internet_conection = false;
           )),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState){
-              return Container( // Need to use container to add size constraint.
+              return SizedBox( // Need to use container to add size constraint.
                 width: 300,
                 height:300,
 

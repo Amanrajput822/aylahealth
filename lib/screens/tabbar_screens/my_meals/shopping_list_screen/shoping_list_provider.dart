@@ -2,16 +2,17 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+
 
 import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../common/styles/const.dart';
-import '../../../../models/meals plans/Meals_Update_MealsPlane_nodel.dart';
+
 import '../../../../models/shopping_list/customerShoppingListModel.dart';
 import '../../../../models/shopping_list/updateShoppingItemStatus_Model.dart';
 
@@ -27,8 +28,6 @@ class ShoppingListProvider with ChangeNotifier {
   String? _tokanget ;
   String? get tokanget => _tokanget;
 
-  String? _user_id ;
-  String? get user_id => _user_id;
 
   bool _loading = false;
   bool get loading => _loading;
@@ -83,19 +82,19 @@ class ShoppingListProvider with ChangeNotifier {
   }
 
   String? _endDayString ;
-  String? get endtDayString  => _endDayString ;
+  String? get endDayString  => _endDayString ;
   void selectEndDayString_function( newMessage) {
     _endDayString = newMessage;
     notifyListeners();
   }
 
-  /// calendar controller
-  PageController? _pageController;
-  PageController? get pageController => _pageController;
-  void calendarController_function( newMessage) {
-    _pageController = newMessage;
-    notifyListeners();
-  }
+  // /// calendar controller
+  // PageController? _pageController;
+  // PageController? get pageController => _pageController;
+  // void calendarController_function( newMessage) {
+  //   _pageController = newMessage;
+  //   notifyListeners();
+  // }
 
 
   String? _dayTypeString ;
@@ -108,16 +107,14 @@ class ShoppingListProvider with ChangeNotifier {
   List<customerShoppingListResponse>? _customerShoppingList_data = [];
   List<customerShoppingListResponse>? get customerShoppingList_data => _customerShoppingList_data;
 
-  var _sl_startdate;
-   get sl_startdate => _sl_startdate;
+  String? _sl_startdate;
+  String? get sl_startdate => _sl_startdate;
 
-  var _sl_enddate;
-  get sl_enddate => _sl_enddate;
+  String? _sl_enddate;
+  String? get sl_enddate => _sl_enddate;
   /// create Shopping List Api
   Future<customerShoppingListModel?> createShoppingList_api(context, startDate, endDate ) async {
     _customerShoppingList_data = [];
-    customerShoppingListModel? result;
-    try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       _tokanget = prefs.getString('login_user_token');
@@ -135,14 +132,13 @@ class ShoppingListProvider with ChangeNotifier {
         var map = Map<String, dynamic>();
         map["sl_startdate"] = startDate.toString();
         map["sl_enddate"] = endDate.toString();
-
         return map;
       }
       print('aman1???????????????');
       print(toMap());
-      print(beasurl + createShoppingList);
+      print(baseURL + createShoppingList);
       var response = await http.post(
-          Uri.parse(beasurl + createShoppingList),
+          Uri.parse(baseURL + createShoppingList),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -153,17 +149,14 @@ class ShoppingListProvider with ChangeNotifier {
       _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
       print(json.decode(response.body));
       if (success == 200) {
-        final item = json.decode(response.body);
-        result = (customerShoppingListModel.fromJson(item));
-        _customerShoppingList_data = result.data;
-        _sl_startdate = result.slStartdate;
-        _sl_enddate = result.slEnddate;
 
-       if(customerShoppingList_data!.isEmpty){
-         warning_popup(context);
+       if(customerShoppingListModel.fromJson(json.decode(response.body)).data!.isNotEmpty){
+         customerShoppingList_api();
+         _customerShoppingList_data = customerShoppingListModel.fromJson(json.decode(response.body)).data!;
        }else{
-         customerShoppingList_api(context );
+         warning_popup(context);
        }
+
        //0 FlutterToast_message('Add Shopping List Data');
         notifyListeners();
 
@@ -172,59 +165,62 @@ class ShoppingListProvider with ChangeNotifier {
         print('else==============');
         FlutterToast_message('No Data');
       }
-    } catch (e) {
-      error = e.toString();
-    }
-    return result;
+
+    return (customerShoppingListModel.fromJson(json.decode(response.body)));
   }
 
 
   /// customer Shopping List Api
 
-  Future<customerShoppingListModel?> customerShoppingList_api(context ) async {
-    customerShoppingListModel? result;
-    try {
-      _loading = true;
+  Future<customerShoppingListModel?> customerShoppingList_api() async {
+    _loading = true;
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       _tokanget = prefs.getString('login_user_token');
       _tokanget = tokanget!.replaceAll('"', '');
       print(tokanget.toString());
 
-      check().then((intenet) async {
-        if (intenet) {
+    check().then((intenet) async {
+      if (intenet != null && intenet) {
 
-        } else {
-          FlutterToast_Internet();
-        }
-      });
-
-      print(beasurl + customerShoppingList);
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+      print(baseURL + customerShoppingList);
       var response = await http.post(
-          Uri.parse(beasurl + customerShoppingList),
+          Uri.parse(baseURL + customerShoppingList),
 
           headers: {
             'Authorization': 'Bearer $tokanget',
             'Accept': 'application/json',
           }
       );
-      print(json.decode(response.body));
+      print(customerShoppingListModel.fromJson(json.decode(response.body)).data!.length);
+      print(':::::::::::::::::');
       _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
-
       if (success == 200) {
-        _loading = false;
-        final item = json.decode(response.body);
-        result = (customerShoppingListModel.fromJson(item));
-        _customerShoppingList_data = result.data;
-        _sl_startdate = result.slStartdate;
-        _sl_enddate = result.slEnddate;
-        viewListFunction(true);
+
+        _customerShoppingList_data = (customerShoppingListModel.fromJson(json.decode(response.body))).data;
+        print(':::::::::::::::::');
+        _sl_startdate = (customerShoppingListModel.fromJson(json.decode(response.body))).slStartdate;
+        _sl_enddate = (customerShoppingListModel.fromJson(json.decode(response.body))).slEnddate;
+        print(':::::::::::::::::');
+        print(customerShoppingList_data!.isNotEmpty);
+        print(':::::::::::::::::');
         if(customerShoppingList_data!.isNotEmpty){
           _viewList_function = true;
+          _loading = false;
+          notifyListeners();
         }else{
           _viewList_function = false;
+          _loading = false;
+          notifyListeners();
         }
-
+        print(':::::::::::::::::1');
+        print(viewList_function);
+        print(loading);
+        print(':::::::::::::::::1');
       //  FlutterToast_message('Shopping List Data');
         notifyListeners();
 
@@ -234,11 +230,8 @@ class ShoppingListProvider with ChangeNotifier {
         print('else==============');
         FlutterToast_message('No Data');
       }
-    } catch (e) {
-      _loading = false;
-      error = e.toString();
-    }
-    return result;
+
+    return (customerShoppingListModel.fromJson(json.decode(response.body)));
   }
 
   /// update Shopping Item Status Api
@@ -267,9 +260,9 @@ class ShoppingListProvider with ChangeNotifier {
       }
       print('aman1???????????????');
       print(toMap());
-      print(beasurl + updateShoppingItemStatus);
+      print(baseURL + updateShoppingItemStatus);
       var response = await http.post(
-          Uri.parse(beasurl + updateShoppingItemStatus),
+          Uri.parse(baseURL + updateShoppingItemStatus),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -298,7 +291,7 @@ class ShoppingListProvider with ChangeNotifier {
   }
 
   Future warning_popup(context){
-    return   showCupertinoDialog(
+    return  showCupertinoDialog(
         context: context,
         builder: (BuildContext ctx) {
           return CupertinoAlertDialog(
@@ -307,12 +300,24 @@ class ShoppingListProvider with ChangeNotifier {
             actions: [
               CupertinoDialogAction(
                 onPressed: () {
-                  viewListFunction( false);
+                  _viewList_function = false;
+
                   Navigator.of(context, rootNavigator: true).pop("Discard");
                   FocusManager.instance.primaryFocus?.unfocus();
+                  customerShoppingList_data!.clear();
                   _viewList_function = false;
-                 _startDayString=null;
-                 _endDayString=null;
+
+
+                  selectStartDayString_function( null);
+                  selectEndDayString_function( null);
+                  viewListFunction(false);
+                  selectStartDate_function(DateTime.now());
+                  selectEndDate_function(DateTime.now());
+                  focusedStartDay_function(DateTime.now());
+                  focusedEndDay_function(DateTime.now());
+
+                  notifyListeners();
+
                 },
 
                 child:  Text('Ok',style: TextStyle(color: colorBluePigment ),),
@@ -327,3 +332,4 @@ class ShoppingListProvider with ChangeNotifier {
     );
   }
 }
+

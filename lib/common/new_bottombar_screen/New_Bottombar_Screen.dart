@@ -8,7 +8,8 @@ import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 import "package:provider/provider.dart";
 
 import "../../screens/tabbar_screens/home/home.dart";
-import "../../screens/tabbar_screens/modules/modules_screen.dart";
+import "../../screens/tabbar_screens/message/chat/chat_list.dart";
+import '../../screens/tabbar_screens/modules/modules_screen/modules_screen.dart';
 import "../../screens/tabbar_screens/my_meals/My_Meals_Provider.dart";
 import "../../screens/tabbar_screens/my_meals/my_meals_screen.dart";
 import "../../screens/tabbar_screens/recipes screens/recipe_screen/RecipeData_Provider.dart";
@@ -75,11 +76,12 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
   List<Widget> _buildScreens() => [
         const Home(),
-        const Home(),
-       // const Modules_Screen(),
+        // const Home(),
+        const Modules_Screen(),
         const My_Meals_Screen(),
         const Recipes_Screen(),
-        const Home(),
+        const ChatListScreen(),
+        //const Home(),
       ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() => [

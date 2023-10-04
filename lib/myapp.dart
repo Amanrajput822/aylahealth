@@ -1,3 +1,4 @@
+import 'package:aylahealth/screens/auth/forgot_password_screens/forgot_pass_provider.dart';
 import 'package:aylahealth/screens/food_natrition_settings/Food_Nutrition_Settings_provider.dart';
 import 'package:aylahealth/screens/help_screen/faq_screen_provider.dart';
 import 'package:aylahealth/screens/onbording_screen/pre_question_loding_screen.dart';
@@ -6,6 +7,8 @@ import 'package:aylahealth/screens/onbording_screen/screen7.dart';
 import 'package:aylahealth/screens/profile_settings/personal_setting/personal_setting_provider.dart';
 import 'package:aylahealth/screens/subscription_screens/subscription_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/home.dart';
+import 'package:aylahealth/screens/tabbar_screens/modules/module_description_screen/ModuleDescriptionProvider.dart';
+import 'package:aylahealth/screens/tabbar_screens/modules/modules_screen/modules_screen_provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/My_Meals_Provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/ShoppingListScreen.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/shoping_list_provider.dart';
@@ -39,6 +42,8 @@ class _MyAppState extends State<MyApp> {
     FlutterNativeSplash.remove();
     super.initState();
   }
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -53,7 +58,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => Food_Nutrition_Settings_provider()),
         ChangeNotifierProvider(create: (context) => ShoppingListProvider()),
         ChangeNotifierProvider(create: (context) => FAQsScreenProvider()),
-        // ChangeNotifierProvider(create: (context) => Show_Updete_Settings_provider()),
+        ChangeNotifierProvider(create: (context) => ModulesScreenProvider()),
+        ChangeNotifierProvider(create: (context) => ModulesDescriptionScreenProvider()),
+        ChangeNotifierProvider(create: (context) => ForgotPassProvider()),
       ],
       // create: (context) => RecipeDataProvider(),
       child: GetMaterialApp(
@@ -78,6 +85,7 @@ class _MyAppState extends State<MyApp> {
             child: child!,
           );
         },
+
         initialRoute: '/',
         routes: {
 
