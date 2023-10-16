@@ -74,7 +74,7 @@ class _Forgotpass_screenState extends State<Forgotpass_screen> {
                         ).paddingOnly(left: 20,right: 20),
                         sizedboxheight(deviceheight(context,0.025)),
 
-                        Text('To reset your password, please enter your email address below. We’ll send a password reset link to this email.',
+                        Text('To reset your password, please enter your email address below. We’ll send a password reset code to this email.',
                           style: TextStyle(
                             fontSize: 16,
                             fontFamily: fontFamilyText,

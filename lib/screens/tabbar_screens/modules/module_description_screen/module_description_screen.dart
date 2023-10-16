@@ -1,12 +1,13 @@
-import 'package:aylahealth/screens/tabbar_screens/modules/module_description_screen/support_screen/support_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../common/commonwidgets/button.dart';
 import '../../../../common/styles/const.dart';
 
+import 'ModuleDescriptionProvider.dart';
 import 'applying_screens/applying_screen.dart';
 import 'learning_screen/learning_screens.dart';
 
@@ -19,9 +20,19 @@ class ModuleDescriptionScreen extends StatefulWidget {
 }
 
 class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
-  String? buttonType = 'Start Module';
+  // String? buttonType = 'Start Module';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final DescriptionScreenData = Provider.of<ModulesDescriptionScreenProvider>(context,listen: false);
+    DescriptionScreenData.buttonTypeFunction('Start Module');
+
+  }
   @override
   Widget build(BuildContext context) {
+    final DescriptionScreenData = Provider.of<ModulesDescriptionScreenProvider>(context);
+
     return Container(
       color: colorWhite,
       width: deviceWidth(context),
@@ -108,6 +119,23 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
                               fontWeight: fontWeight600,
                             ),),
                           sizedboxheight(8.0),
+                          DescriptionScreenData.buttonType == 'Completed'? Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset('assets/image/learnCompleteIcon.svg',
+                                  color: colorBluePigment,width: 20, height: 20,),
+                              sizedboxwidth(5.0),
+                              Text("Completed",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: fontFamilyText,
+                                  color: colorBluePigment,
+                                  fontWeight: fontWeight400,
+                                ),),
+                            ],
+                          ):Container(),
+                          DescriptionScreenData.buttonType == 'Completed'? sizedboxheight(8.0):Container(),
                           Container(
                             child: Wrap(
 
@@ -130,6 +158,7 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
                                     ),
                                   ),
 
+
                               ],
                             ),
                           ),
@@ -144,7 +173,8 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
                           InkWell(
                             onTap: (){
                               setState(() {
-                                buttonType = 'Start Module';
+                                DescriptionScreenData.buttonTypeFunction('Start Module');
+                                // buttonType = 'Start Module';
                               });
                             },
                             child: Container(
@@ -152,19 +182,23 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
 
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: buttonType == 'Start Module'?HexColor('#F6F8F9'):colorWhite,
+                                color: DescriptionScreenData.buttonType == 'Start Module'?HexColor('#F6F8F9'):colorWhite,
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Row(
                                   children: [
-                                    SvgPicture.asset('assets/image/learnIcon.svg',color: buttonType == 'Start Module'?colorPrimaryColor:colorShadowBlue,),
+                                    DescriptionScreenData.buttonType == 'Start Module'?
+                                    SvgPicture.asset('assets/image/play-circle 1.svg',
+                                      color: colorPrimaryColor):
+                                    SvgPicture.asset('assets/image/learnCompleteIcon.svg',
+                                      color: colorShadowBlue,),
                                  sizedboxwidth(10.0),
                                     Text("Learn",
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: fontFamilyText,
-                                        color: buttonType == 'Start Module'?colorPrimaryColor:colorShadowBlue,
+                                        color: DescriptionScreenData.buttonType == 'Start Module'?colorPrimaryColor:colorShadowBlue,
                                         fontWeight: fontWeight600,
                                       ),),
                                   ],
@@ -176,7 +210,8 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
                           InkWell(
                             onTap: (){
                               setState(() {
-                                buttonType = 'Start Applying';
+                                DescriptionScreenData.buttonTypeFunction('Start Applying');
+                               // buttonType = 'Start Applying';
                               });
                             },
                             child: Container(
@@ -184,19 +219,27 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
 
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: buttonType == 'Start Applying'?HexColor('#F6F8F9'):colorWhite,
+                                color: DescriptionScreenData.buttonType == 'Start Applying'?HexColor('#F6F8F9'):colorWhite,
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: Row(
                                   children: [
-                                    SvgPicture.asset('assets/image/play-circle 1.svg',color: buttonType == 'Start Applying'?colorPrimaryColor:colorShadowBlue),
+                                    DescriptionScreenData. buttonType == 'Start Applying'?
+                                    SvgPicture.asset('assets/image/play-circle 1.svg',
+                                        color: colorPrimaryColor):
+                                    DescriptionScreenData. buttonType == 'Completed'|| DescriptionScreenData.buttonType == 'Completed'?
+                                    SvgPicture.asset('assets/image/learnCompleteIcon.svg',
+                                      color: colorShadowBlue,):
+                                    SvgPicture.asset('assets/image/lock_icon.svg',
+                                        color:colorShadowBlue),
+
                                     sizedboxwidth(10.0),
                                     Text("Apply",
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontFamily: fontFamilyText,
-                                        color: buttonType == 'Start Applying'?colorPrimaryColor:colorShadowBlue,
+                                        color: DescriptionScreenData.buttonType == 'Start Applying'?colorPrimaryColor:colorShadowBlue,
                                         fontWeight: fontWeight400,
                                       ),),
                                   ],
@@ -205,39 +248,8 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
                             ),
                           ),
                           sizedboxheight(10.0),
-                          InkWell(
-                            onTap: (){
-                              setState(() {
-                                buttonType = 'Get Support';
-                              });
-                            },
-                            child: Container(
-                              height: 50,
 
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: buttonType == 'Get Support'?HexColor('#F6F8F9'):colorWhite,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Row(
-                                  children: [
-                                    SvgPicture.asset('assets/image/lock_icon.svg',color: buttonType == 'Get Support'?colorPrimaryColor:colorShadowBlue),
-                                    sizedboxwidth(10.0),
-                                    Text("Get Support",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: fontFamilyText,
-                                        color: buttonType == 'Get Support'?colorPrimaryColor:colorShadowBlue,
-                                        fontWeight: fontWeight400,
-                                      ),),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          sizedboxheight(10.0),
-                          start_learning_Btn(context),
+                          start_learning_Btn(context,DescriptionScreenData),
 
                         ],
                       ),
@@ -253,33 +265,29 @@ class _ModuleDescriptionScreenState extends State<ModuleDescriptionScreen> {
   }
   /// start learning button //////////////////
 
-  Widget start_learning_Btn(context) {
+  Widget start_learning_Btn(context,DescriptionScreenData) {
     return Container(
       alignment: Alignment.center,
       child: Button(
-        buttonName: buttonType,
+        buttonName: DescriptionScreenData.buttonType == 'Completed'?"Back to Modules":DescriptionScreenData.buttonType,
         textColor: colorWhite,
         borderRadius: BorderRadius.circular(8.00),
         btnWidth: deviceWidth(context),
         btnHeight: 55,
         btnfontsize: 20,
         btnfontweight: fontWeight400,
-        btnColor: buttonType!.isEmpty?colorDisabledButton:colorBluePigment,
-        borderColor: buttonType!.isEmpty?colorDisabledButton:colorBluePigment,
+        btnColor: DescriptionScreenData.buttonType!.isEmpty?colorDisabledButton:colorBluePigment,
+        borderColor: DescriptionScreenData.buttonType!.isEmpty?colorDisabledButton:colorBluePigment,
         onPressed: () {
-          if(buttonType!.isNotEmpty){
-            if(buttonType == 'Start Module'){
+          if(DescriptionScreenData.buttonType!.isNotEmpty){
+            if(DescriptionScreenData.buttonType == 'Start Module'){
               Get.to(()=>const Learning_Screens());
-            }else if(buttonType == 'Start Applying'){
+            }else if(DescriptionScreenData.buttonType == 'Start Applying'){
               Get.to(()=>const ApplyingScreen());
-            }else if(buttonType == 'Get Support'){
-              Get.to(()=>const SupportScreen());
+            }else if(DescriptionScreenData.buttonType == 'Completed'){
+             Navigator.pop(context);
             }
-
-          }else{
-
-          }
-
+          }else{}
          // Navigator.pop(context);
           // (context as Element).reassemble();
         },

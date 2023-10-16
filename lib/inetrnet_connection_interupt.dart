@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 
 class InternetConnection extends StatelessWidget {
-  static const String route = "/InternetConnection";
+  const InternetConnection({super.key});
 
 
 
@@ -48,8 +48,10 @@ class InternetConnection extends StatelessWidget {
               ),
               const Spacer(flex: 1),
               ElevatedButton(
+
                 onPressed: () {},
                 style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(colorEnabledButton),
                   elevation: MaterialStateProperty.all(0),
 
                   fixedSize: MaterialStateProperty.all(

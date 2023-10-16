@@ -4,9 +4,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:provider/provider.dart';
 
+import '../../../common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
 import '../../Profile_screens/Profile_screen.dart';
 import 'package:intl/intl.dart';
+
+import '../my_meals/shopping_list_screen/ShoppingListScreen.dart';
+import '../recipes screens/recipe_screen/RecipeData_Provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -161,31 +167,66 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   sizedboxheight(25.0),
-                  hedingtile('Start Learning'),
+                  hedingtile('Start Learning',(){}),
                   sizedboxheight(15.0),
                   startlearningcard(),
 
                   sizedboxheight(15.0),
-                  hedingtile('Recipes'),
+                  hedingtile('Recipes',(){
+                    Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+
+                  }),
                   sizedboxheight(15.0),
                   recipescard(),
-
                   sizedboxheight(15.0),
-                  hedingtile('My Meals'),
+
+                  // benarcard('Favourites','A place for your favourite recipes.',
+                  //     'assets/banera_favouritesimage.png', HexColor('#E9ECF1'),(){}),
+                  // sizedboxheight(15.0),
+                  hedingtile('My Meals',(){
+                    Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
+
+                  }),
                   sizedboxheight(15.0),
                   mymealscard(),
 
-                  sizedboxheight(15.0),
+                  // sizedboxheight(15.0),
+                  // benarcard('Favourite Recipes','View your favourite meals and snacks',
+                  //     'assets/Favourites.png', HexColor('#D4F1FA'),(){}),
+                  // sizedboxheight(15.0),
+                  // benarcard('Book a Video Appointment','For quality one-on-one coaching',
+                  //     'assets/VideoConsultations.png', HexColor('#D4F1FA'),(){}),
+                  // sizedboxheight(15.0),
+                  // benarcard('Shopping List','Shop for your planned meals & snacks.',
+                  //     'assets/ShoppingList.png', HexColor('#D4F1FA'),(){}),
+                   sizedboxheight(15.0),
+
                   benarcard('Favourites','A place for your favourite recipes.',
-                      'assets/banera_favouritesimage.png', HexColor('#E9ECF1')),
+                      'assets/banera_favouritesimage.png', HexColor('#E9ECF1'),(){
+                        final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+
+                        recipeModel.selectedfav_filter("1");
+                        recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+                      }),
                   sizedboxheight(15.0),
-                  hedingtile('Featured'),
+                  hedingtile('Featured',(){}),
                   sizedboxheight(15.0),
                   featuredcard(),
                   sizedboxheight(15.0),
                   benarcard('Shopping list','Shopping list text.',
-                      'assets/baneraApple.png', HexColor('#FFFFE1')),
-
+                      'assets/baneraApple.png', HexColor('#FFFFE1'),(){
+                        PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                          context,
+                          settings: const RouteSettings(name: "/Recipes_Screen"),
+                          screen:  const ShoppingListScreen(),
+                        );
+                      }),
+                  sizedboxheight(15.0),
+                  hedingtile('Recipe collections',(){}),
+                  sizedboxheight(15.0),
+                  recipecollectionscard(),
+                  sizedboxheight(15.0),
                 ],
               ),
             ),
@@ -195,7 +236,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget hedingtile(hedingtext){
+  Widget hedingtile(hedingtext,Function action){
     return Container(
       width: deviceWidth(context),
       child: Row(
@@ -213,7 +254,15 @@ class _HomeState extends State<Home> {
                 overflow: TextOverflow.ellipsis
             ),),
           ),
-          const Icon(Icons.arrow_forward_ios_rounded,size: 18,)
+
+          InkWell(
+              onTap: () => action(),
+              child: Container(
+                  width: 25,
+                  height: 20,
+                  child: const Icon(Icons.arrow_forward_ios_rounded,size: 18,),
+              ),
+          )
         ],
       ),
 
@@ -452,7 +501,7 @@ class _HomeState extends State<Home> {
                       padding: EdgeInsets.only(bottom: 10,left: 20),
                       child: Align(
                         alignment: Alignment.bottomLeft,
-                        child: Text('Get Started',style: TextStyle(
+                        child: Text("Get Started",style: TextStyle(
                             fontSize: 16,
                             fontFamily: fontFamilyText,
                             color: colorWhite,
@@ -470,50 +519,132 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget benarcard(hedingtext, lebletext,image, color){
+  List<String> collectionList = ["Picnic faves","Brunch goals"];
+  Widget recipecollectionscard(){
     return Container(
-      width: deviceWidth(context),
-      height: 100,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8)
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            width: deviceWidth(context,0.6),
-            padding: EdgeInsets.only(left: 15),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(hedingtext,
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: fontFamilyText,
-                    color: colorPrimaryColor,
-                    fontWeight: fontWeight700,
-                    overflow: TextOverflow.ellipsis
-                ),),
-                Text(lebletext,
-                  maxLines: 2,
-                  style: TextStyle(
-                      fontSize: 12,
+      height: 150,
+      child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: collectionList.length,
+          itemBuilder: (BuildContext context, int index){
+            return Padding(
+              padding: const EdgeInsets.only(right: 15.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+
+                ),
+                width: deviceWidth(context,0.35),
+                height: 140,
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage('assets/Rectangle 1794.png')
+                        ),
+
+                      ),
+                      width: deviceWidth(context,0.35),
+                      height: 140,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          gradient:  LinearGradient(
+                              colors: [
+                                HexColor('#3B4250').withOpacity(0.6),
+                                HexColor('#3B4250').withOpacity(0.0),
+                              ],
+                              begin: FractionalOffset.bottomCenter,
+                              end: FractionalOffset.topCenter,
+                              tileMode: TileMode.repeated
+                          )
+                      ),
+                      width: deviceWidth(context,0.35),
+                      height: 140,
+                      padding: EdgeInsets.only(bottom: 10,left: 20),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(collectionList[index]??"",style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: fontFamilyText,
+                            color: colorWhite,
+                            fontWeight: fontWeight600,
+                            overflow: TextOverflow.ellipsis
+                        ),),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+
+          }),
+    );
+  }
+
+  Widget benarcard(String hedingtext,String lebletext,String image, color, Function action){
+    return InkWell(
+      onTap: () => action() ,
+      child: Container(
+        width: deviceWidth(context),
+        height: 100,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(8)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: deviceWidth(context,0.6),
+              padding: EdgeInsets.only(left: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(hedingtext,
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 20,
                       fontFamily: fontFamilyText,
                       color: colorPrimaryColor,
-                      fontWeight: fontWeight400,
+                      fontWeight: fontWeight700,
                       overflow: TextOverflow.ellipsis
-                  ),)
-              ],
+                  ),),
+                  Text(lebletext,
+                    maxLines: 2,
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: fontFamilyText,
+                        color: colorPrimaryColor,
+                        fontWeight: fontWeight400,
+                        overflow: TextOverflow.ellipsis
+                    ),)
+                ],
+              ),
             ),
-          ),
-          Container(
-            width: deviceWidth(context,0.3),
-            child: Image.asset(image),
-          ),
-        ],
+            Container(
+              width: deviceWidth(context,0.3),
+              height: 100,
+              child: Align(
+                alignment: Alignment.center,
+                child: Stack(
+                  children: [
+                    // Positioned(
+                    //   left: 3,
+                    //     top: 3,
+                    //     child: Image.asset('assets/CircleImage.png',height: 65,)),
+                    Image.asset(image,height: 70),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

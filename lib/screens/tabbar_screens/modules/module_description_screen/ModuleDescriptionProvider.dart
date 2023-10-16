@@ -19,11 +19,11 @@ class ModulesDescriptionScreenProvider with ChangeNotifier {
   final bool _loading = false;
   bool get loading => _loading;
 
-  bool? _iconColor = false;
-  bool? get iconColor => _iconColor;
+  String? _buttonType = 'Start Module';
+  String? get buttonType => _buttonType;
 
-  void IconColor(newMessage){
-    _iconColor = newMessage;
+  void buttonTypeFunction(newMessage){
+    _buttonType = newMessage;
     notifyListeners();
   }
 

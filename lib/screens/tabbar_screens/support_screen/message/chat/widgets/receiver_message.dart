@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../common/styles/const.dart';
+import '../../../../../../common/styles/const.dart';
 import '../model/MessageModel.dart';
 
 class ReceiverMessage extends StatelessWidget {
@@ -40,12 +40,13 @@ class ReceiverMessage extends StatelessWidget {
             // SizedBox(width: 16,),
 
             Container(
+              margin: const EdgeInsets.only(left: 10),
               padding: const EdgeInsets.only(left: 20,right: 20,top: 8,bottom: 8),
               constraints: BoxConstraints(
                   maxWidth: MediaQuery.of(context).size.width * 0.65, minWidth: 0),
               decoration: BoxDecoration(
                   color: colorBluePigment,
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(25),
                  ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,7 +56,7 @@ class ReceiverMessage extends StatelessWidget {
                           fontFamily: fontFamilyText,
                           fontWeight: fontWeight400,
                           color: colorWhite),
-                      textAlign: TextAlign.end),
+                      textAlign: TextAlign.start),
 
                 ],
               ),
@@ -67,7 +68,7 @@ class ReceiverMessage extends StatelessWidget {
           height: 5,
         ),
         Padding(
-          padding: const EdgeInsets.only(right: 20),
+          padding: const EdgeInsets.only(left: 20),
           child: Text(DateFormat('kk:mm:a').format(DateTime.parse(message.created.toDate().toString())),
               style: TextStyle(color:colorShadowBlue,fontWeight: FontWeight.w400,
                   fontSize:12.0, fontFamily: fontFamilyText),

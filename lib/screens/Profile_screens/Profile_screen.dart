@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aylahealth/common/SharedPrefHelper.dart';
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/auth/login_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -53,7 +54,7 @@ class _Profile_screenState extends State<Profile_screen> {
     });
     print(tokanget.toString());
     check().then((intenet) async {
-      if (intenet != null && intenet) {
+      if (intenet) {
         // Internet Present Case
         showLoaderDialog_popup(context,"Log out...");
 
@@ -63,9 +64,10 @@ class _Profile_screenState extends State<Profile_screen> {
     });
 
     var response = await http.post(
-        Uri.parse(baseURL+logout),
+        Uri.parse(Endpoints.baseURL+Endpoints.logout),
         headers: {
           'Authorization': 'Bearer $tokanget',
+
         }
     );
     print(response.body.toString());
@@ -87,6 +89,8 @@ class _Profile_screenState extends State<Profile_screen> {
       prefs.remove("login_user_email");
       prefs.remove("login_user_name");
       prefs.remove("login_user_id");
+
+      SharedPrefHelper.userId = null;
       ///calendar json data remove function ///
       removeDataFromFile(DateTime.now().year.toString());
       ///

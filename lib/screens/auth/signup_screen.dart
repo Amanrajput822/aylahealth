@@ -23,7 +23,7 @@ import '../../models/auth model/user_login_model.dart';
 import '../onbording_screen/pre_question_loding_screen.dart';
 import 'package:http/http.dart' as http;
 
-import '../tabbar_screens/message/chat/firebase_services.dart';
+import '../tabbar_screens/support_screen/message/chat/firebase_services.dart';
 
 class Signup_screen extends StatefulWidget {
   const Signup_screen({Key? key}) : super(key: key);
@@ -81,7 +81,7 @@ class _Signup_screenState extends State<Signup_screen> {
     });
     print(toMap());
     var response = await http.post(
-      Uri.parse(baseURL+Signup),
+      Uri.parse(Endpoints.baseURL+Endpoints.Signup),
       body: toMap(),
     );
     print(response.body.toString());
@@ -98,7 +98,7 @@ class _Signup_screenState extends State<Signup_screen> {
         SharedPrefHelper.userId = int.tryParse(user.custId.toString());
         SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
         SharedPrefHelper.email = user.custEmail ?? "";
-        SharedPrefHelper.authToken = user.accessToken ?? "";
+        // SharedPrefHelper.authToken = user.accessToken ?? "";
 
         prefs.setBool("isLoggedIn", true);
         prefs.setString(

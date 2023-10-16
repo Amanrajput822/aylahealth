@@ -3,9 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../common/commonwidgets/button.dart';
 import '../../../../../common/styles/const.dart';
+import '../ModuleDescriptionProvider.dart';
 
 class CompleteApplyingScreen extends StatefulWidget {
   const CompleteApplyingScreen({Key? key}) : super(key: key);
@@ -140,7 +142,12 @@ class _CompleteApplyingScreenState extends State<CompleteApplyingScreen> {
         borderColor: colorBluePigment,
         onPressed: () {
 
-
+          final DescriptionScreenData = Provider.of<ModulesDescriptionScreenProvider>(context, listen: false);
+          DescriptionScreenData.buttonTypeFunction('Completed');
+          // Get.to(()=>Learning_Screens());
+          //  Get.off(()=>ModuleDescriptionScreen());
+          Navigator.pop(context);
+          Navigator.pop(context);
           // Get.to(()=>Learning_Screens());
           // Navigator.pop(context);
           // (context as Element).reassemble();
@@ -169,7 +176,7 @@ class _CompleteApplyingScreenState extends State<CompleteApplyingScreen> {
       child: Column(
         children: [
           Container(
-            height: deviceheight(context,0.6),
+            height: deviceheight(context,0.7),
             width: deviceWidth(context),
             color: HexColor('#F6F7FB'),
 

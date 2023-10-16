@@ -4,9 +4,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../../../common/commonwidgets/button.dart';
+import '../ModuleDescriptionProvider.dart';
 
 class Learning_Screens extends StatefulWidget {
   const Learning_Screens({Key? key}) : super(key: key);
@@ -139,8 +141,12 @@ class _Learning_ScreensState extends State<Learning_Screens> {
         btnColor: colorBluePigment,
         borderColor: colorBluePigment,
         onPressed: () {
+
+          final DescriptionScreenData = Provider.of<ModulesDescriptionScreenProvider>(context, listen: false);
+          DescriptionScreenData.buttonTypeFunction('Start Applying');
          // Get.to(()=>Learning_Screens());
-          // Navigator.pop(context);
+         //  Get.off(()=>ModuleDescriptionScreen());
+          Navigator.pop(context);
           // (context as Element).reassemble();
         },
       ),

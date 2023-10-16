@@ -241,11 +241,11 @@ class _Modules_ScreenState extends State<Modules_Screen> {
               padding: const EdgeInsets.only(right:20.0),
               child: InkWell(
                onTap: (){
-                 PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                   context,
-                   settings: const RouteSettings(name: "/Modules"),
-                   screen:  const ModuleDescriptionScreen(),
-                 );
+                 // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                 //   context,
+                 //   settings: const RouteSettings(name: "/Modules"),
+                 //   screen:  const ModuleDescriptionScreen(),
+                 // );
 
                },
 
@@ -319,55 +319,64 @@ class _Modules_ScreenState extends State<Modules_Screen> {
           itemBuilder: (BuildContext context, int index){
             return Padding(
               padding: const EdgeInsets.only(right: 15.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+              child: InkWell(
+                onTap: (){
+                  PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                    context,
+                    settings: const RouteSettings(name: "/Modules"),
+                    screen:  const ModuleDescriptionScreen(),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
 
-                ),
-                width: deviceWidth(context,0.38),
-                height: 145,
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
-                        ),
-
-                      ),
-                      width: deviceWidth(context,0.38),
-                      height: 145,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
+                  ),
+                  width: deviceWidth(context,0.38),
+                  height: 145,
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          gradient:  LinearGradient(
-                              colors: [
-                                HexColor('#3B4250').withOpacity(0.6),
-                                HexColor('#3B4250').withOpacity(0.0),
-                              ],
-                              begin: FractionalOffset.bottomCenter,
-                              end: FractionalOffset.topCenter,
-                              tileMode: TileMode.repeated
-                          )
+                          image: const DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
+                          ),
+
+                        ),
+                        width: deviceWidth(context,0.38),
+                        height: 145,
                       ),
-                      width: deviceWidth(context,0.38),
-                      height: 145,
-                      padding: EdgeInsets.only(bottom: 10,left: 20),
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text('True Healthy Eating',style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: fontFamilyText,
-                            color: colorWhite,
-                            fontWeight: fontWeight600,
-                            overflow: TextOverflow.ellipsis
-                        ),maxLines: 2,),
-                      ),
-                    )
-                  ],
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            gradient:  LinearGradient(
+                                colors: [
+                                  HexColor('#3B4250').withOpacity(0.6),
+                                  HexColor('#3B4250').withOpacity(0.0),
+                                ],
+                                begin: FractionalOffset.bottomCenter,
+                                end: FractionalOffset.topCenter,
+                                tileMode: TileMode.repeated
+                            )
+                        ),
+                        width: deviceWidth(context,0.38),
+                        height: 145,
+                        padding: EdgeInsets.only(bottom: 10,left: 20),
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text('True Healthy Eating',style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: fontFamilyText,
+                              color: colorWhite,
+                              fontWeight: fontWeight600,
+                              overflow: TextOverflow.ellipsis
+                          ),maxLines: 2,),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

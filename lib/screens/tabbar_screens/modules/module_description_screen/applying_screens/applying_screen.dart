@@ -46,52 +46,60 @@ class _ApplyingScreenState extends State<ApplyingScreen> {
 
                         },icon: const Icon(Icons.arrow_back_ios_new,size: 20),),
                       ),
-                      SingleChildScrollView(
-                        physics: const ScrollPhysics(),
-                        padding: const EdgeInsets.only(left: 20.0,right: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                      Container(
+                        width: deviceWidth(context),
+                        height: deviceheight(context,0.85),
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(left: 20.0,right: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
 
-                            Text("Try these foods",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontFamily: fontFamilyText,
-                                color: colorRichblack,
-                                fontWeight: fontWeight600,
-                              ),),
+                              Text("Try these foods",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontFamily: fontFamilyText,
+                                  color: colorRichblack,
+                                  fontWeight: fontWeight600,
+                                ),),
 
-                            sizedboxheight(10.0),
-                            Text("See how many of these foods you can add in!",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: fontFamilyText,
-                                color: HexColor('#3B4250'),
-                                fontWeight: fontWeight400,
-                              ),),
-                            sizedboxheight(20.0),
-                            GridView(
-                              shrinkWrap: true,
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 2,
+                              sizedboxheight(10.0),
+                              Text("See how many of these foods you can add in!",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: fontFamilyText,
+                                  color: HexColor('#3B4250'),
+                                  fontWeight: fontWeight400,
+                                ),),
+                              sizedboxheight(20.0),
+                              GridView(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 2,
+                                ),
+                                scrollDirection: Axis.vertical,
+                                children: [
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+                                  Image.asset('assets/apple_image.png'),
+
+
+
+                                ],
                               ),
-                              scrollDirection: Axis.vertical,
-                              children: [
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
-                                Image.asset('assets/apple_image.png'),
 
-                              ],
-                            ),
-
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -115,95 +123,100 @@ class _ApplyingScreenState extends State<ApplyingScreen> {
                           });
                         },icon: const Icon(Icons.arrow_back_ios_new,size: 20),),
                       ),
-                      SingleChildScrollView(
-                        physics: const ScrollPhysics(),
-                        padding: const EdgeInsets.only(left: 20.0,right: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                      Container(
+                        width: deviceWidth(context),
+                        height: deviceheight(context,0.9),
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(left: 20.0,right: 20,bottom: 50),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
 
-                            Text("Try these habits",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontFamily: fontFamilyText,
-                                color: colorRichblack,
-                                fontWeight: fontWeight600,
-                              ),),
+                              Text("Try these habits",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontFamily: fontFamilyText,
+                                  color: colorRichblack,
+                                  fontWeight: fontWeight600,
+                                ),),
 
-                            sizedboxheight(10.0),
-                            ListView.builder(
-                                itemCount: 5,
-                                shrinkWrap: true,
-                                itemBuilder: (BuildContext context,int index){
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 15),
-                                    child: ExpansionTile(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
-                                      collapsedShape:RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ) ,
-                                      backgroundColor: HexColor('#E9ECF1'),
-                                      collapsedBackgroundColor: HexColor('#E9ECF1'),
+                              sizedboxheight(10.0),
+                              ListView.builder(
+                                  itemCount: 5,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (BuildContext context,int index){
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 15),
+                                      child: ExpansionTile(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        collapsedShape:RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ) ,
+                                        backgroundColor: HexColor('#E9ECF1'),
+                                        collapsedBackgroundColor: HexColor('#E9ECF1'),
 
-                                      iconColor:  HexColor('#3B4250'),
-                                      title: Row(
-                                        children: [
-                                          Text('${index + 1}.', style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: fontFamilyText,
-                                              color: HexColor('#3B4250'),
-                                              height: 1.6,
-                                              fontWeight: fontWeight600,
-                                              overflow: TextOverflow.ellipsis
-                                          )),
-                                          sizedboxwidth(10.0),
-                                          Container(
-                                            width: deviceWidth(context,0.6),
-                                            child: Text('Add nuts, seeds or fruit to chocolate ',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontFamily: fontFamilyText,
-                                                  color: HexColor('#3B4250'),
-                                                  height: 1.6,
-                                                  fontWeight: fontWeight600,
-                                                  overflow: TextOverflow.ellipsis
-                                              ),maxLines: 2,),
-                                          ),
-                                        ],
-                                      ),
-                                      // Contents
-                                      children: [
-                                        Container(
-                                          color: colorWhite,
-                                          child:Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Text("Do you love eating chocolate? Do you constantly "
-                                                "find yourself trying to stop eating it, only to lose control "
-                                                "later? A positive action that you can take right now, "
-                                                "is to allow yourself to eat it and enjoy it with a whole food: "
-                                                "Add nuts and seeds and make a trial mix."
-                                                " Dip your fruit like mandarins, banana and strawberries in melted chocolate",
-                                              style: TextStyle(
-                                                fontSize: 14,
+                                        iconColor:  HexColor('#3B4250'),
+                                        title: Row(
+                                          children: [
+                                            Text('${index + 1}.', style: TextStyle(
+                                                fontSize: 16,
                                                 fontFamily: fontFamilyText,
                                                 color: HexColor('#3B4250'),
                                                 height: 1.6,
-                                                fontWeight: fontWeight400,
+                                                fontWeight: fontWeight600,
+                                                overflow: TextOverflow.ellipsis
+                                            )),
+                                            sizedboxwidth(10.0),
+                                            Container(
+                                              width: deviceWidth(context,0.6),
+                                              child: Text('Add nuts, seeds or fruit to chocolate ',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontFamily: fontFamilyText,
+                                                    color: HexColor('#3B4250'),
+                                                    height: 1.6,
+                                                    fontWeight: fontWeight600,
+                                                    overflow: TextOverflow.ellipsis
+                                                ),maxLines: 2,),
+                                            ),
+                                          ],
+                                        ),
+                                        // Contents
+                                        children: [
+                                          Container(
+                                            color: colorWhite,
+                                            child:Padding(
+                                              padding: const EdgeInsets.all(15.0),
+                                              child: Text("Do you love eating chocolate? Do you constantly "
+                                                  "find yourself trying to stop eating it, only to lose control "
+                                                  "later? A positive action that you can take right now, "
+                                                  "is to allow yourself to eat it and enjoy it with a whole food: "
+                                                  "Add nuts and seeds and make a trial mix."
+                                                  " Dip your fruit like mandarins, banana and strawberries in melted chocolate",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: fontFamilyText,
+                                                  color: HexColor('#3B4250'),
+                                                  height: 1.6,
+                                                  fontWeight: fontWeight400,
 
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        )
+                                          )
 
 
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                        ],
+                                      ),
+                                    );
+                                  }),
 
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -269,37 +282,41 @@ class _ApplyingScreenState extends State<ApplyingScreen> {
                           ],
                         ),
                       ),
-                      SingleChildScrollView(
-                        physics: const ScrollPhysics(),
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                      Container(
+                        height: deviceheight(context,0.7),
+                        width: deviceWidth(context),
+                        child: SingleChildScrollView(
+                          physics: const ScrollPhysics(),
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
 
-                            Text("Take action",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontFamily: fontFamilyText,
-                                color: colorRichblack,
-                                fontWeight: fontWeight600,
-                              ),),
+                              Text("Take action",
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontFamily: fontFamilyText,
+                                  color: colorRichblack,
+                                  fontWeight: fontWeight600,
+                                ),),
 
-                            sizedboxheight(10.0),
-                            Text("Eating a healthy diet is one of several major "
-                                "lifestyle factors that influence our health."
-                                " Eating well ensures we meet our body’s energy and "
-                                "nutrient needs to grow, develop and repair. "
-                                "Healthy eating also reduces the risk of heart disease, "
-                                "diabetes, and cancer or slows the progression of these diseases.",
-                              style: TextStyle(
-                                fontSize: 16,height: 1.8,
-                                fontFamily: fontFamilyText,
-                                color: HexColor('#3B4250'),
-                                fontWeight: fontWeight400,
-                              ),),
+                              sizedboxheight(10.0),
+                              Text("Eating a healthy diet is one of several major "
+                                  "lifestyle factors that influence our health."
+                                  " Eating well ensures we meet our body’s energy and "
+                                  "nutrient needs to grow, develop and repair. "
+                                  "Healthy eating also reduces the risk of heart disease, "
+                                  "diabetes, and cancer or slows the progression of these diseases.",
+                                style: TextStyle(
+                                  fontSize: 16,height: 1.8,
+                                  fontFamily: fontFamilyText,
+                                  color: HexColor('#3B4250'),
+                                  fontWeight: fontWeight400,
+                                ),),
 
 
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],

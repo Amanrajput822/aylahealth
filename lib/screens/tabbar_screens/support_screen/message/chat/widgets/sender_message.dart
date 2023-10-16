@@ -2,13 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../common/styles/const.dart';
+import '../../../../../../common/styles/const.dart';
 import '../model/MessageModel.dart';
 
-class SenderMessage extends StatelessWidget {
+class SenderMessage extends StatefulWidget {
   final Message message;
 
   const SenderMessage({Key? key, required this.message}) : super(key: key);
+
+  @override
+  State<SenderMessage> createState() => _SenderMessageState();
+}
+
+class _SenderMessageState extends State<SenderMessage> {
+
+  String categorizeMessage(Message message) {
+    final now = DateTime.now();
+    final messageDate = message.created.toDate();
+    final difference = messageDate.difference(now).inDays;
+
+    if (difference == 0) {
+      return "Today";
+    } else if (difference == -1) {
+      return "Yesterday";
+    } else if (difference == 1) {
+      return "Tomorrow";
+    } else {
+      return DateFormat('MMM d').format(DateTime.parse(widget.message.created.toDate().toString()));
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +41,7 @@ class SenderMessage extends StatelessWidget {
     //     Padding(
     //       padding: const EdgeInsets.only(right: 90),
     //       child: Text(
-    //           "You",
+    //           categorizeMessage(widget.message),
     //           style: TextStyle(color:Color(0xffBEBEBE),fontWeight: FontWeight.w400,
     // fontSize:12.0, fontFamily: fontFamilyText),
     //
@@ -45,7 +68,7 @@ class SenderMessage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(message.text,
+                  Text(widget.message.text,
                   style: TextStyle(fontSize: 16,
                       fontFamily: fontFamilyText,
                   fontWeight: fontWeight400,
@@ -72,10 +95,9 @@ class SenderMessage extends StatelessWidget {
         ),
             Padding(
               padding: const EdgeInsets.only(right: 20),
-              child: Text(DateFormat('kk:mm:a').format(DateTime.parse(message.created.toDate().toString())),
+              child: Text(DateFormat('kk:mm:a').format(DateTime.parse(widget.message.created.toDate().toString())),
                   style: TextStyle(color:colorShadowBlue,fontWeight: FontWeight.w400,
                   fontSize:12.0, fontFamily: fontFamilyText),
-
                   maxLines: 1,
                   textAlign: TextAlign.end),
             ),

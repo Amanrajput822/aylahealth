@@ -264,9 +264,9 @@ class RecipeData_Provider with ChangeNotifier {
     }
 
     print(toMap().toString());
-    print(baseURL+recipeList.toString());
+    print(Endpoints.baseURL+Endpoints.recipeList.toString());
     var response = await http.post(
-        Uri.parse(baseURL+recipeList),
+        Uri.parse(Endpoints.baseURL+Endpoints.recipeList),
         body: json.encode(toMap()),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -334,11 +334,11 @@ class RecipeData_Provider with ChangeNotifier {
       }
       print('toMap()@@@@@@@@@@@@@@@@');
       print(toMap());
-      print(baseURL+recipeList);
+      print(Endpoints.baseURL+Endpoints.recipeList);
 
       try {
         response = await http.post(
-            Uri.parse(baseURL+recipeList),
+            Uri.parse(Endpoints.baseURL+Endpoints.recipeList),
             body: json.encode(toMap()),
             headers: {
               'Authorization': 'Bearer $_tokanget',
@@ -396,7 +396,7 @@ class RecipeData_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(baseURL + markRecipeFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.markRecipeFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -452,7 +452,7 @@ class RecipeData_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(baseURL + unmarkRecipeFromFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.unmarkRecipeFromFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -509,7 +509,7 @@ class RecipeData_Provider with ChangeNotifier {
     });
 
     var response = await http.get(
-        Uri.parse(baseURL + allRecipeFiltersList),
+        Uri.parse(Endpoints.baseURL + Endpoints.allRecipeFiltersList),
         headers: {
           'Authorization': 'Bearer $_tokanget',
           'Accept': 'application/json'
@@ -555,7 +555,7 @@ class RecipeData_Provider with ChangeNotifier {
     });
 
     var response = await http.get(
-        Uri.parse(baseURL + recipeCategoryList),
+        Uri.parse(Endpoints.baseURL + Endpoints.recipeCategoryList),
         headers: {
           'Authorization': 'Bearer $_tokanget',
           'Accept': 'application/json'

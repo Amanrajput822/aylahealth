@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../../../common/SharedPrefHelper.dart';
+import '../../../../../common/SharedPrefHelper.dart';
 import 'model/MessageModel.dart';
 
 class FirebaseData {
@@ -43,8 +43,7 @@ class FirebaseData {
       "email": email,
       "profile": profile,
     });
-    print(
-        "shjbcxjscjusgcjubcghbjk${_userCollection}${id}${name}${email}${profile}");
+    print("shjbcxjscjusgcjubcghbjk${_userCollection}${id}${name}${email}${profile}");
   }
 
   Future<void> sendMessage(Message message) async {

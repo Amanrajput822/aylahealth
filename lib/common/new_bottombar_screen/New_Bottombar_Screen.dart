@@ -8,13 +8,13 @@ import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 import "package:provider/provider.dart";
 
 import "../../screens/tabbar_screens/home/home.dart";
-import "../../screens/tabbar_screens/message/chat/chat_list.dart";
 import '../../screens/tabbar_screens/modules/modules_screen/modules_screen.dart';
 import "../../screens/tabbar_screens/my_meals/My_Meals_Provider.dart";
 import "../../screens/tabbar_screens/my_meals/my_meals_screen.dart";
 import "../../screens/tabbar_screens/recipes screens/recipe_screen/RecipeData_Provider.dart";
 import "../../screens/tabbar_screens/recipes screens/recipe_screen/recipes_screen.dart";
-import "../commonwidgets/commonwidgets.dart";
+import "../../screens/tabbar_screens/support_screen/support_screen.dart";
+import "../commonwidgets/app_close_popup.dart";
 import "Bottom_NavBar_Provider.dart";
 
 BuildContext? testContext;
@@ -80,7 +80,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
         const Modules_Screen(),
         const My_Meals_Screen(),
         const Recipes_Screen(),
-        const ChatListScreen(),
+        const SupportScreen(),
         //const Home(),
       ];
 
@@ -97,6 +97,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             else{
               warning_popup();
             }
+            FocusManager.instance.primaryFocus?.unfocus();
           },
             icon: Column(
               children: [
@@ -136,6 +137,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             else{
               warning_popup();
             }
+            FocusManager.instance.primaryFocus?.unfocus();
           },
           icon: Column(
             children: [
@@ -180,6 +182,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             else{
               warning_popup();
             }
+            FocusManager.instance.primaryFocus?.unfocus();
           },
           icon: Column(
             children: [
@@ -221,6 +224,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             else{
               warning_popup();
             }
+            FocusManager.instance.primaryFocus?.unfocus();
           },
           icon: Column(
             children: [
@@ -259,7 +263,9 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             else{
               warning_popup();
             }
+            FocusManager.instance.primaryFocus?.unfocus();
           },
+
           icon: Column(
             children: [
               SvgPicture.asset(
@@ -268,7 +274,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
                 height: 18,width: 18,
               ),
               sizedboxheight(4.0),
-              Text('Chat',
+              Text('Support',
                 style: TextStyle(fontSize: 12,color:HexColor('#2D3091'),fontFamily: fontFamilyText,fontWeight: fontWeight400 ),)
             ],
           ),
@@ -280,7 +286,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
                 height: 18,width: 18,
               ),
               sizedboxheight(4.0),
-              Text('Chat',style: TextStyle(fontSize: 12,color:HexColor('#79879C') ,fontFamily: fontFamilyText,fontWeight: fontWeight400),)
+              Text('Support',style: TextStyle(fontSize: 12,color:HexColor('#79879C') ,fontFamily: fontFamilyText,fontWeight: fontWeight400),)
             ],
           ),
 

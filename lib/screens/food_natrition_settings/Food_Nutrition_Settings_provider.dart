@@ -1,7 +1,3 @@
-import 'package:aylahealth/models/recipelist/RecipeList_data_model.dart';
-import 'package:aylahealth/models/recipelist/filtter_list_models/RecipeCategoryList_Model.dart';
-import 'package:aylahealth/models/recipelist/filtter_list_models/Recipe_Filtter_model.dart';
-import 'package:aylahealth/models/recipelist/recipe_like_unlike_data_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
@@ -13,8 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
-import '../../../common/styles/showLoaderDialog_popup.dart';
-import '../../../models/profile/user_details_model.dart';
+
 import '../../models/food_nutrition_settings/customerFoodSettingHeadingList_model.dart';
 
 class Food_Nutrition_Settings_provider with ChangeNotifier {
@@ -56,7 +51,7 @@ class Food_Nutrition_Settings_provider with ChangeNotifier {
     });
 
     var response = await http.post(
-        Uri.parse(baseURL+customerFoodSettingHeadingList),
+        Uri.parse(Endpoints.baseURL+Endpoints.customerFoodSettingHeadingList),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json'
@@ -87,8 +82,5 @@ class Food_Nutrition_Settings_provider with ChangeNotifier {
 
     return customerFoodSettingHeadingList_model.fromJson(json.decode(response.body));
   }
-
-
-
 
 }

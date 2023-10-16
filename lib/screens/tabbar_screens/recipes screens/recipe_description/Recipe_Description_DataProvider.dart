@@ -3,14 +3,9 @@ import 'package:flutter/cupertino.dart';
 
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
@@ -83,9 +78,9 @@ class Recipe_Description_DataProvider with ChangeNotifier {
         return map;
       }
       print(toMap());
-      print(baseURL + recipeDetails);
+      print(Endpoints.baseURL + Endpoints.recipeDetails);
       var response = await http.post(
-          Uri.parse(baseURL + recipeDetails),
+          Uri.parse(Endpoints.baseURL + Endpoints.recipeDetails),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',

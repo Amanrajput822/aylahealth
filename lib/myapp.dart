@@ -22,12 +22,12 @@ import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 
-import 'FlutterNativeSplash.dart';
 import 'common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
 import 'common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import 'demo/appleLogin_demo.dart';
 import 'demo/deno.dart';
 import 'home_screen.dart';
+import 'inetrnet_connection_interupt.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -38,10 +38,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void initState() {
-    FlutterNativeSplash.remove();
-    super.initState();
-  }
 
 
   // This widget is the root of your application.
@@ -67,7 +63,6 @@ class _MyAppState extends State<MyApp> {
         title: 'Ayla Health',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-
           appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
               // Status bar color
@@ -89,18 +84,19 @@ class _MyAppState extends State<MyApp> {
         initialRoute: '/',
         routes: {
 
-          '/': (context) => Splesh(),
-          'HomeScreen': (context) => HomeScreen(),
-          'd': (context) => Pre_Question_Screen(),
-          'Screen1': (context) => Screen1(),
-          'SubscriptionScreen': (context) => SubscriptionScreen(),
+          '/': (context) => const Splesh(),
+          'HomeScreen': (context) => const HomeScreen(),
+          'd': (context) => const Pre_Question_Screen(),
+          'Screen1': (context) => const Screen1(),
+          'SubscriptionScreen': (context) => const SubscriptionScreen(),
           'Screen7': (context) => Screen7(),
           'demo': (context) => SliverWithTabBar(),
-          'New_Bottombar_Screen': (context) => New_Bottombar_Screen(),
-          'Home': (context) => Home(),
-          'Recipes_Screen': (context) => Recipes_Screen(),
+          'New_Bottombar_Screen': (context) => const New_Bottombar_Screen(),
+          'Home': (context) => const Home(),
+          'Recipes_Screen': (context) => const Recipes_Screen(),
           'apple_login_demo': (context) => apple_login_demo(),
-          'ShoppingListScreen': (context) => ShoppingListScreen(),
+          'ShoppingListScreen': (context) => const ShoppingListScreen(),
+          'InternetConnection': (context) => const InternetConnection(),
           // 'CalendarApp': (context) => CalendarApp(),
 
 

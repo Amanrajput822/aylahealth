@@ -127,6 +127,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         child: InkWell(
                           onTap: (){
                             if(widget.email!.isNotEmpty){
+                              txt_varify_code.clear();
                               forgotPassProviderData.forgotPasswordApi(context,widget.email.toString());
                             }
 

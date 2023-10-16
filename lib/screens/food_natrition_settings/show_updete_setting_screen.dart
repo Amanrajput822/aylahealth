@@ -58,7 +58,10 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
   Future? _future3;
   Future? _future4;
   var success, message,tokanget;
-////////////////// Ingredient_Name_List_api API ////////////
+  bool loading = false;
+
+   /// Ingredient_Name_List_api API ////////////
+
   final List<String> _selectedItems = [];
   void _itemChange(String itemValue, bool isSelected) {
     setState(() {
@@ -86,8 +89,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     print(tokanget.toString());
     check().then((intenet) {
       if (intenet != null && intenet) {
-        // Internet Present Case
-       // showLoaderDialog(context,'Ingredient Name List....');
+
 
       } else {
         FlutterToast_Internet();
@@ -95,7 +97,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     });
 
     var response = await http.post(
-        Uri.parse(baseURL+ingredientNameList),
+        Uri.parse(Endpoints.baseURL+Endpoints.ingredientNameList),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json'
@@ -125,8 +127,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     return Ingredient_Name_List_Model.fromJson(json.decode(response.body));
   }
 
-
-///////////////////// customerFoodSettingData_api API /////////////////
+  /// customerFoodSettingData_api API /////////////////
 
 
   //List<Options>? options_list;
@@ -141,8 +142,8 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     check().then((intenet) {
       if (intenet != null && intenet) {
         // Internet Present Case
-        showLoaderDialog1(context);
-
+      //  showLoaderDialog1(context);
+        loading = true;
 
       } else {
         FlutterToast_Internet();
@@ -157,7 +158,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     }
     print(toMap());
     var response = await http.post(
-        Uri.parse(baseURL+customerFoodSettingData),
+        Uri.parse(Endpoints.baseURL+Endpoints.customerFoodSettingData),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -167,8 +168,9 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     print(response.body.toString());
     success = (customerFoodSettingData_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
+    loading = false;
     if (success == 200) {
-      Navigator.pop(context);
+    //  Navigator.pop(context);
      // options_list = (customerFoodSettingData_model.fromJson(json.decode(response.body)).data!.options);
       customerAnswer_list = (customerFoodSettingData_model.fromJson(json.decode(response.body)).data!.customerAnswer);
 
@@ -206,7 +208,8 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
       }
       // Get.to(() => Pre_Question_Screen());
     } else {
-      Navigator.pop(context);
+      loading = false;
+     // Navigator.pop(context);
       print('else==============');
 
       FlutterToast_message('No Question Data');
@@ -259,7 +262,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     print(toMap().toString());
     print(json.encode(toMap()).toString());
     var response = await http.post(
-        Uri.parse(baseURL+addOrUpdateCustomerAnswer),
+        Uri.parse(Endpoints.baseURL+Endpoints.addOrUpdateCustomerAnswer),
         body:(quetype == 'MULTIPLE'|| quetype == 'INDEXING')?json.encode(toMap()):toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -290,6 +293,8 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     return Answer_submit_Model.fromJson(json.decode(response.body));
   }
 
+  /// customer nutrition aria API
+
   List<customerNutritionArea_recponce>? customerNutritionArea_data_list;
   Future<customerNutritionArea_model> customerNutritionArea_data_list_api() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -309,7 +314,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     });
 
     var response = await http.post(
-        Uri.parse(baseURL+customerNutritionArea),
+        Uri.parse(Endpoints.baseURL+Endpoints.customerNutritionArea),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json',
@@ -411,7 +416,10 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
         width: deviceWidth(context),
         child: Stack(
           children: [
-            Container(
+            loading
+                ? Container(
+              child: const Center(child: CircularProgressIndicator(),),
+            ) : Container(
               height: deviceheight(context),
               width: deviceWidth(context),
               padding: const EdgeInsets.only(left: 15,right: 15,top: 5,bottom:15 ),

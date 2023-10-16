@@ -15,7 +15,7 @@ import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../common/styles/showLoaderDialog_popup.dart';
 import '../../../models/profile/user_details_model.dart';
-import '../../tabbar_screens/message/chat/firebase_services.dart';
+import '../../tabbar_screens/support_screen/message/chat/firebase_services.dart';
 
 class userprofile_Provider with ChangeNotifier {
 
@@ -70,7 +70,7 @@ class userprofile_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(baseURL+customerDetails),
+        Uri.parse(Endpoints.baseURL+Endpoints.customerDetails),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',

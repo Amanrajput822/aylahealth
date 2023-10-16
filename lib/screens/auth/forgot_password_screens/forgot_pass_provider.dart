@@ -63,7 +63,7 @@ class ForgotPassProvider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(baseURL + forgotPassword),
+        Uri.parse(Endpoints.baseURL + Endpoints.forgotPassword),
         body: toMap(),
     );
     if (response.statusCode == 200) {
@@ -78,6 +78,7 @@ class ForgotPassProvider with ChangeNotifier {
       if (_success == 200) {
         _loading = false;
       //  FlutterToast_message(_message);
+        _textFieldValidation = false;
         Get.to(() =>  VerifyScreen(email:custEmail));
         notifyListeners();
 
@@ -115,7 +116,7 @@ class ForgotPassProvider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-      Uri.parse(baseURL + verifyForgotPasswordCode),
+      Uri.parse(Endpoints.baseURL + Endpoints.verifyForgotPasswordCode),
       body: toMap(),
     );
     if (response.statusCode == 200) {
@@ -167,7 +168,7 @@ class ForgotPassProvider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-      Uri.parse(baseURL + resetPassword),
+      Uri.parse(Endpoints.baseURL + Endpoints.resetPassword),
       body: toMap(),
     );
     if (response.statusCode == 200) {

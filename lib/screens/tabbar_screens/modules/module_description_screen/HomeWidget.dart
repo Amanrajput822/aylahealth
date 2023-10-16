@@ -14,6 +14,9 @@ class _VideoWidget extends State<HomeWidget> {
   late ChewieController chewieController;
 
   bool isReady = false;
+  bool isPlayerPlayPause = true;
+  bool isPlayerVolume = true;
+  bool isPlayerFullScreen = true;
 
   @override
   void initState() {
@@ -23,34 +26,97 @@ class _VideoWidget extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: colorWhite,
-      child: SafeArea(
-        child: Scaffold(
-          body: Container(
-
-            child: Column(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: colorWhite,
+        iconTheme: IconThemeData(
+          color: colorBlackRichBlack
+        ),
+      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 230,
+            width: deviceWidth(context),
+            child: Stack(
               children: [
-                Container(
-                  height: 200,
+                SizedBox(
+                  height: 230,
                   width: deviceWidth(context),
                   child: isReady == true
                       ? Chewie(controller: chewieController)
                       : const Center(child: CircularProgressIndicator()),
                 ),
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: (){
-                          chewieController.play();
-                        },
-                        icon: Icon(Icons.play_circle_outline,size: 55,))
-                  ],
-                )
+                // SizedBox(
+                //   height: 200,
+                //   width: deviceWidth(context),
+                //   child: Align(
+                //     alignment: Alignment.bottomCenter,
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //       children: [
+                //         isPlayerPlayPause?IconButton(
+                //             onPressed: (){
+                //               setState(() {
+                //                 isPlayerPlayPause = false;
+                //               });
+                //               chewieController.play();
+                //             },
+                //             icon: Icon(Icons.play_arrow,size: 25,)):
+                //         IconButton(
+                //             onPressed: (){
+                //               setState(() {
+                //                 isPlayerPlayPause = true;
+                //               });
+                //               chewieController.pause();
+                //             },
+                //             icon: Icon(Icons.pause,size: 25,)),
+                //         Row(
+                //           children: [
+                //             isPlayerVolume?IconButton(
+                //                 onPressed: (){
+                //                   setState(() {
+                //                     isPlayerVolume = false;
+                //                   });
+                //                   chewieController.setVolume(0);
+                //                 },
+                //                 icon: Icon(Icons.volume_up,size: 25,)):
+                //             IconButton(
+                //                 onPressed: (){
+                //                   setState(() {
+                //                     isPlayerVolume = true;
+                //                   });
+                //                   chewieController.setVolume(1);
+                //                 },
+                //                 icon: Icon(Icons.volume_off,size: 25,)),
+                //             isPlayerFullScreen? IconButton(
+                //                 onPressed: (){
+                //                   setState(() {
+                //                     isPlayerFullScreen = true;
+                //                   });
+                //                   chewieController.enterFullScreen();
+                //                 },
+                //                 icon: Icon(Icons.fullscreen,size: 25,)):
+                //             IconButton(
+                //                 onPressed: (){
+                //                   setState(() {
+                //                     isPlayerFullScreen = true;
+                //                   });
+                //                   chewieController.exitFullScreen();
+                //                 },
+                //                 icon: Icon(Icons.fullscreen_exit,size: 25,)),
+                //           ],
+                //         ),
+                //
+                //       ],
+                //     ),
+                //   ),
+                // )
               ],
             ),
           ),
-        ),
+
+        ],
       ),
     );
   }
@@ -65,8 +131,8 @@ class _VideoWidget extends State<HomeWidget> {
   }
 
   Future<void> initializeVideoPlayer() async {
-    videoPlayerController = VideoPlayerController.network(
-        "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4");
+    videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse("https://cdn.pixabay.com/vimeo/246463976/atoms-13232.mp4?width=640&hash=4c8703a3f34b289318ae2077bcae4008b1d886da"));
     await Future.wait([videoPlayerController.initialize()]);
 
     chewieController = ChewieController(

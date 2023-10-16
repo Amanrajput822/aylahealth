@@ -63,7 +63,7 @@ class _ModulesSearchBarState extends State<ModulesSearchBar> {
       return map;
     }
     var response = await http.post(
-        Uri.parse(baseURL+recipeList),
+        Uri.parse(Endpoints.baseURL+Endpoints.recipeList),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',

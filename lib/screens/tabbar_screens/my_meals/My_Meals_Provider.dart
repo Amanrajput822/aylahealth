@@ -180,9 +180,9 @@ class MyMeals_Provider with ChangeNotifier {
       }
       print('aman1???????????????');
       print(toMap());
-      print(baseURL + addOrUpdateMealPlan);
+      print(Endpoints.baseURL + Endpoints.addOrUpdateMealPlan);
       var response = await http.post(
-          Uri.parse(baseURL + addOrUpdateMealPlan),
+          Uri.parse(Endpoints.baseURL + Endpoints.addOrUpdateMealPlan),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -257,9 +257,9 @@ class MyMeals_Provider with ChangeNotifier {
       }
       print('get_meals_calendardata_api111');
       print(toMap());
-      print(baseURL + customerMealPlanData);
+      print(Endpoints.baseURL + Endpoints.customerMealPlanData);
       var response = await http.post(
-          Uri.parse(baseURL + customerMealPlanData),
+          Uri.parse(Endpoints.baseURL + Endpoints.customerMealPlanData),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -352,9 +352,9 @@ class MyMeals_Provider with ChangeNotifier {
       print("get_meals_calendardata_multiple_months_api");
 
       print(toMap());
-      print(baseURL + customerFiveMonthMealPlanData);
+      print(Endpoints.baseURL + Endpoints.customerFiveMonthMealPlanData);
       var response = await http.post(
-          Uri.parse(baseURL + customerFiveMonthMealPlanData),
+          Uri.parse(Endpoints.baseURL + Endpoints.customerFiveMonthMealPlanData),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -444,7 +444,7 @@ class MyMeals_Provider with ChangeNotifier {
       });
 
       var response = await http.get(
-          Uri.parse(baseURL + mealTimeList),
+          Uri.parse(Endpoints.baseURL + Endpoints.mealTimeList),
 
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -548,9 +548,9 @@ class MyMeals_Provider with ChangeNotifier {
         return map;
       }
       print(toMap());
-      print(baseURL + customerMealOfDay);
+      print(Endpoints.baseURL + Endpoints.customerMealOfDay);
       var response = await http.post(
-          Uri.parse(baseURL + customerMealOfDay),
+          Uri.parse(Endpoints.baseURL + Endpoints.customerMealOfDay),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -654,7 +654,7 @@ class MyMeals_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(baseURL + markRecipeFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.markRecipeFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -720,7 +720,7 @@ class MyMeals_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(baseURL + unmarkRecipeFromFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.unmarkRecipeFromFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',

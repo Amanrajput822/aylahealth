@@ -38,8 +38,9 @@ String? validateNewPassword(value) {
   } else if (value.length < 8) {
     return 'Password length cannot be less than 8 characters.';
   }
-  else if (!regex.hasMatch(value))
+  else if (!regex.hasMatch(value)) {
     return 'Password must contain numbers, letter, and at least 8 characters';
+  }
 }
 
 String? validateName(value) {
@@ -50,11 +51,7 @@ String? validateName(value) {
   }
 }
 
-String? validateTitle(value) {
-  if (value.isEmpty) {
-    return 'Project Name is Required.';
-  }
-}
+
 
 String? validatePromoCode(value) {
   if (value.isEmpty) {
@@ -70,53 +67,7 @@ String? validateHome(value) {
   }
 }
 
-String? validateBlock(value) {
-  if (value.isEmpty) {
-    return 'Block is Required.';
-  }
-}
 
-String? validateStreet(value) {
-  if (value.isEmpty) {
-    return 'Street is Required.';
-  }
-}
-
-String? validateAvenue(value) {
-  if (value.isEmpty) {
-    return 'Avenue is Required.';
-  }
-}
-
-String? validateBuilding(value) {
-  if (value.isEmpty) {
-    return 'Building is Required.';
-  }
-}
-
-String? validateAppartmentNo(value) {
-  if (value.isEmpty) {
-    return 'Appartment no. is Required.';
-  }
-}
-
-String? validateOffice(value) {
-  if (value.isEmpty) {
-    return 'Office is Required.';
-  }
-}
-
-String? validateFloor(value) {
-  if (value.isEmpty) {
-    return 'Floor is Required.';
-  }
-}
-
-String? validaterequired(value) {
-  if (value.isEmpty) {
-    return 'Required Field.';
-  }
-}
 
 String? validateAddressName(value) {
   if (value.isEmpty) {

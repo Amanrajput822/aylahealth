@@ -99,16 +99,16 @@ class _FAQs_screenState extends State<FAQs_screen> {
       //   ),
       //   maxLines: 1,
       // ),
-      subtitle: Text(_subtitle.toString(),
-        style: TextStyle(
-            fontSize: 12,
-            fontFamily: fontFamilyText,
-            color: HexColor('#79879C'),
-            fontWeight: fontWeight400,
-            overflow: TextOverflow.ellipsis
-        ),
-        maxLines: 1,
-      ).paddingOnly(left: 8),
+      // subtitle: Text(_subtitle.toString(),
+      //   style: TextStyle(
+      //       fontSize: 12,
+      //       fontFamily: fontFamilyText,
+      //       color: HexColor('#79879C'),
+      //       fontWeight: fontWeight400,
+      //       overflow: TextOverflow.ellipsis
+      //   ),
+      //   maxLines: 1,
+      // ).paddingOnly(left: 8),
       tileColor: colorWhite,
       textColor: colorRichblack,
       onTap: () => action() ,

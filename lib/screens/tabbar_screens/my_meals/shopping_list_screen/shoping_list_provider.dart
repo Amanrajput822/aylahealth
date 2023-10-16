@@ -136,9 +136,9 @@ class ShoppingListProvider with ChangeNotifier {
       }
       print('aman1???????????????');
       print(toMap());
-      print(baseURL + createShoppingList);
+      print(Endpoints.baseURL + Endpoints.createShoppingList);
       var response = await http.post(
-          Uri.parse(baseURL + createShoppingList),
+          Uri.parse(Endpoints.baseURL + Endpoints.createShoppingList),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -187,9 +187,9 @@ class ShoppingListProvider with ChangeNotifier {
         FlutterToast_Internet();
       }
     });
-      print(baseURL + customerShoppingList);
+      print(Endpoints.baseURL + Endpoints.customerShoppingList);
       var response = await http.post(
-          Uri.parse(baseURL + customerShoppingList),
+          Uri.parse(Endpoints.baseURL + Endpoints.customerShoppingList),
 
           headers: {
             'Authorization': 'Bearer $tokanget',
@@ -260,9 +260,9 @@ class ShoppingListProvider with ChangeNotifier {
       }
       print('aman1???????????????');
       print(toMap());
-      print(baseURL + updateShoppingItemStatus);
+      print(Endpoints.baseURL + Endpoints.updateShoppingItemStatus);
       var response = await http.post(
-          Uri.parse(baseURL + updateShoppingItemStatus),
+          Uri.parse(Endpoints.baseURL + Endpoints.updateShoppingItemStatus),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',

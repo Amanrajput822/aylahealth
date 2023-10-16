@@ -24,7 +24,7 @@ import '../../common/styles/const.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/onboarding_screens_models/Gender_List_Model.dart';
 import '../../models/profile/user_details_model.dart';
-import '../tabbar_screens/message/chat/firebase_services.dart';
+import '../tabbar_screens/support_screen/message/chat/firebase_services.dart';
 
 class Edite_Profile_Screen extends StatefulWidget {
 
@@ -97,7 +97,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
     });
      print(toMap());
     var response = await http.post(
-        Uri.parse(baseURL+updateCustomer),
+        Uri.parse(Endpoints.baseURL+Endpoints.updateCustomer),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -206,7 +206,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
     });
 
     var response = await http.get(
-        Uri.parse(baseURL+genderList),
+        Uri.parse(Endpoints.baseURL+Endpoints.genderList),
         headers: {
           'Authorization': 'Bearer $tokanget',
         }

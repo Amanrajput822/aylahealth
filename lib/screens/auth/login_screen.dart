@@ -87,7 +87,7 @@ class _LogInState extends State<LogIn> {
 
     print(toMap());
     var response = await http.post(
-      Uri.parse(baseURL+Login),
+      Uri.parse(Endpoints.baseURL+Endpoints.Login),
       body: toMap(),
     );
 print(response.body.toString());
@@ -102,10 +102,8 @@ print(response.body.toString());
         FlutterToast_message(message??"");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool("isLoggedIn", true);
-        SharedPrefHelper.userId = int.tryParse(user.custId.toString());
-        SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
-        SharedPrefHelper.email = user.custEmail ?? "";
-        SharedPrefHelper.authToken = user.accessToken ?? "";
+
+        // SharedPrefHelper.authToken = user.accessToken ?? "";
 
         prefs.setString(
           'login_user_id',
@@ -143,8 +141,10 @@ print(response.body.toString());
             user_login_model.fromJson(json.decode(response.body)).data!.image ?? '',
           ),
         );
-
-
+        SharedPrefHelper.userId = int.tryParse(user.custId.toString());
+        SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
+        SharedPrefHelper.email = user.custEmail ?? "";
+        SharedPrefHelper.authToken = user.accessToken ?? "";
 
         Get.offAll(() => New_Bottombar_Screen());
         txt_email.clear();
