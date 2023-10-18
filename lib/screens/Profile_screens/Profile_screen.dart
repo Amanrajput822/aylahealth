@@ -89,6 +89,7 @@ class _Profile_screenState extends State<Profile_screen> {
       prefs.remove("login_user_email");
       prefs.remove("login_user_name");
       prefs.remove("login_user_id");
+      prefs.remove("user_login_time");
 
       SharedPrefHelper.userId = null;
       ///calendar json data remove function ///

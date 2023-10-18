@@ -371,10 +371,12 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
       width: deviceWidth(context),
       color: HexColor('#F6F7FB'),
       padding: EdgeInsets.all(15),
-      child:  recipeModel.recipe_data_List!.length == 0?Container(
+      child:  recipeModel.recipe_data_List!.isEmpty?SizedBox(
         width: deviceWidth(context),
         height: deviceheight(context,0.4),
-        child: const Center(child: Text('No Recipe Found'),),) :
+        child: Align(
+            alignment: Alignment.topCenter,
+            child: recipeModel.fav_filter=='1'?const Text('Favorite Recipe Not Found'):const Text('No Recipe Found')),) :
 
       recipeModel.isFirstLoadRunning
           ? const Center(

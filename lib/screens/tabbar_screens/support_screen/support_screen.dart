@@ -107,7 +107,7 @@ class _SupportScreenState extends State<SupportScreen> {
                         //       );
                         //     }),
                         sizedboxheight(20.0),
-                        benarcard('Book a video appointment','For complex challenges or questions',
+                        benarcard('Book a Video Appointment','For quality one-on-one coaching',
                             'assets/booking_appointment.png', HexColor('#EBFADC'),(){
                               PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                 context,
@@ -116,7 +116,7 @@ class _SupportScreenState extends State<SupportScreen> {
                               );
                             }),
                         sizedboxheight(20.0),
-                        benarcard('Live Chat','A quick answer for nutrition questions',
+                        benarcard('Live Chat','Ask a nutrition question for a quick answer from our team',
                             'assets/live_chat.png', HexColor('#E6F4F8'),
                              (){
                                 PersistentNavBarNavigator.pushNewScreenWithRouteSettings(

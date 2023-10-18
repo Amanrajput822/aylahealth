@@ -33,6 +33,9 @@ class _SpleshState extends State<Splesh> {
             : Get.offAll(() => const HomeScreen());
       },
     );
+    prefs.setBool(
+      'user_login_time', true,
+    );
   }
 
   @override

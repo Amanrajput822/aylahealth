@@ -219,6 +219,11 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
             if(mealsModel.notes){
               Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+              final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+
+              recipeModel.selectedfav_filter("0");
+              recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+
               recipe_screen_tap();
             }
             else{

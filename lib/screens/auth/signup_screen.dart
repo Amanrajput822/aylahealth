@@ -137,6 +137,9 @@ class _Signup_screenState extends State<Signup_screen> {
             user_login_model.fromJson(json.decode(response.body)).data!.image ?? '',
           ),
         );
+        prefs.setBool(
+          'user_login_time', false,
+        );
         Get.to(() => Pre_Question_Screen());
         FirebaseData.instance.userRegister();
         FlutterToast_message(message);

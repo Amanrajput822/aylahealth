@@ -7,6 +7,7 @@ import 'package:aylahealth/screens/onbording_screen/screen7.dart';
 import 'package:aylahealth/screens/profile_settings/personal_setting/personal_setting_provider.dart';
 import 'package:aylahealth/screens/subscription_screens/subscription_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/home.dart';
+import 'package:aylahealth/screens/tabbar_screens/home/homeScreenProvider.dart';
 import 'package:aylahealth/screens/tabbar_screens/modules/module_description_screen/ModuleDescriptionProvider.dart';
 import 'package:aylahealth/screens/tabbar_screens/modules/modules_screen/modules_screen_provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/My_Meals_Provider.dart';
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ModulesScreenProvider()),
         ChangeNotifierProvider(create: (context) => ModulesDescriptionScreenProvider()),
         ChangeNotifierProvider(create: (context) => ForgotPassProvider()),
+        ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
       ],
       // create: (context) => RecipeDataProvider(),
       child: GetMaterialApp(

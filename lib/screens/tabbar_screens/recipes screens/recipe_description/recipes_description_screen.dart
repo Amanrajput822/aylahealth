@@ -39,6 +39,8 @@ class Recipes_Description_Screen extends StatefulWidget {
 class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen> with SingleTickerProviderStateMixin{
    final GlobalKey _childKey = GlobalKey();
 
+  int tab_value = 0;
+
   bool isHeightCalculated = false;
   double height12 = 0.0;
   TabController? controller;
@@ -72,7 +74,9 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
    isHeightCalculated = false;
     super.dispose();
   }
-int tab_value = 0;
+
+
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -112,7 +116,7 @@ int tab_value = 0;
               backgroundColor: colorWhite,
               body:recipeDescreptioModel.loading
                   ? Container(
-                child: Center(child: CircularProgressIndicator()),
+                child: const Center(child: CircularProgressIndicator()),
               ) :NestedScrollView(
                   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                     return [
@@ -283,7 +287,7 @@ int tab_value = 0;
                                           fontFamily: fontFamilyText,
                                           color: colorRichblack,
                                           fontWeight: fontWeight600,
-                                          overflow: TextOverflow.ellipsis
+
                                       ),),
                                     Text(recipeDescreptioModel.recipe_ditels_data!.recDescription??"",
                                       style: TextStyle(
@@ -293,30 +297,10 @@ int tab_value = 0;
                                         fontWeight: fontWeight400,
                                       ),),
                                     sizedboxheight(8.0),
-                                    Container(
-                                      child: Wrap(
-
-                                        children: [
-                                          for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeCategory!)...[
-                                            Card(
-                                              elevation: 0,
-                                              color: HexColor('#F6F8F9'),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
-                                                child: Text(item.catName??"", style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: fontFamilyText,
-                                                  color: colorShadowBlue,
-                                                  fontWeight: fontWeight400,
-
-                                                ),),
-                                              ),
-                                            ),
-                                          ],
-                                          recipeDescreptioModel.recipe_ditels_data!.eatName!=null?Card(
+                                    Wrap(
+                                      children: [
+                                        for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeCategory!)...[
+                                          Card(
                                             elevation: 0,
                                             color: HexColor('#F6F8F9'),
                                             shape: RoundedRectangleBorder(
@@ -324,7 +308,7 @@ int tab_value = 0;
                                             ),
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
-                                              child: Text(recipeDescreptioModel.recipe_ditels_data!.eatName??"", style: TextStyle(
+                                              child: Text(item.catName??"", style: TextStyle(
                                                 fontSize: 14,
                                                 fontFamily: fontFamilyText,
                                                 color: colorShadowBlue,
@@ -332,28 +316,45 @@ int tab_value = 0;
 
                                               ),),
                                             ),
-                                          ):Container(),
-                                          for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeTag!)...[
-                                            Card(
-                                              elevation: 0,
-                                              color: HexColor('#F6F8F9'),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
-                                                child: Text(item.tagName??"", style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: fontFamilyText,
-                                                  color: colorShadowBlue,
-                                                  fontWeight: fontWeight400,
-
-                                                ),),
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ],
-                                      ),
+                                        recipeDescreptioModel.recipe_ditels_data!.eatName!=null?Card(
+                                          elevation: 0,
+                                          color: HexColor('#F6F8F9'),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15.0),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
+                                            child: Text(recipeDescreptioModel.recipe_ditels_data!.eatName??"", style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: fontFamilyText,
+                                              color: colorShadowBlue,
+                                              fontWeight: fontWeight400,
+
+                                            ),),
+                                          ),
+                                        ):Container(),
+                                        for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeTag!)...[
+                                          Card(
+                                            elevation: 0,
+                                            color: HexColor('#F6F8F9'),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(15.0),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
+                                              child: Text(item.tagName??"", style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: fontFamilyText,
+                                                color: colorShadowBlue,
+                                                fontWeight: fontWeight400,
+
+                                              ),),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                     sizedboxheight(18.0),
                                     Row(

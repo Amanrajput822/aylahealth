@@ -141,6 +141,11 @@ print(response.body.toString());
             user_login_model.fromJson(json.decode(response.body)).data!.image ?? '',
           ),
         );
+
+        prefs.setBool(
+          'user_login_time',
+           true,
+        );
         SharedPrefHelper.userId = int.tryParse(user.custId.toString());
         SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
         SharedPrefHelper.email = user.custEmail ?? "";

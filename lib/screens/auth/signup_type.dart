@@ -21,6 +21,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
+import '../../common/SharedPrefHelper.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
@@ -318,6 +319,16 @@ class _Signup_typeState extends State<Signup_type> {
             user_login_model.fromJson(json.decode(response.body)).data!.image ?? '',
           ),
         );
+        prefs.setBool(
+          'user_login_time',
+          user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus! ,
+        );
+        final user = user_login_model.fromJson(json.decode(response.body)).data!;
+
+        SharedPrefHelper.userId = int.tryParse(user.custId.toString());
+        SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
+        SharedPrefHelper.email = user.custEmail ?? "";
+        SharedPrefHelper.authToken = user.accessToken ?? "";
         print('11111111111');
         print(response.body.toString());
         print(user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus.toString());

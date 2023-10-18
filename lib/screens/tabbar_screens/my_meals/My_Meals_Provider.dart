@@ -519,6 +519,10 @@ class MyMeals_Provider with ChangeNotifier {
   List<int>? _tabbarindex = [];
   List<int>? get tabbarindex => _tabbarindex;
 
+  Meal_Plan_Date_Data_Response? _singleDayaData;
+  Meal_Plan_Date_Data_Response? get singleDayaData => _singleDayaData;
+
+
   Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
 
 
@@ -569,6 +573,10 @@ class MyMeals_Provider with ChangeNotifier {
         }
         final item = json.decode(response.body);
         result = (Meal_Plan_Date_Data_model.fromJson(item));
+
+        _singleDayaData =(Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).data);
+        _mealData = singleDayaData!.mealData;
+
         _single_day_data = result.data;
         _mealData = result.data!.mealData;
         select_tab_data_list!.clear();
@@ -689,12 +697,14 @@ class MyMeals_Provider with ChangeNotifier {
     recipe_like_api(recipe_id);
     notifyListeners();
   }
+
   /// Recipe like api function  ///
   unlikeRecipeData1(context,recipe_id,txt_search,fav_filter) async {
     recipe_unlike_api(context,recipe_id,txt_search,fav_filter);
     notifyListeners();
   }
-  ////////////////////// recipe_unlike_api ///////////////////
+
+  /// recipe_unlike_api ///////////////////
 
   Future<recipe_like_unlike_data_model> recipe_unlike_api(context,recipe_id,txt_search,fav_filter) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
