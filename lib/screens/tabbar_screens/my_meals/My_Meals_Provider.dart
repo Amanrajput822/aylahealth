@@ -291,6 +291,7 @@ class MyMeals_Provider with ChangeNotifier {
         get_meals_calendardata_multiple_months_api(context,datetime, index,);
       if(loader !="2"){
         singal_day_data_gate_api(selectedDay!,true,index);
+        singal_day_data_gate_api1(DateTime.now(),index);
       }
 
         notifyListeners();
@@ -502,12 +503,12 @@ class MyMeals_Provider with ChangeNotifier {
   List<MealData_list>? _mealData = [];
   List<MealData_list>? get mealData =>_mealData;
 
+
+
   List<MealData_list>? _select_tab_data_list = [];
   List<MealData_list>? get select_tab_data_list =>_select_tab_data_list;
-  // void tabbar_tab_select(tab){
-  //   _select_tab_data_list = tab;
-  //   notifyListeners();
-  // }
+
+
   List<bool> _boolDataList = [];
   List<bool> get boolDataList => _boolDataList;
   void updateItem(int index, bool newValue) {
@@ -523,7 +524,7 @@ class MyMeals_Provider with ChangeNotifier {
   Meal_Plan_Date_Data_Response? get singleDayaData => _singleDayaData;
 
 
-  Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
+   Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
 
 
    if(loder) {
@@ -589,6 +590,7 @@ class MyMeals_Provider with ChangeNotifier {
             print(select_tab_data_list!.length.toString());
           }
         }
+
         tabbarindex!.clear();
         _tabbarindex =[];
         bool a = true;
@@ -634,6 +636,81 @@ class MyMeals_Provider with ChangeNotifier {
     return result;
   }
 
+
+   /// Home screen single day api
+  List<MealData_list>? _select_tab_data_list1 = [];
+  List<MealData_list>? get select_tab_data_list1 =>_select_tab_data_list1;
+
+  List<MealData_list>? _mealData1 = [];
+  List<MealData_list>? get mealData1 =>_mealData1;
+
+  Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api1(DateTime selectDate,int index) async {
+
+    select_tab_data_list1!.clear();
+    Meal_Plan_Date_Data_model? result;
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _tokanget = prefs.getString('login_user_token');
+      _tokanget = tokanget!.replaceAll('"', '');
+
+      check().then((intenet) async {
+        if (intenet) {
+
+        } else {FlutterToast_Internet();}
+      });
+      Map toMap() {
+        var map = Map<String, dynamic>();
+        map["mlp_year"] = selectDate.year.toString();
+        map["mlp_month"] = selectDate.month.toString();
+        map["date"] = selectDate.day.toString();
+        // map["mlp_id"] = '1';
+        return map;
+      }
+      print(toMap());
+      print(Endpoints.baseURL + Endpoints.customerMealOfDay);
+      var response = await http.post(
+          Uri.parse(Endpoints.baseURL + Endpoints.customerMealOfDay),
+          body: toMap(),
+          headers: {
+            'Authorization': 'Bearer $tokanget',
+            'Accept': 'application/json'
+          }
+      );
+
+      _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);
+      print("json.decode(response.body)${json.decode(response.body)}");
+      if (success == 200) {
+
+        final item = json.decode(response.body);
+        result = (Meal_Plan_Date_Data_model.fromJson(item));
+
+        _mealData1 = result.data!.mealData;
+
+        _select_tab_data_list1!.clear();
+        select_tab_data_list1!.clear();
+
+        for(var item1 in get_meals_planlist_data!){
+          for(var item in mealData1!){
+            print(item);
+            print(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId);
+
+            if(int.parse(item.mtId.toString()) == item1.mtId){
+              _select_tab_data_list1!.add(item);
+              print(select_tab_data_list1!.length.toString());
+            }
+          }
+        }
+
+      } else {
+        print('else==============');
+        FlutterToast_message('No Data');
+      }
+    } catch (e) {
+      notifyListeners();
+      error = e.toString();
+    }
+    return result;
+  }
 
   /// recipe_like_api //////////////////
 

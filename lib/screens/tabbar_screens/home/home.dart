@@ -58,15 +58,18 @@ class _HomeState extends State<Home> {
     _scrollController = ScrollController()..addListener(_scrollListener);
     todayDate();
     loginTimeStatusFunction();
+
     final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
+    homeScreenProviderData.recipeList_ditels_api();
 
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     mealsModel.get_meals_plantypelist_api();
 
     mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
+    mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
 
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-    recipeModel.getRecipeData1(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
+  //  recipeModel.getRecipeData1(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
   }
 
   @override
@@ -205,7 +208,7 @@ class _HomeState extends State<Home> {
                   startlearningcard(),
 
                  sizedboxheight(15.0),
-                  mealsModel.mealData!.isEmpty?  hedingtile('Recipes',(){
+                  mealsModel.mealData1!.isEmpty?  hedingtile('Recipes',(){
                     Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
                     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
@@ -215,13 +218,39 @@ class _HomeState extends State<Home> {
                   }):hedingtile('Today\'s Meals',(){
                     Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
 
+                      setState(() {
+                        mealsModel.singlecalendarstartdate_set(DateTime.now());
+                        mealsModel.singlecalendar_selectedDay(DateTime.now());
+
+                        mealsModel.userSelectDay_set('Today');
+                        mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
+                        mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
+                        mealsModel.select_tab_data_list!.clear();
+                        mealsModel.boolDataList.clear();
+                        for(var item in mealsModel.mealData!){
+                          if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
+                            setState(() {
+                              mealsModel.boolDataList.add(false);
+                              mealsModel.select_tab_data_list!.add(item);
+                            });
+
+                          }
+                        }
+                       // _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
+                        mealsModel.selecttab_fuction(0);
+                        mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+                        mealsModel.get_meals_calendardata_multiple_months_api(context,DateTime.now(),0);
+                      });
+
+                    mealsModel.multiple_calender_selected(DateTime.now());
+                    mealsModel.singlecalendar_focuseday(DateTime.now());
                   }),
                   sizedboxheight(15.0),
-                  recipeModel.loading
+                  homeScreenProviderData.loading
                       ? Container(
                     height: 200,
                     child: const Center(child: CircularProgressIndicator()),
-                  ):   mealsModel.mealData!.isEmpty? recipescard(): toDayMealsDataCard(),
+                  ):   mealsModel.mealData1!.isEmpty? recipescard(): toDayMealsDataCard(),
                 //  sizedboxheight(15.0),
 
                   // benarcard('Favourites','A place for your favourite recipes.',
@@ -245,9 +274,9 @@ class _HomeState extends State<Home> {
                   // benarcard('Shopping List','Shop for your planned meals & snacks.',
                   //     'assets/ShoppingList.png', HexColor('#D4F1FA'),(){}),
                  //  sizedboxheight(15.0),
-
+                  sizedboxheight(15.0),
                   benarcard('Favourite Recipes','View your favourite meals and snacks',
-                      'assets/banera_favouritesimage.png', HexColor('#E9ECF1'),(){
+                      'assets/banner_icon/Favourites.png', HexColor('#D0EEB2'),(){
                         final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
                         recipeModel.selectedfav_filter("1");
@@ -263,8 +292,13 @@ class _HomeState extends State<Home> {
                   recipecollectionscard(),
 
                   sizedboxheight(15.0),
+                  benarcard('Nutrition Support','Connect with a qualified nutritionist or dietitian',
+                      'assets/banner_icon/NutritionSupport.png', HexColor('#FBE990'),(){
+                        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
+                      }),
+                  sizedboxheight(15.0),
                   benarcard('Shopping List','Shop for your planned meals & snacks.',
-                      'assets/baneraApple.png', HexColor('#FFFFE1'),(){
+                      'assets/banner_icon/ShoppingList.png', HexColor('#EC90AC'),(){
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
                           settings: const RouteSettings(name: "/Recipes_Screen"),
@@ -272,18 +306,16 @@ class _HomeState extends State<Home> {
                         );
                       }),
                   sizedboxheight(15.0),
-                  benarcard('Book a Video Appointment','For quality one-on-one coaching',
-                      'assets/booking_appointment.png', HexColor('#EBFADC'),(){
-                        PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                          context,
-                          settings: const RouteSettings(name: "/Support"),
-                          screen:  VideoAppointment(),
-                        );
-                      }),
-                  sizedboxheight(15.0),
-                  benarcard('Nutrition Support','Connect with a qualified nutritionist or dietitian',
-                      'assets/image/NutritionSupport.png', HexColor('#D4F1FA'),(){}),
-                  sizedboxheight(15.0),
+                  // benarcard('Book a Video Appointment','For quality one-on-one coaching',
+                  //     'assets/booking_appointment.png', HexColor('#EBFADC'),(){
+                  //       PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  //         context,
+                  //         settings: const RouteSettings(name: "/Support"),
+                  //         screen:  VideoAppointment(),
+                  //       );
+                  //     }),
+                 // sizedboxheight(15.0),
+
                   // hedingtile('Recipe collections',(){}),
                   // sizedboxheight(15.0),
                   // recipecollectionscard(),
@@ -403,11 +435,13 @@ class _HomeState extends State<Home> {
   Widget recipescard(){
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+    final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
+
     return Container(
       height: 200,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: recipeModel.recipe_data_List!.length>3?4:recipeModel.recipe_data_List!.length,
+          itemCount: homeScreenProviderData.recipe_data_List!.length>3?4:homeScreenProviderData.recipe_data_List!.length,
           itemBuilder: (BuildContext context, int index){
             return Padding(
               padding: const EdgeInsets.only(right: 15),
@@ -416,7 +450,7 @@ class _HomeState extends State<Home> {
                   // color: Colors.green,
                     borderRadius: BorderRadius.circular(5)
                 ),
-                margin:  EdgeInsets.all(1.0),
+                margin:  const EdgeInsets.all(1.0),
                 width: deviceWidth(context,0.44),
                 child:  Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -428,7 +462,7 @@ class _HomeState extends State<Home> {
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
                           settings: const RouteSettings(name: "/Recipes_Screen"),
-                          screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:recipeModel.fav_filter),
+                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0'),
                         );
                       },
                       child: Container(
@@ -437,7 +471,7 @@ class _HomeState extends State<Home> {
                           height: 110,width: deviceWidth(context),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
-                            child: Image.network(recipeModel.recipe_data_List![index].image??"",
+                            child: Image.network(homeScreenProviderData.recipe_data_List![index].image??"",
                               height: 110,width: deviceWidth(context),fit: BoxFit.cover,
                               loadingBuilder: (BuildContext context, Widget child,
                                   ImageChunkEvent? loadingProgress) {
@@ -461,10 +495,10 @@ class _HomeState extends State<Home> {
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
                           settings: const RouteSettings(name: "/Recipes_Screen"),
-                          screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:recipeModel.fav_filter),
+                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0'),
                         );
                       },
-                      child: Text(recipeModel.recipe_data_List![index].recTitle??"",style:TextStyle(
+                      child: Text(homeScreenProviderData.recipe_data_List![index].recTitle??"",style:TextStyle(
                         fontSize: 16,
                         fontFamily: fontFamilyText,
                         color: HexColor('#3B4250'),
@@ -485,7 +519,7 @@ class _HomeState extends State<Home> {
                           recipeModel.selectedDate_string(null);
                           recipeModel.meal_plan_id_select_fuction_recipe(null);
                         }
-                        add_meals_bottom_sheet(recipeModel.recipe_data_List!,(index));
+                        add_meals_bottom_sheet(homeScreenProviderData.recipe_data_List!,(index));
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -518,7 +552,6 @@ class _HomeState extends State<Home> {
 
   /// Today Meals data list
   Widget toDayMealsDataCard(){
-    final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     return Container(
       height: 200,
@@ -528,9 +561,9 @@ class _HomeState extends State<Home> {
         child: const Center(child: CircularProgressIndicator()),
       ): ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount:mealsModel.mealData!.length > 3?4: mealsModel.mealData!.length,
+          itemCount:mealsModel.select_tab_data_list1!.length > 7?8: mealsModel.select_tab_data_list1!.length,
           itemBuilder: (BuildContext context, int index){
-           var todayMealsData = mealsModel.mealData![index];
+           var todayMealsData = mealsModel.select_tab_data_list1![index];
             return Padding(
               padding: const EdgeInsets.only(right: 15),
               child: InkWell(
@@ -820,6 +853,7 @@ class _HomeState extends State<Home> {
                       fontWeight: fontWeight700,
                       overflow: TextOverflow.ellipsis
                   ),),
+                  sizedboxheight(5.0),
                   Text(lebletext,
                     maxLines: 2,
                     style: TextStyle(
@@ -839,10 +873,10 @@ class _HomeState extends State<Home> {
                 alignment: Alignment.center,
                 child: Stack(
                   children: [
-                    // Positioned(
-                    //   left: 3,
-                    //     top: 3,
-                    //     child: Image.asset('assets/CircleImage.png',height: 65,)),
+                    Positioned(
+                      left: 3,
+                        top: 3,
+                        child: Image.asset('assets/CircleImage.png',height: 65,)),
                     Image.asset(image,height: 70),
                   ],
                 ),

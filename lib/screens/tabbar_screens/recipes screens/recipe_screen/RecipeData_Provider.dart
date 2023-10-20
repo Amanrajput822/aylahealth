@@ -258,6 +258,8 @@ class RecipeData_Provider with ChangeNotifier {
       map["cat_id"] = cat_id??'0';
       map["eat_id"] = eat_id??'0';
       map["tagIds"] = tagIds;
+      // map["rec_isfeatured"] = "1";
+
       // map["sortby"] = '';
       // map["orderby"] = '';
       return map;

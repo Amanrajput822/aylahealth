@@ -65,6 +65,7 @@ dependencies:
   table_calendar: ^3.0.9
   uuid: ^4.1.0
   video_player: ^2.7.2
+  webview_flutter: ^4.4.1
 #  pod_player: ^0.0.6
 #  vimeo_video_player: ^0.0.10
 
@@ -136,6 +137,7 @@ flutter:
   assets:
      - assets/
      - assets/image/
+     - assets/banner_icon/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

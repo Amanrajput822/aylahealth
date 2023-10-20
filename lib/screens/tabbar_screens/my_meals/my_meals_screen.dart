@@ -48,7 +48,7 @@ class _My_Meals_ScreenState extends State<My_Meals_Screen> with TickerProviderSt
 
   TabController? _controller;
 
-bool internet_conection = false;
+  bool internet_conection = false;
   /// initState ///
   @override
   void initState() {
@@ -72,7 +72,7 @@ bool internet_conection = false;
     mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1",mealsModel.selectedDay);
     mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,0);
     mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
-
+    mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
 
 
   }
@@ -213,6 +213,7 @@ bool internet_conection = false;
                                 today_check = today;
                               }
                               mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
+                              mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
                               //  _selectedDay = selectedDay;
                               mealsModel.select_tab_data_list!.clear();
                               mealsModel.boolDataList.clear();
@@ -739,6 +740,7 @@ bool internet_conection = false;
           mealsModel.singlecalendar_focuseday(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
 
           mealsModel.singal_day_data_gate_api(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day),true,0);
+          mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
           mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDays,0);
           //  _selectedDay = selectedDay;
           mealsModel.select_tab_data_list!.clear();
@@ -1180,6 +1182,7 @@ bool internet_conection = false;
               //mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
               /// single day data api
               mealsModel.singal_day_data_gate_api(selectedDay,true,0);
+              mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
               //  _selectedDay = selectedDay;
               mealsModel.select_tab_data_list!.clear();
               mealsModel.boolDataList.clear();
@@ -1324,6 +1327,7 @@ bool internet_conection = false;
             //  mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
               /// single day data api
               mealsModel.singal_day_data_gate_api(selectedDay,true,0);
+              mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
               //  _selectedDay = selectedDay;
               mealsModel.select_tab_data_list!.clear();
               mealsModel.boolDataList.clear();

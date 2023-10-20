@@ -9,6 +9,8 @@ import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
 import '../../../models/meals plans/Meal_Plan_Date_Data_model.dart';
+import '../../../models/recipelist/RecipeList_data_model.dart';
+import '../../../models/recipelist/filtter_list_models/Recipe_Filtter_model.dart';
 
 
 
@@ -22,8 +24,8 @@ class HomeScreenProvider with ChangeNotifier {
   String? _message ;
   String? get message => _message;
 
-  String? _tokenGet ;
-  String? get tokenGet => _tokenGet;
+  String? _tokanget ;
+  String? get tokanget => _tokanget;
 
 
    bool _loading = false;
@@ -91,67 +93,63 @@ class HomeScreenProvider with ChangeNotifier {
   //   return result;
   // }
 
-//
-// Future<Recipe_details_data_model?> recipe_ditels_api(context, rec_id) async {
-//   Recipe_details_data_model? result;
-//   try {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//
-//     _tokenGet = prefs.getString('login_user_token');
-//     _tokenGet = tokenGet!.replaceAll('"', '');
-//     _user_id = prefs.getString('login_user_id');
-//     _user_id = user_id!.replaceAll('"', '');
-//
-//     print(tokenGet.toString());
-//     check().then((intenet) async {
-//       if (intenet != null && intenet) {
-//
-//       } else {
-//         FlutterToast_Internet();
-//       }
-//     });
-//     Map toMap() {
-//       var map = Map<String, dynamic>();
-//       map["rec_id"] = rec_id.toString();
-//       map["cust_id"] = user_id.toString();
-//       map["checkNutritionSetting"] = '1';
-//       return map;
-//     }
-//     print(toMap());
-//     print(beasurl + recipeDetails);
-//     var response = await http.post(
-//         Uri.parse(beasurl + recipeDetails),
-//         body: toMap(),
-//         headers: {
-//           'Authorization': 'Bearer $tokenGet',
-//           'Accept': 'application/json'
-//         }
-//     );
-//     print(response.body.toString());
-//     _success = (Recipe_details_data_model
-//         .fromJson(json.decode(response.body))
-//         .status);
-//     print("json.decode(response.body)${json.decode(response.body)}");
-//     if (success == 200) {
-//       final item = json.decode(response.body);
-//       result = (Recipe_details_data_model.fromJson(item));
-//       _recipe_ditels_data = (Recipe_details_data_model
-//           .fromJson(item)
-//           .data);
-//       notifyListeners();
-//       // Get.to(() => Pre_Question_Screen());
-//     } else {
-//       // Navigator.pop(context);
-//       print('else==============');
-//       FlutterToast_message('No Data');
-//
-//     }
-//   } catch (e) {
-//     error = e.toString();
-//   }
-//   return result;
-// }
-//
+
+  /// recipeList_ditels_api ///
+
+  List<RecipeList_data_Response>? _recipe_data_List ;
+  List<RecipeList_data_Response>? get recipe_data_List => _recipe_data_List;
+
+  Future<RecipeList_data_model> recipeList_ditels_api() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _tokanget = prefs.getString('login_user_token');
+    _tokanget = _tokanget!.replaceAll('"', '');
+    print(_tokanget.toString());
+    check().then((intenet) async {
+      _loading = true;
+      if (intenet) {
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+
+    Map toMap() {
+      var map =  Map<String, dynamic>();
+      map["index"] = '0';
+      map["limit"] = 20;
+      map["search"] = "";
+      map["fav_status"] = '0';
+      map["rec_isfeatured"] = "1";
+
+      return map;
+    }
+
+    print(toMap().toString());
+    print(Endpoints.baseURL+Endpoints.recipeList.toString());
+    var response = await http.post(
+        Uri.parse(Endpoints.baseURL+Endpoints.recipeList),
+        body: json.encode(toMap()),
+        headers: {
+          'Authorization': 'Bearer $_tokanget',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+    );
+    _loading = false;
+    print(response.body.toString());
+    _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
+    print("success 123 ==${_success}");
+    if (_success == 200) {
+      _loading = false;
+      _recipe_data_List = (RecipeList_data_model.fromJson(json.decode(response.body)).data);
+      notifyListeners();
+
+    } else {
+      _loading = false;
+      print('else==============');
+      FlutterToast_message('No Data');
+    }
+    return RecipeList_data_model.fromJson(json.decode(response.body));
+  }
 
 
 }

@@ -282,7 +282,20 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               ),
               sizedboxheight(30.0),
               view_list_Btn(context,shoppingListModel),
+              sizedboxheight(50.0),
+              Align(
+                alignment: Alignment.center,
+                child: Text('To create a shopping list you must first have'
+                    ' recipes added to your meal planner.'
+                    ' Then select the dates that you want to shop for.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: fontFamilyText,
+                      color: colorSlateGray,
+                      fontWeight: fontWeight600,
 
+                  ),textAlign: TextAlign.center),
+              ).paddingOnly(left: 10,right: 10),
             ],
           ),
         ),

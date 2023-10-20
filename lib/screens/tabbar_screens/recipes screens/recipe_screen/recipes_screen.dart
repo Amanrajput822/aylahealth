@@ -376,7 +376,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
         height: deviceheight(context,0.4),
         child: Align(
             alignment: Alignment.topCenter,
-            child: recipeModel.fav_filter=='1'?const Text('Favorite Recipe Not Found'):const Text('No Recipe Found')),) :
+            child: recipeModel.fav_filter=='1'?const Text('You have not added any recipes to favorite the list.'):const Text('No Recipe Found')),) :
 
       recipeModel.isFirstLoadRunning
           ? const Center(

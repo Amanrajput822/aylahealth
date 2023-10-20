@@ -108,7 +108,7 @@ class _SupportScreenState extends State<SupportScreen> {
                         //     }),
                         sizedboxheight(20.0),
                         benarcard('Book a Video Appointment','For quality one-on-one coaching',
-                            'assets/booking_appointment.png', HexColor('#EBFADC'),(){
+                            'assets/banner_icon/VideoConsultations.png', HexColor('#D0EEB2'),(){
                               PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                 context,
                                 settings: const RouteSettings(name: "/Support"),
@@ -117,7 +117,7 @@ class _SupportScreenState extends State<SupportScreen> {
                             }),
                         sizedboxheight(20.0),
                         benarcard('Live Chat','Ask a nutrition question for a quick answer from our team',
-                            'assets/live_chat.png', HexColor('#E6F4F8'),
+                            'assets/banner_icon/LiveChat.png', HexColor('#EC90AC'),
                              (){
                                 PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                 context,
@@ -244,14 +244,22 @@ class _SupportScreenState extends State<SupportScreen> {
                 ],
               ),
             ),
-            SizedBox(
-              width: deviceWidth(context,0.3),
-              height: 100,
-              child: Align(
-                alignment: Alignment.center,
-                child: Image.asset(image,height: 65),
-              ),
-            ),
+      Container(
+        width: deviceWidth(context,0.3),
+        height: 100,
+        child: Align(
+          alignment: Alignment.center,
+          child: Stack(
+            children: [
+              Positioned(
+                  left: 3,
+                  top: 3,
+                  child: Image.asset('assets/CircleImage.png',height: 65,)),
+              Image.asset(image,height: 70),
+            ],
+          ),
+        ),
+      ),
           ],
         ),
       ),
