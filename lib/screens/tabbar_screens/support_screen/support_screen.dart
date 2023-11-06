@@ -28,7 +28,7 @@ class _SupportScreenState extends State<SupportScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor:  colorWhite,
-        title:  Text("Get support",
+        title:  Text("Get Support",
           style: TextStyle(
               fontSize: 30,
               fontFamily: 'Playfair Display',
@@ -58,7 +58,8 @@ class _SupportScreenState extends State<SupportScreen> {
                   fontFamily: fontFamilyText,
                   color: colorSlateGray,
                   fontWeight: fontWeight400,
-                ),).paddingOnly(left: 20.0,right: 20),
+                  height: 1.5,
+                ),).paddingOnly(left: 20.0,right: 30),
               sizedboxheight(20.0),
               Card(
                 elevation: 2,

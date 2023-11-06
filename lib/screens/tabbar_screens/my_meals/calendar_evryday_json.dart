@@ -45,8 +45,7 @@ void json_add_api_data_calendar_json_fuction(context,String year, String month,S
       }
     }}
   }
-  print('recipe_check');
-  print(recipe_check);
+
   if(recipe_check){
     FlutterToast_message('This recipe already added');
   }else{

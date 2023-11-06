@@ -143,7 +143,9 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                     Container(
                                       height: deviceheight(context,0.25),
                                       width: deviceWidth(context),
-                                      child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??"",fit: BoxFit.fill,
+                                      child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",fit: BoxFit.fill,
+                                        errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                          fit: BoxFit.fill,),
                                         loadingBuilder: (BuildContext context, Widget child,
                                             ImageChunkEvent? loadingProgress) {
                                           if (loadingProgress == null) return child;
@@ -813,7 +815,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                  DateFormat('EEEE d MMM yyyy').format(selectedDay);
                                  print(DateFormat('EE d MMM').format(selectedDay));
                                  mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",selectedDay);
-                                 mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+                                // mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                                  // only_year_json_create_fuction(selectedDay.year.toString(), selectedDay.month.toString(),selectedDay.day.toString());
 
                                  // int s = getTotalDaysInMonth(_selectedDay!.year, _selectedDay!.month);
@@ -952,14 +954,40 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                          height: 160,
                                          width: 260,
 
-                                         decoration: BoxDecoration(
-                                             color: Colors.black12,
-                                             borderRadius: BorderRadius.circular(5),
-                                             image: DecorationImage(
-                                                 image: NetworkImage(recipe_data_List!.image??""),fit: BoxFit.fill
-                                             )
-                                         ),
+                                         // decoration: BoxDecoration(
+                                         //     color: Colors.black12,
+                                         //     borderRadius: BorderRadius.circular(5),
+                                         //     image: DecorationImage(
+                                         //         image: NetworkImage(recipe_data_List!.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="),
+                                         //         fit: BoxFit.fill
+                                         //
+                                         //     )
+                                         // ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          child: Image.network(recipe_data_List!.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                            height: 160,
+                                            width: 260,
+                                            fit: BoxFit.fill,
+                                            errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                              height: 160,
+                                              width: 260,
 
+                                              fit: BoxFit.fill,),
+                                            loadingBuilder: (BuildContext context, Widget child,
+                                                ImageChunkEvent? loadingProgress) {
+                                              if (loadingProgress == null) return child;
+                                              return Center(
+                                                child: CircularProgressIndicator(
+                                                  value: loadingProgress.expectedTotalBytes != null
+                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                      loadingProgress.expectedTotalBytes!
+                                                      : null,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
                                        ),
                                        sizedboxheight(deviceheight(context,0.01),),
                                        Text(recipe_data_List.recTitle??"",style:TextStyle(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/homeScreenProvider.dart';
 import 'package:custom_cupertino_picker/custom_cupertino_picker.dart';
@@ -32,7 +34,8 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
+  AppLifecycleState? _appLifecycleState;
 
   ScrollController? _scrollController;
   bool lastStatus = true;
@@ -55,40 +58,64 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scrollController = ScrollController()..addListener(_scrollListener);
     todayDate();
     loginTimeStatusFunction();
 
-    final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
-    homeScreenProviderData.recipeList_ditels_api();
-
-    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
-    mealsModel.get_meals_plantypelist_api();
-
-    mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
-    mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
-
-    final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-  //  recipeModel.getRecipeData1(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
+    final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
+    homeScreenProviderData.get_meals_plantypelist_api();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
     _scrollController?.removeListener(_scrollListener);
     _scrollController?.dispose();
     super.dispose();
   }
+  int? backgroundDateTime =0;
+  int? foregroundDateTime =0;
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _appLifecycleState = state;
+    });
+
+    if (state == AppLifecycleState.resumed) {
+      // App is in the foreground
+      print('App is in the foreground');
+      foregroundDateTime = DateTime.now().year+DateTime.now().month+DateTime.now().day;
+      if(backgroundDateTime != foregroundDateTime){
+        final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
+        homeScreenProviderData.recipeList_ditels_api();
+        homeScreenProviderData.get_meals_plantypelist_api();
+        homeScreenProviderData.singal_day_data_gate_api1(DateTime.now());
+      }
+      print(foregroundDateTime.toString());
+    } else if (state == AppLifecycleState.paused) {
+      // App is in the background
+      print('App is in the background');
+      backgroundDateTime = DateTime.now().year+DateTime.now().month+DateTime.now().day;
+      print(backgroundDateTime.toString());
+
+    }
+  }
+
+
+
 
   String? formattedTime;
   todayDate() {
-    var now = new DateTime.now();
+    var now =  DateTime.now();
      formattedTime = DateFormat('EEEE d MMM yyyy').format(now);
 
   }
   var loginTimeStatus ;
  Future<void> loginTimeStatusFunction() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
+    setState(()  {
         loginTimeStatus = prefs.getBool('user_login_time');
     });
 
@@ -96,8 +123,8 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final homeScreenProviderData = Provider.of<HomeScreenProvider>(context);
-    final mealsModel = Provider.of<MyMeals_Provider>(context);
-    final recipeModel = Provider.of<RecipeData_Provider>(context);
+
+    final meaBottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context);
 
     return Scaffold(
       body:  NestedScrollView(
@@ -208,49 +235,53 @@ class _HomeState extends State<Home> {
                   startlearningcard(),
 
                  sizedboxheight(15.0),
-                  mealsModel.mealData1!.isEmpty?  hedingtile('Recipes',(){
-                    Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+                  homeScreenProviderData.mealData1!.isEmpty? hedingtile('Recipes',(){
+                    meaBottomNavBarProviderModel.setcontrollervalue(3);
                     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+                    if(recipeModel.fav_filter == '1'){
+                      recipeModel.selectedfav_filter("0");
+                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    }
+                  }):
+                  hedingtile('Today\'s Meals',() async {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    setState(() {
+                      prefs.setBool('Home_Screen', true,);
+                    });
 
-                    recipeModel.selectedfav_filter("0");
-                    recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
 
-                  }):hedingtile('Today\'s Meals',(){
-                    Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
+                    // setState(() {
+                    //   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+                    //   mealsModel.singlecalendarstartdate_set(DateTime.now());
+                    //   mealsModel.singlecalendar_selectedDay(DateTime.now());
+                    //   mealsModel.userSelectDay_set('Today');
+                    //   mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
+                    //   mealsModel.select_tab_data_list!.clear();
+                    //   mealsModel.boolDataList.clear();
+                    //   for(var item in mealsModel.mealData!){
+                    //     if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
+                    //       setState(() {
+                    //         mealsModel.boolDataList.add(false);
+                    //         mealsModel.select_tab_data_list!.add(item);
+                    //       });
+                    //     }
+                    //   }
+                    //   mealsModel.selecttab_fuction(0);
+                    //   mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+                    //   mealsModel.get_meals_calendardata_multiple_months_api(context,DateTime.now(),0);
+                    //   mealsModel.multiple_calender_selected(DateTime.now());
+                    //   mealsModel.singlecalendar_focuseday(DateTime.now());
+                    // });
 
-                      setState(() {
-                        mealsModel.singlecalendarstartdate_set(DateTime.now());
-                        mealsModel.singlecalendar_selectedDay(DateTime.now());
+                    meaBottomNavBarProviderModel.setcontrollervalue(2);
 
-                        mealsModel.userSelectDay_set('Today');
-                        mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
-                        mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
-                        mealsModel.select_tab_data_list!.clear();
-                        mealsModel.boolDataList.clear();
-                        for(var item in mealsModel.mealData!){
-                          if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
-                            setState(() {
-                              mealsModel.boolDataList.add(false);
-                              mealsModel.select_tab_data_list!.add(item);
-                            });
-
-                          }
-                        }
-                       // _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
-                        mealsModel.selecttab_fuction(0);
-                        mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
-                        mealsModel.get_meals_calendardata_multiple_months_api(context,DateTime.now(),0);
-                      });
-
-                    mealsModel.multiple_calender_selected(DateTime.now());
-                    mealsModel.singlecalendar_focuseday(DateTime.now());
                   }),
                   sizedboxheight(15.0),
-                  homeScreenProviderData.loading
-                      ? Container(
+                  homeScreenProviderData.loading2
+                      ? const SizedBox(
                     height: 200,
-                    child: const Center(child: CircularProgressIndicator()),
-                  ):   mealsModel.mealData1!.isEmpty? recipescard(): toDayMealsDataCard(),
+                    child: Center(child: CircularProgressIndicator()),
+                  ):   homeScreenProviderData.mealData1!.isEmpty? recipescard():toDayMealsDataCard(),
                 //  sizedboxheight(15.0),
 
                   // benarcard('Favourites','A place for your favourite recipes.',
@@ -297,7 +328,7 @@ class _HomeState extends State<Home> {
                         Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
                       }),
                   sizedboxheight(15.0),
-                  benarcard('Shopping List','Shop for your planned meals & snacks.',
+                  benarcard('Shopping List','Shop for your planned meals & snacks',
                       'assets/banner_icon/ShoppingList.png', HexColor('#EC90AC'),(){
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
@@ -439,7 +470,10 @@ class _HomeState extends State<Home> {
 
     return Container(
       height: 200,
-      child: ListView.builder(
+      child: homeScreenProviderData.loading
+          ? Container(
+        child: const Center(child: CircularProgressIndicator()),
+      ): ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: homeScreenProviderData.recipe_data_List!.length>3?4:homeScreenProviderData.recipe_data_List!.length,
           itemBuilder: (BuildContext context, int index){
@@ -471,8 +505,12 @@ class _HomeState extends State<Home> {
                           height: 110,width: deviceWidth(context),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
-                            child: Image.network(homeScreenProviderData.recipe_data_List![index].image??"",
+                            child: Image.network(homeScreenProviderData.recipe_data_List![index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
                               height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                              errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                                height: 110,
+
+                                fit: BoxFit.fill,),
                               loadingBuilder: (BuildContext context, Widget child,
                                   ImageChunkEvent? loadingProgress) {
                                 if (loadingProgress == null) return child;
@@ -552,18 +590,19 @@ class _HomeState extends State<Home> {
 
   /// Today Meals data list
   Widget toDayMealsDataCard(){
-    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+    final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
+
     return Container(
       height: 200,
 
-      child: mealsModel.loading
+      child: homeScreenProviderData.loading2
           ? Container(
         child: const Center(child: CircularProgressIndicator()),
       ): ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount:mealsModel.select_tab_data_list1!.length > 7?8: mealsModel.select_tab_data_list1!.length,
+          itemCount:homeScreenProviderData.select_tab_data_list1!.length > 7?8: homeScreenProviderData.select_tab_data_list1!.length,
           itemBuilder: (BuildContext context, int index){
-           var todayMealsData = mealsModel.select_tab_data_list1![index];
+           var todayMealsData = homeScreenProviderData.select_tab_data_list1![index];
             return Padding(
               padding: const EdgeInsets.only(right: 15),
               child: InkWell(
@@ -583,7 +622,7 @@ class _HomeState extends State<Home> {
                     children: [
                       Container(
                         width: deviceWidth(context,0.35),
-                        child: Text(mealsModel.get_meals_planlist_data![int.parse(todayMealsData.mtId??"")-1].mtName??"",
+                        child: Text(homeScreenProviderData.get_meals_planlist_data![int.parse(todayMealsData.mtId??"")-1].mtName??"",
                           maxLines: 2,
                           style: TextStyle(
                               fontSize: 14,
@@ -601,11 +640,31 @@ class _HomeState extends State<Home> {
                           borderRadius: BorderRadius.circular(5), // Image border
                           child: SizedBox.fromSize(
                              // Image radius
-                            child: Image.network(todayMealsData.image??"",width:deviceWidth(context,0.4) ,
+                            child:Image.network(todayMealsData.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                              width:deviceWidth(context,0.4) ,
                               height: 110,
 
                               fit: BoxFit.fill,
-                            ),
+                              errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                                height: 110,
+
+                                fit: BoxFit.fill,),
+
+                              loadingBuilder: (BuildContext context, Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                );
+                              },)
+
+
+
                           ),
                         ),
                       )
@@ -887,6 +946,7 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
   Future<void> add_meals_bottom_sheet(recipe_data_List,index){
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
@@ -944,7 +1004,7 @@ class _HomeState extends State<Home> {
                                             color: Colors.black12,
                                             borderRadius: BorderRadius.circular(5),
                                             image: DecorationImage(
-                                                image: NetworkImage(recipe_data_List[index].image),fit: BoxFit.fill
+                                                image: NetworkImage(recipe_data_List[index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="),fit: BoxFit.fill
                                             )
                                         ),
 
@@ -1057,26 +1117,6 @@ class _HomeState extends State<Home> {
         btnWidth: deviceWidth(context,0.92),
         btnColor: colorEnabledButton,
         onPressed: () {
-
-
-          if(mealsModel.single_day_meals_change!){
-            Navigator.pop(context);
-            change_meals_fuction(context,
-                mealsModel.single_day_data!.mlpYear.toString(),
-                mealsModel.single_day_data!.mlpMonth.toString(),
-                mealsModel.single_day_data!.date.toString(),
-                mealsModel.single_day_data!.mealData![mealsModel.single_day_index!].recId.toString(),
-                mealsModel.single_day_data!.mealData![mealsModel.single_day_index!].mtId.toString(),
-                int.parse(mealsModel.select_mealplanID.toString())-1,
-
-                recipeModel.selectedDay.year.toString(),
-                recipeModel.selectedDay.month.toString(),
-                recipeModel.selectedDay.day.toString(),
-                [{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].note.toString(),"logged":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].logged.toString()}]
-            );
-          }
-          else{
-            if(recipeModel.selectedDay != null){
               if(recipeModel.select_mealplanID_recipe!=null){
                 if(rec_id!=null){
                   Navigator.pop(context);
@@ -1089,13 +1129,7 @@ class _HomeState extends State<Home> {
               else{
                 FlutterToast_message('Choose an eating occasion');
               }
-            }else{
-              FlutterToast_message('Please select Date');
-            }
-          }
-          if(recipeModel.meals_screen){
-            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
-          }
+
 
           recipeModel.select_screen_data(false);
           mealsModel.singleDayMeals_change(false);
@@ -1127,48 +1161,7 @@ class _HomeState extends State<Home> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // calendar_listview? Container(
-                        //   child: Column(
-                        //     children: [
-                        //        Text('Select Month',style: TextStyle(
-                        //           color: colorBluePigment,
-                        //           fontSize: 18,
-                        //           fontFamily: fontFamilyText,
-                        //           fontWeight: fontWeight400
-                        //       ),),
-                        //       sizedboxheight(10.0),
-                        //       Wrap(
-                        //         spacing: 5.0,
-                        //         runSpacing: 0.0,
-                        //        // children: _buildChoiceList(),
-                        //         children: _monthNames
-                        //             .asMap()
-                        //             .entries
-                        //             .map((entry) => ChoiceChip(
-                        //           label: Text(_monthNames[entry.key]),
-                        //           labelStyle: TextStyle(
-                        //               color: selectedChoiceIndex == entry.key?colorWhite:colorBluePigment,
-                        //               fontSize: 14,
-                        //               fontFamily: fontFamilyText,
-                        //               fontWeight: fontWeight400
-                        //           ),
-                        //           selected: selectedChoiceIndex == entry.key,
-                        //           selectedColor: colorBluePigment,
-                        //           shape: StadiumBorder(side: BorderSide(color: colorBluePigment)),
-                        //           backgroundColor: colorWhite,
-                        //           onSelected: (bool isSelected) {
-                        //             setState(() {
-                        //               selectedChoiceIndex = isSelected ? entry.key : -1;
-                        //               calendar_listview = false;
-                        //               (context as Element).reassemble();
-                        //             });
-                        //           },
-                        //         ))
-                        //             .toList(),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ).paddingAll(10.0):
+
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 20.0),
                           padding: EdgeInsets.only(bottom: 10),
@@ -1223,16 +1216,6 @@ class _HomeState extends State<Home> {
                               weekendStyle:TextStyle(color: colorSlateGray ,fontSize: 11, fontWeight: fontWeight600, fontFamily: fontFamilyText, ),
                             ),
 
-                            // onFormatChanged: (format) {
-                            //   setState(() {
-                            //     _calendarFormat = format;
-                            //   });
-                            // },
-                            onHeaderTapped: (_) {
-                              setState(() {
-                                // calendar_listview = true;
-                              });
-                            },
                             onPageChanged: (focusedDay) {
                               setState(() {
                                 recipeModel.focusedDay_data(focusedDay);
@@ -1247,22 +1230,11 @@ class _HomeState extends State<Home> {
                                 recipeModel.selectedDay_data(selectedDay);
                                 recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(selectedDay));
 
-
                                 Navigator.pop(context);
-                                DateFormat('EEEE d MMM yyyy').format(selectedDay);
-                                print(DateFormat('EE d MMM').format(selectedDay));
+
                                 mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",selectedDay);
-                                mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
-                                // only_year_json_create_fuction(selectedDay.year.toString(), selectedDay.month.toString(),selectedDay.day.toString());
+                             //   mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
 
-                                // int s = getTotalDaysInMonth(_selectedDay!.year, _selectedDay!.month);
-                                // if(totalDays == s){
-                                //   print(totalDays == s);
-                                // }else{
-                                //   complet_month_json(selectedDay);
-                                // }
-
-                                //  DateFormat.MMMMEEEEd(focusedDay).format(selectedDay);
                               });
                             },
                           ),

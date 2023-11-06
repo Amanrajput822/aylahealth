@@ -329,15 +329,20 @@ class _Signup_typeState extends State<Signup_type> {
         SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
         SharedPrefHelper.email = user.custEmail ?? "";
         SharedPrefHelper.authToken = user.accessToken ?? "";
-        print('11111111111');
-        print(response.body.toString());
-        print(user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus.toString());
-        print('1111111111111');
+
         if(user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus == 0){
+          prefs.setBool(
+            'user_login_time', false,
+          );
           Get.offAll(() => Pre_Question_Screen());
+
         }
         else if(user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus == 1){
+          prefs.setBool(
+            'user_login_time', true,
+          );
           Get.offAll(() => New_Bottombar_Screen());
+
         }
         else{
           Get.offAll(() => New_Bottombar_Screen());

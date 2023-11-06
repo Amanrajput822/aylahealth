@@ -177,40 +177,105 @@ bool fieldFocus = false;
         builder: (BuildContext context) {
           final FocusNode focusNode = Focus.of(context);
           final bool hasFocus = focusNode.hasFocus;
-          return  AllInputDesign(
-            // key: Key("email1"),
-             floatingLabelBehavior: FloatingLabelBehavior.never,
-             focusNode: focusKey,
-            hintText: 'Send a message....',
+          return
+            TextFormField(
+              controller: messageController,
+            style: TextStyle(
+                color:  colorRichblack,
+                fontFamily: 'Messina Sans',
+                fontWeight: FontWeight.w400,
+                fontSize:  16),
+              maxLines: null,
+              textInputAction: TextInputAction.newline,
+              keyboardType: TextInputType.multiline,
+            decoration: InputDecoration(
+              hintText: 'Send a message....',
+              hintStyle: TextStyle(
+                color: colorTextFieldHintText,
+                fontSize: 16,
+                fontFamily: 'Messina Sans',
+                fontWeight: FontWeight.w400,
+              ),
 
-            fillColor:hasFocus ? colorEnabledTextField : colorDisabledTextField,
-            suffixIcon: TextButton(
-                onPressed: () async {
-                    if (messageController.text.trim().isNotEmpty) {
-                      await FirebaseData.instance.userUpdateTime();
-                      await FirebaseData.instance.sendMessage(Message(
-                          text: messageController.text,
-                          created: FieldValue.serverTimestamp(),
-                          receiverId: "1",
-                          senderId: SharedPrefHelper.userId.toString()));
-                      messageController.clear();
-                      _scrollController.animateTo(
-                          _scrollController.position.maxScrollExtent,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeOut);
-                    } else {}
-                },
-                child:SvgPicture.asset(
-                  'assets/image/send.svg',
+              suffixIcon: TextButton(
+                    onPressed: () async {
+                        if (messageController.text.trim().isNotEmpty) {
+                          await FirebaseData.instance.userUpdateTime();
+                          await FirebaseData.instance.sendMessage(Message(
+                              text: messageController.text,
+                              created: FieldValue.serverTimestamp(),
+                              receiverId: "1",
+                              senderId: SharedPrefHelper.userId.toString()));
+                          messageController.clear();
+                          _scrollController.animateTo(
+                              _scrollController.position.maxScrollExtent,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeOut);
+                        } else {}
+                    },
+                    child:SvgPicture.asset(
+                      'assets/image/send.svg',
 
-                )),
+                    )),
+              filled: true,
+              fillColor:hasFocus ? colorEnabledTextField : colorDisabledTextField,
+              contentPadding: const EdgeInsets.all(10.0),
 
-            controller: messageController,
-            textInputAction: TextInputAction.done,
-            keyBoardType: TextInputType.text,
-            validatorFieldValue: 'email',
-
+              border:  OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(6),
+                borderSide: BorderSide(
+                    color: colorDisabledTextField, width: 0.6),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(6),
+                borderSide: BorderSide(
+                    color: colorDisabledTextField, width: 0.6),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(6),
+                borderSide: BorderSide(
+                    color:  colorDisabledTextField, width: 0.6),
+              ),
+            ),
           );
+          //   AllInputDesign(
+          //   // key: Key("email1"),
+          //   floatingLabelBehavior: FloatingLabelBehavior.never,
+          //   focusNode: focusKey,
+          //   hintText: 'Send a message....',
+          //   maxLines: null,
+          //   keyboardType: TextInputType.multiline,
+          //   fillColor:hasFocus ? colorEnabledTextField : colorDisabledTextField,
+          //   suffixIcon: TextButton(
+          //       onPressed: () async {
+          //           if (messageController.text.trim().isNotEmpty) {
+          //             await FirebaseData.instance.userUpdateTime();
+          //             await FirebaseData.instance.sendMessage(Message(
+          //                 text: messageController.text,
+          //                 created: FieldValue.serverTimestamp(),
+          //                 receiverId: "1",
+          //                 senderId: SharedPrefHelper.userId.toString()));
+          //             messageController.clear();
+          //             _scrollController.animateTo(
+          //                 _scrollController.position.maxScrollExtent,
+          //                 duration: const Duration(milliseconds: 500),
+          //                 curve: Curves.easeOut);
+          //           } else {}
+          //       },
+          //       child:SvgPicture.asset(
+          //         'assets/image/send.svg',
+          //
+          //       )),
+          //
+          //   controller: messageController,
+          //  // textInputAction: TextInputAction.multiline,
+          //  // keyBoardType: TextInputType.text,
+          //   validatorFieldValue: 'email',
+          //
+          // );
         },
       ),
     );

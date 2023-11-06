@@ -38,7 +38,7 @@ dependencies:
   dropdown_button2:
   firebase_auth: ^4.10.0
   firebase_core: ^2.16.0
-  firebase_messaging: ^14.6.8
+  firebase_messaging: ^14.7.3
 
   flutter_holo_date_picker: ^1.1.2+1
   flutter_html: ^3.0.0-beta.2
@@ -65,8 +65,9 @@ dependencies:
   table_calendar: ^3.0.9
   uuid: ^4.1.0
   video_player: ^2.7.2
-  webview_flutter: ^4.4.1
-#  pod_player: ^0.0.6
+#  webview_flutter: 4.0.0
+  webview_flutter: ^2.0.13
+
 #  vimeo_video_player: ^0.0.10
 
 

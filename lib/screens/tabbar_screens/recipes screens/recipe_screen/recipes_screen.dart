@@ -430,8 +430,11 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                           height: 110,width: deviceWidth(context),
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(5),
-                                            child: Image.network(recipeModel.recipe_data_List![index * 2].image??"",
+                                            child: Image.network(recipeModel.recipe_data_List![index * 2].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
                                               height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                                              errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                                                height: 110,
+                                                fit: BoxFit.fill,),
                                               loadingBuilder: (BuildContext context, Widget child,
                                                   ImageChunkEvent? loadingProgress) {
                                                 if (loadingProgress == null) return child;
@@ -564,8 +567,11 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                             height: 110,width: deviceWidth(context),
                                             child: ClipRRect(
                                               borderRadius: BorderRadius.circular(5),
-                                              child: Image.network(recipeModel.recipe_data_List![index * 2 + 1].image??"",
+                                              child: Image.network(recipeModel.recipe_data_List![index * 2 + 1].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
                                                 height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                                                errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                                                  height: 110,
+                                                  fit: BoxFit.fill,),
                                                 loadingBuilder: (BuildContext context, Widget child,
                                                     ImageChunkEvent? loadingProgress) {
                                                   if (loadingProgress == null) return child;
@@ -1104,7 +1110,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                               DateFormat('EEEE d MMM yyyy').format(selectedDay);
                               print(DateFormat('EE d MMM').format(selectedDay));
                               mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",selectedDay);
-                              mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+                             // mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                              // only_year_json_create_fuction(selectedDay.year.toString(), selectedDay.month.toString(),selectedDay.day.toString());
 
                               // int s = getTotalDaysInMonth(_selectedDay!.year, _selectedDay!.month);
@@ -1210,86 +1216,80 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
               builder: (BuildContext context) {
                 return StatefulBuilder(
                     builder: (BuildContext context, setState){
-                    return Container(
-                     // height: deviceheight(context,0.8),
-                      child: Stack(
-                        children: [
-                          Container(
-                          //  height: deviceheight(context,0.8),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 15.0,right: 15,top: 15,bottom: 70),
-                              child: SingleChildScrollView(
-                                physics: ScrollPhysics(),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      width: deviceWidth(context),
-                                      height: 60,
-                                      child: Center(
-                                        child: Text('Add to My Meals',style:TextStyle(
-                                            fontSize: 24,
-                                            fontFamily: fontFamilyText,
-                                            color: colorRichblack,
-                                            fontWeight: fontWeight600,
-                                            height: 1.5,
-                                            overflow: TextOverflow.ellipsis
-                                        )),
-                                      ),
-                                    ),
-                                    sizedboxheight(deviceheight(context,0.01),),
-                                    Container(
-                                      height: 160,
-                                      width: 260,
-
-                                      decoration: BoxDecoration(
-                                        color: Colors.black12,
-                                        borderRadius: BorderRadius.circular(5),
-                                        image: DecorationImage(
-                                          image: NetworkImage(recipe_data_List[index].image),fit: BoxFit.fill
-                                        )
-                                      ),
-
-                                    ),
-                                    sizedboxheight(deviceheight(context,0.01),),
-                                    Text(recipe_data_List[index].recTitle,style:TextStyle(
-                                        fontSize: 16,
+                    return Stack(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0,right: 15,top: 15,bottom: 70),
+                          child: SingleChildScrollView(
+                            physics: const ScrollPhysics(),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  width: deviceWidth(context),
+                                  height: 60,
+                                  child: Center(
+                                    child: Text('Add to My Meals',style:TextStyle(
+                                        fontSize: 24,
                                         fontFamily: fontFamilyText,
                                         color: colorRichblack,
-                                        fontWeight: fontWeight400,
-                                        height: 1.2,
+                                        fontWeight: fontWeight600,
+                                        height: 1.5,
                                         overflow: TextOverflow.ellipsis
                                     )),
-
-                                    sizedboxheight(deviceheight(context,0.02),),
-                                    InkWell(
-                                        onTap: (){
-                                         // _displayDialog( context);
-                                          showBottomAlertDialog( context);
-                                        },
-                                        child: feildcontainer(recipeModel.selectedDate == null?'When do you want to eat this?':recipeModel.selectedDate.toString(),"Add to your calendar",recipeModel.selectedDate == null?1:0)
-                                    ),
-                                    sizedboxheight(deviceheight(context,0.02),),
-                                    InkWell(
-                                        onTap: (){
-                                          _showPicker(context);
-                                        //  _displayDialog( context);
-                                        },
-                                        child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')
-                                    ),
-                                    sizedboxheight(deviceheight(context,0.02),),
-                                    add_mymeals_Btn(recipe_data_List[index].recId),
-                                    sizedboxheight(deviceheight(context,0.01),),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                sizedboxheight(deviceheight(context,0.01),),
+                                Container(
+                                  height: 160,
+                                  width: 260,
+
+                                  decoration: BoxDecoration(
+                                    color: Colors.black12,
+                                    borderRadius: BorderRadius.circular(5),
+                                    image: DecorationImage(
+                                      image: NetworkImage(recipe_data_List[index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="),fit: BoxFit.fill
+                                    )
+                                  ),
+
+                                ),
+                                sizedboxheight(deviceheight(context,0.01),),
+                                Text(recipe_data_List[index].recTitle??"",style:TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: fontFamilyText,
+                                    color: colorRichblack,
+                                    fontWeight: fontWeight400,
+                                    height: 1.2,
+                                    overflow: TextOverflow.ellipsis
+                                )),
+
+                                sizedboxheight(deviceheight(context,0.02),),
+                                InkWell(
+                                    onTap: (){
+                                     // _displayDialog( context);
+                                      showBottomAlertDialog( context);
+                                    },
+                                    child: feildcontainer(recipeModel.selectedDate == null?'When do you want to eat this?':recipeModel.selectedDate.toString(),"Add to your calendar",recipeModel.selectedDate == null?1:0)
+                                ),
+                                sizedboxheight(deviceheight(context,0.02),),
+                                InkWell(
+                                    onTap: (){
+                                      _showPicker(context);
+                                    //  _displayDialog( context);
+                                    },
+                                    child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')
+                                ),
+                                sizedboxheight(deviceheight(context,0.02),),
+                                add_mymeals_Btn(recipe_data_List[index].recId??""),
+                                sizedboxheight(deviceheight(context,0.01),),
+                              ],
                             ),
                           ),
+                        ),
 
-                        ],
-                      ),
+                      ],
                     );
                   }
                 );

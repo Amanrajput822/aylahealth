@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/SharedPrefHelper.dart';
@@ -23,6 +24,8 @@ import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/auth model/user_login_model.dart';
 import '../onbording_screen/pre_question_loding_screen.dart';
+import '../tabbar_screens/home/homeScreenProvider.dart';
+import '../tabbar_screens/my_meals/My_Meals_Provider.dart';
 import 'forgot_password_screens/forgotpassword_screen.dart';
 import 'package:http/http.dart' as http;
 

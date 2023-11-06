@@ -4,9 +4,11 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:hexcolor/hexcolor.dart";
+import "package:intl/intl.dart";
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 import "package:provider/provider.dart";
 
+import "../../screens/notification_screen/PushNotificationNotifier.dart";
 import "../../screens/tabbar_screens/home/home.dart";
 import '../../screens/tabbar_screens/modules/modules_screen/modules_screen.dart';
 import "../../screens/tabbar_screens/my_meals/My_Meals_Provider.dart";
@@ -34,8 +36,6 @@ class New_Bottombar_Screen extends StatefulWidget {
 class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
  // PersistentTabController? _controller;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +43,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
     BottomNavBarProviderModel.setcontrollervalue(0);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     mealsModel.get_meals_plantypelist_api();
-   // _controller = PersistentTabController(initialIndex: 0);
+
   }
   /// recipe screen list  ////
   void recipe_screen_tap() {
@@ -66,19 +66,61 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
       );
     }}
 
-  void meals_screen_tap() {
+
+  /// day type check ///
+
+
+  DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime yesterday = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day - 1);
+  DateTime tomorrow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
+
+  DateTime? today_check;
+  void daytype_check(){
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
-    //  recipeModel.add_update_meals_api(context, 2020,recipeModel.selectedDay!.month,dayEvent_list);
 
-   // recipeModel.get_meals_calendardata_api(context, recipeModel.selectedDay!.year,recipeModel.selectedDay!.month);
+    final DateTime aDate = DateTime(mealsModel.selectedDay!.year, mealsModel.selectedDay!.month, mealsModel.selectedDay!.day);
+    if(aDate == today) {
+      mealsModel.userSelectDay_set('Today');
+      today_check = today;
+    } else if(aDate == yesterday) {
+      today_check = yesterday;
+      mealsModel.userSelectDay_set('Yesterday');
+    } else if(aDate == tomorrow) {
+      today_check = tomorrow;
+      mealsModel.userSelectDay_set('Tomorrow');
+    } else{
+      today_check = mealsModel.selectedDay;
+      mealsModel.userSelectDay_set(DateFormat('EEEE d MMMM').format(mealsModel.selectedDay!).toString());
+    }
+  }
 
+
+  void meals_screen_tap() {
+   // // final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+   //  //  recipeModel.add_update_meals_api(context, 2020,recipeModel.selectedDay!.month,dayEvent_list);
+   //
+   // // recipeModel.get_meals_calendardata_api(context, recipeModel.selectedDay!.year,recipeModel.selectedDay!.month);
+   //  final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+   //  daytype_check();
+   //
+   //  // recipeModel.selecttab_fuction(0);
+   //
+   //  mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+   //
+   //  mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1",mealsModel.selectedDay);
+   //  mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,0);
+   //  mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
+   //  mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
+   //
+   //
+   //  setState(() {});
   }
 
   List<Widget> _buildScreens() => [
         const Home(),
         // const Home(),
         const Modules_Screen(),
-        const My_Meals_Screen(),
+        const MyMealsScreen(),
         const Recipes_Screen(),
         const SupportScreen(),
         //const Home(),
@@ -87,18 +129,11 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   List<PersistentBottomNavBarItem> _navBarsItems() => [
 
         PersistentBottomNavBarItem(
-          onPressed: (value){
-            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
-            if(mealsModel.notes){
-              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(0);
-             // recipe_screen_tap();
-            }
-            else{
-              warning_popup();
-            }
-            FocusManager.instance.primaryFocus?.unfocus();
+          onSelectedTabPressWhenNoScreensPushed: (){
+            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(0);
           },
+
             icon: Column(
               children: [
                 SvgPicture.asset(
@@ -126,19 +161,12 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             activeColorPrimary: HexColor('#2D3091'),
             inactiveColorPrimary: HexColor('#79879C'),
             ),
-        PersistentBottomNavBarItem(
-          onPressed: (value){
-            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+         PersistentBottomNavBarItem(
+          onSelectedTabPressWhenNoScreensPushed: (){
+            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(1);
 
-            if(mealsModel.notes){
-              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(1);
-             // recipe_screen_tap();
-            }
-            else{
-              warning_popup();
-            }
-            FocusManager.instance.primaryFocus?.unfocus();
           },
+
           icon: Column(
             children: [
               SvgPicture.asset(
@@ -171,19 +199,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
           onSelectedTabPressWhenNoScreensPushed: (){
             Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
           },
-          onPressed: (value){
-            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
-            if(mealsModel.notes){
-              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
-
-             // recipe_screen_tap();
-            }
-            else{
-              warning_popup();
-            }
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
           icon: Column(
             children: [
               SvgPicture.asset(
@@ -213,24 +229,10 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
         PersistentBottomNavBarItem(
           onSelectedTabPressWhenNoScreensPushed: (){
            recipe_screen_tap();
+           Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+
           },
-          onPressed: (value){
-            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
-            if(mealsModel.notes){
-              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
-              final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
-              recipeModel.selectedfav_filter("0");
-              recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-
-              recipe_screen_tap();
-            }
-            else{
-              warning_popup();
-            }
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
           icon: Column(
             children: [
               SvgPicture.asset(
@@ -258,17 +260,9 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
         ),
         PersistentBottomNavBarItem(
-          onPressed: (value){
-            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+          onSelectedTabPressWhenNoScreensPushed: (){
+            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
 
-            if(mealsModel.notes){
-              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
-            //  recipe_screen_tap();
-            }
-            else{
-              warning_popup();
-            }
-            FocusManager.instance.primaryFocus?.unfocus();
           },
 
           icon: Column(
@@ -322,7 +316,9 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   @override
   Widget build(final BuildContext context) {
     final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context);
-   return WillPopScope(
+    final notifier = Provider.of<PushNotificationNotifier>(context);
+
+    return WillPopScope(
      onWillPop: () {
        return BottomNavBarProviderModel.controller!.index == 2?_willPopCallback():(BottomNavBarProviderModel.controller!.index == 0
            ? onWillPop(context)
@@ -330,10 +326,29 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
      },
      child: Scaffold(
         body: PersistentTabView(
+          onItemSelected: (value){
+            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+
+            if(mealsModel.notes){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(value);
+              //  recipe_screen_tap();
+            }
+            else{
+              warning_popup();
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
+            }
+            if(value==3){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+              final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+              if(recipeModel.fav_filter == '1'){
+              recipeModel.selectedfav_filter("0");
+              recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+              }
+            }
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
           confineInSafeArea: true,
-
           handleAndroidBackButtonPress: true,
-
           stateManagement: true,
           hideNavigationBarWhenKeyboardShows: true,
           popAllScreensOnTapOfSelectedTab: true,

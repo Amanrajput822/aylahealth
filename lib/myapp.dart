@@ -1,6 +1,8 @@
 import 'package:aylahealth/screens/auth/forgot_password_screens/forgot_pass_provider.dart';
 import 'package:aylahealth/screens/food_natrition_settings/Food_Nutrition_Settings_provider.dart';
 import 'package:aylahealth/screens/help_screen/faq_screen_provider.dart';
+import 'package:aylahealth/screens/notification_screen/PushNotificationNotifier.dart';
+import 'package:aylahealth/screens/notification_screen/PushNotificationService.dart';
 import 'package:aylahealth/screens/onbording_screen/pre_question_loding_screen.dart';
 import 'package:aylahealth/screens/onbording_screen/screen1.dart';
 import 'package:aylahealth/screens/onbording_screen/screen7.dart';
@@ -40,7 +42,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
 
+  final PushNotificationService _notificationService = PushNotificationService();
 
+  @override
+  void initState() {
+    _notificationService.initialize();
+    super.initState();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -59,12 +67,16 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ModulesDescriptionScreenProvider()),
         ChangeNotifierProvider(create: (context) => ForgotPassProvider()),
         ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
+
+        ChangeNotifierProvider(create: (context) => PushNotificationNotifier()),
+
       ],
       // create: (context) => RecipeDataProvider(),
       child: GetMaterialApp(
         title: 'Ayla Health',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          backgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
               // Status bar color

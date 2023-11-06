@@ -165,10 +165,14 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
           'Accept': 'application/json'
         }
     );
+    setState(() {
+      loading = false;
+    });
+
     print(response.body.toString());
     success = (customerFoodSettingData_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
-    loading = false;
+
     if (success == 200) {
     //  Navigator.pop(context);
      // options_list = (customerFoodSettingData_model.fromJson(json.decode(response.body)).data!.options);

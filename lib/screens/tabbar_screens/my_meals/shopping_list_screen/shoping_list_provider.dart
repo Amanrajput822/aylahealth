@@ -197,17 +197,17 @@ class ShoppingListProvider with ChangeNotifier {
           }
       );
       print(customerShoppingListModel.fromJson(json.decode(response.body)).data!.length);
-      print(':::::::::::::::::');
+
       _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
       if (success == 200) {
 
         _customerShoppingList_data = (customerShoppingListModel.fromJson(json.decode(response.body))).data;
-        print(':::::::::::::::::');
+
         _sl_startdate = (customerShoppingListModel.fromJson(json.decode(response.body))).slStartdate;
         _sl_enddate = (customerShoppingListModel.fromJson(json.decode(response.body))).slEnddate;
-        print(':::::::::::::::::');
+
         print(customerShoppingList_data!.isNotEmpty);
-        print(':::::::::::::::::');
+
         if(customerShoppingList_data!.isNotEmpty){
           _viewList_function = true;
           _loading = false;
@@ -217,10 +217,9 @@ class ShoppingListProvider with ChangeNotifier {
           _loading = false;
           notifyListeners();
         }
-        print(':::::::::::::::::1');
-        print(viewList_function);
-        print(loading);
-        print(':::::::::::::::::1');
+
+
+
       //  FlutterToast_message('Shopping List Data');
         notifyListeners();
 
