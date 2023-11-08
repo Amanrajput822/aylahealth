@@ -15,6 +15,7 @@ import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../common/styles/showLoaderDialog_popup.dart';
 import '../../../models/profile/user_details_model.dart';
+import '../../tabbar_screens/support_screen/message/chat/firebase_services.dart';
 
 class userprofile_Provider with ChangeNotifier {
 
@@ -69,7 +70,7 @@ class userprofile_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(beasurl+customerDetails),
+        Uri.parse(Endpoints.baseURL+Endpoints.customerDetails),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -85,8 +86,10 @@ class userprofile_Provider with ChangeNotifier {
      // Navigator.pop(context);
 
       _user_details_data = (user_details_model.fromJson(json.decode(response.body)).data);
+      FirebaseData.instance.userUpdate();
       notifyListeners();
       // Get.to(() => Pre_Question_Screen());
+
     } else {
       loading = false;
     //  Navigator.pop(context);

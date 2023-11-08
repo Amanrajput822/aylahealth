@@ -3,19 +3,11 @@ import 'dart:convert';
 import 'package:aylahealth/screens/food_natrition_settings/show_updete_setting_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../common/api_common_fuction.dart';
-import '../../common/check_screen.dart';
-import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/const.dart';
-import '../../common/styles/showLoaderDialog_popup.dart';
-import '../../models/food_nutrition_settings/customerFoodSettingHeadingList_model.dart';
 
 import 'package:http/http.dart' as http;
 

@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:aylahealth/common/styles/const.dart';
-import 'package:aylahealth/screens/onbording_screen/pagination_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,22 +18,26 @@ class Splesh extends StatefulWidget {
 }
 
 class _SpleshState extends State<Splesh> {
-  @override
   var status;
+
+  @override
   getValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     status = prefs.getBool('isLoggedIn') ?? false;
-
     Timer(
-      Duration(seconds: 3),
+      const Duration(seconds: 3),
           () {
         // status ? Get.offAll(() => BottomNavBarPage()) : Get.offAll(() => IntroductionPage());
         status
-            ? Get.offAll(() => New_Bottombar_Screen())
-            : Get.offAll(() => HomeScreen());
+            ? Get.offAll(() => const New_Bottombar_Screen())
+            : Get.offAll(() => const HomeScreen());
       },
     );
+    prefs.setBool(
+      'user_login_time', true,
+    );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -48,11 +50,16 @@ class _SpleshState extends State<Splesh> {
     return Scaffold(
       body: Container(
         height: deviceheight(context),
-        width: deviceWidth(context),
+        width: deviceheight(context),
         child: Center(
-          child:Image.asset('assets/image/Light_Mode_SecondaryLogo_Small 1.png',width: 185,height: 185,) ,
+          child: Hero(
+            tag: 'Light_Mode_SecondaryLogo_Small',
+            child: Image.asset('assets/image/Light_Mode_SecondaryLogo_Small.png',
+              width: 185,height: 185,)
+          ),
         ),
       ),
     );
+
   }
 }

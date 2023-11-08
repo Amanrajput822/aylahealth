@@ -67,7 +67,7 @@ class _Edit_Passwers_ScreenState extends State<Edit_Passwers_Screen> {
     }
     print(toMap());
     var response = await http.post(
-      Uri.parse(beasurl+changePassword),
+      Uri.parse(Endpoints.baseURL+Endpoints.changePassword),
       body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',

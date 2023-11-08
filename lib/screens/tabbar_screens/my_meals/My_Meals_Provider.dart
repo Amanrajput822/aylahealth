@@ -4,13 +4,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
+import '../../../models/meals plans/Get_Meals_Plane_multipl_months_model.dart';
 import '../../../models/recipelist/recipe_like_unlike_data_model.dart';
+import '../home/homeScreenProvider.dart';
 import 'calendar_evryday_json.dart';
 import '../../../models/meals plans/Get_Meals_Plane_model.dart';
 import '../../../models/meals plans/MealPlaneLestData_Model.dart';
@@ -18,8 +22,6 @@ import '../../../models/meals plans/Meal_Plan_Date_Data_model.dart';
 import '../../../models/meals plans/Meals_Update_MealsPlane_nodel.dart';
 import '../../../models/month_json_model.dart';
 import 'my_meals_screen.dart';
-
-
 
 class MyMeals_Provider with ChangeNotifier {
   String error = '';
@@ -39,8 +41,24 @@ class MyMeals_Provider with ChangeNotifier {
   bool _loading = false;
   bool get loading => _loading;
 
+  void loaderFunction(newMessage){
+    _loading = newMessage;
+    notifyListeners();
+  }
+
   bool _loading1 = false;
   bool get loading1 => _loading1;
+  void loaderFunction1(newMessage){
+    _loading = newMessage;
+    notifyListeners();
+  }
+  bool _loading2 = false;
+  bool get loading2 => _loading2;
+
+  void loaderFunction2(newMessage){
+    _loading2 = newMessage;
+    notifyListeners();
+  }
 
   int? _selectedIdx;
   int? get selectedIdx => _selectedIdx;
@@ -50,6 +68,13 @@ class MyMeals_Provider with ChangeNotifier {
    notifyListeners();
   }
 
+  int? _selectScreen1;
+  int? get selectScreen1 => _selectScreen1;
+
+  void selectScreenTap(int value) {
+    _selectScreen1 = value;
+    notifyListeners();
+  }
   /// tabbat tab index save /////
 
   int? _selecttab = 0;
@@ -95,7 +120,7 @@ class MyMeals_Provider with ChangeNotifier {
     notifyListeners();
   }
 
-  String?  _user_select_day ;
+  String?  _user_select_day = DateFormat('EEEE d MMMM').format(DateTime.now()).toString();
   String? get user_select_day => _user_select_day;
   void userSelectDay_set( newMessage) {
     _user_select_day = newMessage;
@@ -151,8 +176,7 @@ class MyMeals_Provider with ChangeNotifier {
   }
   /// add and update meals  calendar data
   Future<Meals_Update_MealsPlane_model?> add_update_meals_api(context,String year,String month,String datelist,List<Map<String, dynamic>> monthsData,index) async {
-    Meals_Update_MealsPlane_model? result;
-    try {
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       _tokanget = prefs.getString('login_user_token');
@@ -176,37 +200,46 @@ class MyMeals_Provider with ChangeNotifier {
        // map["mlp_id"] = '1';
         return map;
       }
-      print('aman1???????????????');
+
       print(toMap());
-      print(beasurl + addOrUpdateMealPlan);
+      print(Endpoints.baseURL + Endpoints.addOrUpdateMealPlan);
       var response = await http.post(
-          Uri.parse(beasurl + addOrUpdateMealPlan),
+          Uri.parse(Endpoints.baseURL + Endpoints.addOrUpdateMealPlan),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
             'Accept': 'application/json',
           }
       );
-      _success = (Meals_Update_MealsPlane_model.fromJson(json.decode(response.body)).status);
-      _message = (Meals_Update_MealsPlane_model.fromJson(json.decode(response.body)).message);
-      print("json.decode(response.body)${json.decode(response.body)}");
-      if (success == 200) {
-        final item = json.decode(response.body);
-        result = (Meals_Update_MealsPlane_model.fromJson(item));
-        saveMonthsDataToFile(monthsData,year.toString());
-        singal_day_data_gate_api(selectedDay!,true,index);
-        FlutterToast_message(message);
-        notifyListeners();
-        // Get.to(() => Pre_Question_Screen());
-      } else {
-        // Navigator.pop(context);
-        print('else==============');
-        FlutterToast_message('No Data');
+      if(response.statusCode == 200){
+        _success = (Meals_Update_MealsPlane_model.fromJson(json.decode(response.body)).status);
+        _message = (Meals_Update_MealsPlane_model.fromJson(json.decode(response.body)).message);
+        if (success == 200) {
+
+          saveMonthsDataToFile(monthsData,year.toString());
+          singal_day_data_gate_api(selectedDay!,true,index);
+
+          if(selectedDay!.year == DateTime.now().year && selectedDay!.month == DateTime.now().month &&selectedDay!.day == DateTime.now().day){
+            final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
+            homeScreenProviderData.singal_day_data_gate_api1(DateTime.now());
+          }
+
+          FlutterToast_message(message);
+          notifyListeners();
+          // Get.to(() => Pre_Question_Screen());
+        } else {
+          // Navigator.pop(context);
+          print('else==============');
+          loaderFunction(false);
+          FlutterToast_message(json.decode(response.body)['message']);
+        }
       }
-    } catch (e) {
-      error = e.toString();
-    }
-    return result;
+      else{
+        loaderFunction(false);
+        FlutterToast_message(json.decode(response.body)['message']);
+      }
+
+    return (Meals_Update_MealsPlane_model.fromJson(json.decode(response.body)));
   }
 
   /// Get meals calendar data
@@ -218,21 +251,19 @@ class MyMeals_Provider with ChangeNotifier {
 
   List<Map<String, dynamic>>? _dataList;
   List<Map<String, dynamic>>? get dataList => _dataList;
+  void DataList(List<Map<String, dynamic>>? event){
+    _dataList = event;
+    notifyListeners();
+  }
 
   Map<DateTime, List<Event>>? _kEventSource ;
   Map<DateTime, List<Event>>? get kEventSource =>_kEventSource;
-  void EventSource(event){
+  void EventSource(Map<DateTime, List<Event>>? event){
     _kEventSource = event;
     notifyListeners();
   }
 
-  Future<Get_Meals_Plane_model?> get_meals_calendardata_api(context, year,month,index, loader) async {
-    if(loader=="1"){
-      _loading1 = true;
-    }
-
-    Get_Meals_Plane_model? result;
-    try {
+  Future<Get_Meals_Plane_model?> get_meals_calendardata_api(context, year,month,index, loader,DateTime? datetime) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       _tokanget = prefs.getString('login_user_token');
       _tokanget = tokanget!.replaceAll('"', '');
@@ -249,68 +280,143 @@ class MyMeals_Provider with ChangeNotifier {
         map["mlp_month"] = month.toString();
         return map;
       }
-      print('get_meals_calendardata_api111');
+      loaderFunction1(true);
       print(toMap());
-      print(beasurl + customerMealPlanData);
+      print(Endpoints.baseURL + Endpoints.customerMealPlanData);
       var response = await http.post(
-          Uri.parse(beasurl + customerMealPlanData),
+          Uri.parse(Endpoints.baseURL + Endpoints.customerMealPlanData),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
             'Accept': 'application/json'
           }
       );
-      print('get_meals_calendardata_api222');
-      print(response.body);
-      if(loader=="1"){
-        _loading1 = false;
-      }
-     // _loading1 = false;
-      _success = (Get_Meals_Plane_model.fromJson(json.decode(response.body)).status);
-      print("get_meals_calendardata_api${json.decode(response.body)}");
-      if (success == 200) {
-        final item = json.decode(response.body);
-        result = (Get_Meals_Plane_model.fromJson(item));
-        _get_meals_calendar_data = result.data;
-        String jsondata = Get_Meals_Plane_model.fromJson(json.decode(response.body)).data!.mlpCalenderData!;
+      if(response.statusCode ==200){
+        loaderFunction1(false);
 
-        print('person.toString()');
-        print('121212');
-         _dataList = (json.decode(jsondata) as List)
-            .map((item) => item as Map<String, dynamic>)
-            .toList();
+        _success = (Get_Meals_Plane_model.fromJson(json.decode(response.body)).status);
+        print("get_meals_calendardata_api${json.decode(response.body)}");
+        if (success == 200) {
 
-        _kEventSource = { for (var item in dataList!)
-          DateTime.utc(result.data!.mlpYear!, result.data!.mlpMonth!, int.parse(item['date'])) : List.generate(
-              item['mealData'].isEmpty? 0:1, (index) => const Event('Event')) };
+          final result = (Get_Meals_Plane_model.fromJson(json.decode(response.body)));
+          _get_meals_calendar_data = (Get_Meals_Plane_model.fromJson(json.decode(response.body))).data;
+          String jsondata = Get_Meals_Plane_model.fromJson(json.decode(response.body)).data!.mlpCalenderData!;
 
-        print(dataList.runtimeType);
-        print('person.toString()${dataList}');
-        // for(int i = 0; i<person.length;i++){
-        //   _jsondata.add(Month_all_Date_json_model(date: person[i]['date'], mealData:person[i]['comment'] ,comment: person[i]['mealData']));
-        // }
-        apidata_lode_calendar_json_fuction(context,get_meals_calendar_data!.mlpYear.toString(), get_meals_calendar_data!.mlpMonth.toString(),dataList!);
-      if(loader !="2"){
-        singal_day_data_gate_api(selectedDay!,true,index);
-      }
+          _dataList = (json.decode(jsondata) as List)
+              .map((item) => item as Map<String, dynamic>)
+              .toList();
 
-        notifyListeners();
-        // Get.to(() => Pre_Question_Screen());
-      } else {
-        if(loader=="1"){
-          _loading1 = false;
+          apidata_lode_calendar_json_fuction(context,get_meals_calendar_data!.mlpYear.toString(), get_meals_calendar_data!.mlpMonth.toString(),dataList!);
+          get_meals_calendardata_multiple_months_api(context,datetime, index,);
+
+          if(loader !="2"){
+            singal_day_data_gate_api(selectedDay!,true,index);
+          }
+
+          notifyListeners();
+          // Get.to(() => Pre_Question_Screen());
+        } else {
+          loaderFunction1(false);
+          print('else==============');
+          FlutterToast_message(json.decode(response.body)['message']);
         }
-        // Navigator.pop(context);
-        print('else==============');
-        FlutterToast_message('No Data');
+      } else{
+        loaderFunction1(false);
+        FlutterToast_message(json.decode(response.body)['message']);
       }
-    } catch (e) {
-      if(loader=="1"){
-        _loading1 = false;
+
+
+    return (Get_Meals_Plane_model.fromJson(json.decode(response.body)));
+  }
+
+/// meals plan multiple months data api
+
+  int? _monthday;
+  int? get monthday =>_monthday;
+  int getDaysInMonth(int year, int month) {
+    final date = DateTime(year, month + 1, 0);
+    _monthday = int.parse(date.day.toString());
+    print('++++++++++++++++');
+    print(date.day);
+    return date.day;
+  }
+
+  List<Map<String, dynamic>>?  _dataList1 = [];
+  List<Map<String, dynamic>>?get  dataList1 => _dataList1;
+
+  Future<Get_Meals_Plane_multipl_months_model?> get_meals_calendardata_multiple_months_api(context,DateTime? selectdate, index,) async {
+    _dataList1!.clear();
+    _dataList1!= null;
+    _monthday = null;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _tokanget = prefs.getString('login_user_token');
+      _tokanget = tokanget!.replaceAll('"', '');
+      print(tokanget);
+      check().then((intenet) async {
+        if (intenet) {
+
+        } else {FlutterToast_Internet();}
+      });
+      Map toMap() {
+        var map = Map<String, dynamic>();
+        map["dateRange"] = selectdate.toString().split(" ")[0];
+
+        return map;
       }
-      error = e.toString();
-    }
-    return result;
+      print(toMap());
+      print(Endpoints.baseURL + Endpoints.customerFiveMonthMealPlanData);
+      var response = await http.post(
+          Uri.parse(Endpoints.baseURL + Endpoints.customerFiveMonthMealPlanData),
+          body: toMap(),
+          headers: {
+            'Authorization': 'Bearer $tokanget',
+            'Accept': 'application/json'
+          }
+      );
+      if(response.statusCode == 200){
+        _success = (Get_Meals_Plane_multipl_months_model.fromJson(json.decode(response.body)).status);
+        if (success == 200) {
+          final   result = (Get_Meals_Plane_multipl_months_model.fromJson(json.decode(response.body)));
+          for(var item in result.data!){
+            if(item.mlpCalenderData == ""){
+              getDaysInMonth(item.mlpYear, item.mlpMonth);
+
+              List<Map<String, dynamic>> daysData = [];
+              for (int day = 1; day <= monthday!; day++) {
+                Map<String, dynamic> dayData = {
+                  'date': day.toString(),
+                  'mealData': [],
+                };
+                daysData.add(dayData);
+
+              }
+              _dataList = daysData;
+            }
+            else{
+              _dataList = (json.decode(item.mlpCalenderData!) as List)
+                  .map((item) => item as Map<String, dynamic>).toList();
+            }
+
+            _dataList1!.addAll(dataList!.toList());
+            _kEventSource = { for (int i=0;i< dataList1!.length;i++)
+              DateTime.utc(result.data!.first.mlpYear,result.data!.first.mlpMonth, i+1) :
+              List.generate(dataList1![i]['mealData'].isEmpty? 0:1, (index) => const Event('Event')) };
+          }
+
+          notifyListeners();
+        } else {
+          print('else==============');
+          notifyListeners();
+        }
+      }
+      else{
+        loaderFunction(false);
+        FlutterToast_message(json.decode(response.body)['message']);
+      }
+
+
+    return (Get_Meals_Plane_multipl_months_model.fromJson(json.decode(response.body)));
   }
 
   /// Get meals plan types list data api
@@ -326,8 +432,7 @@ class MyMeals_Provider with ChangeNotifier {
 
 
   Future<MealPlaneLestData_Model?> get_meals_plantypelist_api() async {
-    MealPlaneLestData_Model? result;
-    try {
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       _tokanget = prefs.getString('login_user_token');
       _tokanget = tokanget!.replaceAll('"', '');
@@ -339,33 +444,39 @@ class MyMeals_Provider with ChangeNotifier {
       });
 
       var response = await http.get(
-          Uri.parse(beasurl + mealTimeList),
+          Uri.parse(Endpoints.baseURL + Endpoints.mealTimeList),
 
           headers: {
             'Authorization': 'Bearer $tokanget',
             'Accept': 'application/json'
           }
       );
-      _success = (MealPlaneLestData_Model.fromJson(json.decode(response.body)).status);
-      print("json.decode(response.body)${json.decode(response.body)}");
-      if (success == 200) {
-        final item = json.decode(response.body);
-        result = (MealPlaneLestData_Model.fromJson(item));
-        _get_meals_planlist_data = result.data;
+      if(response.statusCode == 200){
+        _success = (MealPlaneLestData_Model.fromJson(json.decode(response.body)).status);
+        print("json.decode(response.body)${json.decode(response.body)}");
+        if (success == 200) {
+          final item = json.decode(response.body);
+          final  result = (MealPlaneLestData_Model.fromJson(json.decode(response.body)));
+          _get_meals_planlist_data = result.data;
 
-        print('person.toString()');
+          print('person.toString()');
 
-        notifyListeners();
-        // Get.to(() => Pre_Question_Screen());
-      } else {
-        // Navigator.pop(context);
-        print('else==============');
-        FlutterToast_message('No Data');
+          notifyListeners();
+          // Get.to(() => Pre_Question_Screen());
+        } else {
+          // Navigator.pop(context);
+          print('else==============');
+          loaderFunction(false);
+          FlutterToast_message(json.decode(response.body)['message']);
+        }
       }
-    } catch (e) {
-      error = e.toString();
-    }
-    return result;
+      else{
+        loaderFunction(false);
+        FlutterToast_message(json.decode(response.body)['message']);
+      }
+
+
+    return (MealPlaneLestData_Model.fromJson(json.decode(response.body)));
   }
 
   /// single date meal plan data gate api
@@ -399,10 +510,8 @@ class MyMeals_Provider with ChangeNotifier {
 
   List<MealData_list>? _select_tab_data_list = [];
   List<MealData_list>? get select_tab_data_list =>_select_tab_data_list;
-  // void tabbar_tab_select(tab){
-  //   _select_tab_data_list = tab;
-  //   notifyListeners();
-  // }
+
+
   List<bool> _boolDataList = [];
   List<bool> get boolDataList => _boolDataList;
   void updateItem(int index, bool newValue) {
@@ -414,17 +523,16 @@ class MyMeals_Provider with ChangeNotifier {
   List<int>? _tabbarindex = [];
   List<int>? get tabbarindex => _tabbarindex;
 
-  Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
+  Meal_Plan_Date_Data_Response? _singleDayaData;
+  Meal_Plan_Date_Data_Response? get singleDayaData => _singleDayaData;
 
 
-   if(loder) {
-     _loading = true;
-   };
+   Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
+
     select_tab_data_list!.clear();
     mealData!.clear();
     tabbarindex!.clear();
-    Meal_Plan_Date_Data_model? result;
-    try {
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       _tokanget = prefs.getString('login_user_token');
       _tokanget = tokanget!.replaceAll('"', '');
@@ -442,89 +550,95 @@ class MyMeals_Provider with ChangeNotifier {
         // map["mlp_id"] = '1';
         return map;
       }
+
+      loaderFunction(true);
       print(toMap());
-      print(beasurl + customerMealOfDay);
+      print(Endpoints.baseURL + Endpoints.customerMealOfDay);
       var response = await http.post(
-          Uri.parse(beasurl + customerMealOfDay),
+          Uri.parse(Endpoints.baseURL + Endpoints.customerMealOfDay),
           body: toMap(),
           headers: {
             'Authorization': 'Bearer $tokanget',
             'Accept': 'application/json'
           }
       );
-      if(loder) {
-        _loading = false;
-      };
+     if(response.statusCode == 200){
+       loaderFunction(false);
+       _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);
+       print("json.decode(response.body)${json.decode(response.body)}");
+       if (success == 200) {
+         loaderFunction(false);
 
-      _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);
-      print("json.decode(response.body)${json.decode(response.body)}");
-      if (success == 200) {
-        if(loder) {
-          _loading = false;
-        }
-        final item = json.decode(response.body);
-        result = (Meal_Plan_Date_Data_model.fromJson(item));
-        _single_day_data = result.data;
-        _mealData = result.data!.mealData;
-        select_tab_data_list!.clear();
-        for(var item in mealData!){
-          print(item);
-          print(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId);
-          if(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId){
-            select_tab_data_list!.add(item);
-            _boolDataList.add(false);
-            print(select_tab_data_list!.length.toString());
-          }
-        }
-        tabbarindex!.clear();
-        _tabbarindex =[];
-        bool a = true;
-        for(int i =0;i<get_meals_planlist_data!.length;i++){
+         final item = json.decode(response.body);
+         final  result = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)));
+
+         _singleDayaData =(Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).data);
+         _mealData = singleDayaData!.mealData;
+
+         _single_day_data = result.data;
+         _mealData = result.data!.mealData;
+         select_tab_data_list!.clear();
+         for(var item in mealData!){
+           print(item);
+           print(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId);
+           if(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId){
+             select_tab_data_list!.add(item);
+             _boolDataList.add(false);
+             print(select_tab_data_list!.length.toString());
+           }
+         }
+
+         tabbarindex!.clear();
+         _tabbarindex =[];
+         bool a = true;
+         for(int i =0;i<get_meals_planlist_data!.length;i++){
            a = true;
-          for(int j =0;j<mealData!.length;j++){
-            if(a){
-              if (get_meals_planlist_data![i].mtId == int.parse(mealData![j].mtId!)){
-                tabbarindex!.add(get_meals_planlist_data![i].mtId!);
-                print("****************");
-                print(tabbarindex!.length);
-                print(get_meals_planlist_data![i].mtId.toString());
-                print("****************");
-                a = false;
-                notifyListeners();
-              }
-            }
-          }
-          a = true;
-        }
-        _selecttab = selecttab;
-        _select_mealplanID = get_meals_planlist_data![selecttab!].mtId.toString();
-        selecttab_fuction(selecttab);
-        meal_plan_id_select_fuction(get_meals_planlist_data![selecttab!].mtId.toString());
+           for(int j =0;j<mealData!.length;j++){
+             if(a){
+               if (get_meals_planlist_data![i].mtId == int.parse(mealData![j].mtId!)){
+                 tabbarindex!.add(get_meals_planlist_data![i].mtId!);
+                 print("****************");
+                 print(tabbarindex!.length);
+                 print(get_meals_planlist_data![i].mtId.toString());
+                 print("****************");
+                 a = false;
+                 notifyListeners();
+               }
+             }
+           }
+           a = true;
+         }
+         _selecttab = selecttab;
+         _select_mealplanID = get_meals_planlist_data![selecttab!].mtId.toString();
+         selecttab_fuction(selecttab);
+         meal_plan_id_select_fuction(get_meals_planlist_data![selecttab!].mtId.toString());
 
-       // notifyListeners();
-        // Get.to(() => Pre_Question_Screen());
-      } else {
-        if(loder) {
-          _loading = false;
-        };
-        // Navigator.pop(context);
-        print('else==============');
-        FlutterToast_message('No Data');
-      }
-    } catch (e) {
-      notifyListeners();
-      if(loder) {
-        _loading = false;
-      };
-      error = e.toString();
-    }
-    return result;
+         notifyListeners();
+         // Get.to(() => Pre_Question_Screen());
+       } else {
+         loaderFunction(false);
+         print('else==============');
+       }
+     }
+     else{
+       loaderFunction(false);
+       FlutterToast_message(json.decode(response.body)['message']);
+     }
+
+    return (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)));
   }
 
 
+
+
+  /// Recipe like api function  ///
+  likeRecipeData1(context,recipeId) async {
+    recipe_like_api(recipeId);
+    notifyListeners();
+  }
   /// recipe_like_api //////////////////
 
-  Future<recipe_like_unlike_data_model> recipe_like_api(recipe_id) async {
+  Future<recipe_like_unlike_data_model> recipe_like_api(recipeId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     _tokanget = prefs.getString('login_user_token');
@@ -543,13 +657,13 @@ class MyMeals_Provider with ChangeNotifier {
 
     Map toMap() {
       var map = Map<String, dynamic>();
-      map["rec_id"] = recipe_id.toString();
+      map["rec_id"] = recipeId.toString();
       map["cust_id"] = _user_id.toString();
 
       return map;
     }
     var response = await http.post(
-        Uri.parse(beasurl + markRecipeFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.markRecipeFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -570,28 +684,30 @@ class MyMeals_Provider with ChangeNotifier {
         FlutterToast_message(_message);
         notifyListeners();
         // Get.to(() => Pre_Question_Screen());
+      }else {
+        print('else==============');
+        FlutterToast_message(_message);
+
       }
     }
-    else {
-      print('else==============');
-      FlutterToast_message(_message);
+    else{
+      loaderFunction(false);
+      FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
   }
 
-  /// Recipe like api function  ///
-  likeRecipeData1(context,recipe_id) async {
-    recipe_like_api(recipe_id);
-    notifyListeners();
-  }
-  /// Recipe like api function  ///
-  unlikeRecipeData1(context,recipe_id,txt_search,fav_filter) async {
-    recipe_unlike_api(context,recipe_id,txt_search,fav_filter);
-    notifyListeners();
-  }
-  ////////////////////// recipe_unlike_api ///////////////////
 
-  Future<recipe_like_unlike_data_model> recipe_unlike_api(context,recipe_id,txt_search,fav_filter) async {
+
+  /// Recipe like api function  ///
+  unlikeRecipeData1(context,recipeId,txtSearch,favFilter) async {
+    recipe_unlike_api(context,recipeId,txtSearch,favFilter);
+    notifyListeners();
+  }
+
+  /// recipe_unlike_api ///////////////////
+
+  Future<recipe_like_unlike_data_model> recipe_unlike_api(context,recipeId,txtSearch,favFilter) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     _tokanget = prefs.getString('login_user_token');
@@ -601,7 +717,7 @@ class MyMeals_Provider with ChangeNotifier {
 
     print(_tokanget.toString());
     check().then((intenet) async {
-      if (intenet != null && intenet) {
+      if (intenet) {
 
       } else {
         FlutterToast_Internet();
@@ -610,12 +726,12 @@ class MyMeals_Provider with ChangeNotifier {
 
     Map toMap() {
       var map = Map<String, dynamic>();
-      map["rec_id"] = recipe_id.toString();
+      map["rec_id"] = recipeId.toString();
       map["cust_id"] = _user_id.toString();
       return map;
     }
     var response = await http.post(
-        Uri.parse(beasurl + unmarkRecipeFromFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.unmarkRecipeFromFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -632,22 +748,17 @@ class MyMeals_Provider with ChangeNotifier {
           .message);
       print("success 123 ==${_success}");
       if (_success == 200) {
-
         FlutterToast_message(_message);
-        // if(fav_filter=='1'){
-        //   getRecipeData(context,txt_search.toString(),fav_filter,select_cat_id,save_eatingPattern_id,selected_filter);
-        //
-        //   //getRecipeData(context,search_test,favorite,cat_id,eat_id,tagIds_list)
-        // }
         notifyListeners();
-        // Get.to(() => Pre_Question_Screen());
+      }else {
+        print('else==============');
+        FlutterToast_message(_message);
+
       }
     }
-    else {
-
-      print('else==============');
-      FlutterToast_message(_message);
-
+    else{
+      loaderFunction(false);
+      FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
   }

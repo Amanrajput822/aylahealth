@@ -223,18 +223,16 @@ class RecipeData_Provider with ChangeNotifier {
   }
 
 
-          /// recipeList_ditels_api ///
+    /// recipeList_ditels_api ///
 
   Future<RecipeList_data_model> recipeList_ditels_api({String? search_test,String? favorite,String?cat_id,String? eat_id,List<FilterTag>? tagIds_list}) async {
-    print("recipeList_ditels_api");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     _tokanget = prefs.getString('login_user_token');
     _tokanget = _tokanget!.replaceAll('"', '');
     _user_id = prefs.getString('login_user_id');
     _user_id = _user_id!.replaceAll('"', '');
 
-    print(_tokanget.toString());
     check().then((intenet) async {
       if (intenet != null && intenet) {
 
@@ -258,15 +256,16 @@ class RecipeData_Provider with ChangeNotifier {
       map["cat_id"] = cat_id??'0';
       map["eat_id"] = eat_id??'0';
       map["tagIds"] = tagIds;
+      // map["rec_isfeatured"] = "1";
       // map["sortby"] = '';
       // map["orderby"] = '';
       return map;
     }
 
     print(toMap().toString());
-    print(beasurl+recipeList.toString());
+    print(Endpoints.baseURL+Endpoints.recipeList.toString());
     var response = await http.post(
-        Uri.parse(beasurl+recipeList),
+        Uri.parse(Endpoints.baseURL+Endpoints.recipeList),
         body: json.encode(toMap()),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -275,23 +274,28 @@ class RecipeData_Provider with ChangeNotifier {
         }
     );
 
-    print(response.body.toString());
-    _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
-    print("success 123 ==${_success}");
-    if (_success == 200) {
-      // Navigator.pop(context);
-      _hasNextPage = true;
-      _recipe_data_List = (RecipeList_data_model.fromJson(json.decode(response.body)).data);
-      notifyListeners();
-      print("?????????????????000 ==${_recipe_data_List!.length.toString()}");
-      // Get.to(() => Pre_Question_Screen());
-    } else {
-     // Navigator.pop(context);
-      print('else==============');
+   if(response.statusCode == 200){
+     _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
 
-      FlutterToast_message('No Data');
+     if (_success == 200) {
+       // Navigator.pop(context);
+       _hasNextPage = true;
+       _recipe_data_List = (RecipeList_data_model.fromJson(json.decode(response.body)).data);
+       notifyListeners();
+       // Get.to(() => Pre_Question_Screen());
+     } else {
+       // Navigator.pop(context);
+       print('else==============');
+       _recipe_data_List = [];
+       notifyListeners();
+       FlutterToast_message('No Data');
+     }
+   }
+   else{
 
-    }
+     FlutterToast_message(json.decode(response.body)['message']);
+   }
+
     return RecipeList_data_model.fromJson(json.decode(response.body));
   }
 
@@ -301,9 +305,6 @@ class RecipeData_Provider with ChangeNotifier {
   Future<RecipeList_data_model> recipeList_ditels_api_relode_fuction({String? search_test,String? favorite,String?cat_id,String? eat_id,List<FilterTag>? tagIds_list}) async {
    print("recipeList_ditels_api_relode_fuction");
     var response;
-    print(_hasNextPage == true);
-    print(_isFirstLoadRunning == false);
-    print(controller!.position.extentAfter < 300);
     if (_hasNextPage == true &&
         _isFirstLoadRunning == false &&
         _isLoadMoreRunning == false &&
@@ -334,11 +335,11 @@ class RecipeData_Provider with ChangeNotifier {
       }
       print('toMap()@@@@@@@@@@@@@@@@');
       print(toMap());
-      print(beasurl+recipeList);
+      print(Endpoints.baseURL+Endpoints.recipeList);
 
       try {
         response = await http.post(
-            Uri.parse(beasurl+recipeList),
+            Uri.parse(Endpoints.baseURL+Endpoints.recipeList),
             body: json.encode(toMap()),
             headers: {
               'Authorization': 'Bearer $_tokanget',
@@ -351,7 +352,6 @@ class RecipeData_Provider with ChangeNotifier {
 
         if (fetchedPosts!.isNotEmpty) {
              _recipe_data_List!.addAll(fetchedPosts);
-              print("?????????????????111 ==${_recipe_data_List!.length.toString()}");
              notifyListeners();
         } else {
           // This means there is no more data
@@ -361,6 +361,8 @@ class RecipeData_Provider with ChangeNotifier {
         }
       } catch (err) {
         if (kDebugMode) {
+          _recipe_data_List = [];
+          notifyListeners();
           print('Something went wrong!');
         }
       }
@@ -396,7 +398,7 @@ class RecipeData_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(beasurl + markRecipeFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.markRecipeFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -418,10 +420,13 @@ class RecipeData_Provider with ChangeNotifier {
         notifyListeners();
         // Get.to(() => Pre_Question_Screen());
       }
+      else {
+        print('else==============');
+        FlutterToast_message(_message);
+      }
     }
-    else {
-      print('else==============');
-      FlutterToast_message(_message);
+    else{
+      FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
   }
@@ -452,7 +457,7 @@ class RecipeData_Provider with ChangeNotifier {
       return map;
     }
     var response = await http.post(
-        Uri.parse(beasurl + unmarkRecipeFromFavorite),
+        Uri.parse(Endpoints.baseURL + Endpoints.unmarkRecipeFromFavorite),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $_tokanget',
@@ -479,11 +484,12 @@ class RecipeData_Provider with ChangeNotifier {
         notifyListeners();
         // Get.to(() => Pre_Question_Screen());
       }
+      else{
+        FlutterToast_message(_message);
+      }
     }
     else {
-
-      print('else==============');
-      FlutterToast_message(_message);
+      FlutterToast_message(json.decode(response.body)['message']);
 
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
@@ -509,7 +515,7 @@ class RecipeData_Provider with ChangeNotifier {
     });
 
     var response = await http.get(
-        Uri.parse(beasurl + allRecipeFiltersList),
+        Uri.parse(Endpoints.baseURL + Endpoints.allRecipeFiltersList),
         headers: {
           'Authorization': 'Bearer $_tokanget',
           'Accept': 'application/json'
@@ -523,14 +529,20 @@ class RecipeData_Provider with ChangeNotifier {
       print("success 123 ==${_success}");
       if (_success == 200) {
         _filter_list_data = (Recipe_Filtter_model.fromJson(json.decode(response.body)).data);
+        notifyListeners();
         // Get.to(() => Pre_Question_Screen());
+      }else {
+        _filter_list_data = null;
+
+        print('else==============');
+        FlutterToast_message(_message);
+        notifyListeners();
       }
     }
-    else {
-
-      print('else==============');
-      FlutterToast_message(_message);
-
+    else{
+      _filter_list_data = null;
+      notifyListeners();
+      FlutterToast_message(json.decode(response.body)['message']);
     }
     return Recipe_Filtter_model.fromJson(json.decode(response.body));
   }
@@ -555,7 +567,7 @@ class RecipeData_Provider with ChangeNotifier {
     });
 
     var response = await http.get(
-        Uri.parse(beasurl + recipeCategoryList),
+        Uri.parse(Endpoints.baseURL + Endpoints.recipeCategoryList),
         headers: {
           'Authorization': 'Bearer $_tokanget',
           'Accept': 'application/json'
@@ -563,20 +575,23 @@ class RecipeData_Provider with ChangeNotifier {
     );
     print("success recipeCategoryList${response.body}");
     if (response.statusCode == 200) {
-      print(response.body.toString());
       _success = (RecipeCategoryList_Model.fromJson(json.decode(response.body)).status);
 
-      print("success 123 ==${_success}");
       if (_success == 200) {
         _recipecategory_list_data = (RecipeCategoryList_Model.fromJson(json.decode(response.body)).data);
         // Get.to(() => Pre_Question_Screen());
       }
+      else {
+        _recipecategory_list_data = [];
+        print('else==============');
+        FlutterToast_message(_message);
+        notifyListeners();
+      }
     }
-    else {
-
-      print('else==============');
-      FlutterToast_message(_message);
-
+    else{
+      _recipecategory_list_data = [];
+      notifyListeners();
+      FlutterToast_message(json.decode(response.body)['message']);
     }
     return RecipeCategoryList_Model.fromJson(json.decode(response.body));
   }

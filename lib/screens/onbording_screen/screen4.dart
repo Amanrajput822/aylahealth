@@ -17,7 +17,7 @@ class Screen4 extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/image/Light_Mode_SecondaryLogo_Small 1.png',width: 185,height: 185,),
+                Image.asset('assets/image/Light_Mode_SecondaryLogo_Small.png',width: 185,height: 185,),
                sizedboxheight(deviceheight(context,0.05)),
                 Text('Did you know?',
                   style: TextStyle(

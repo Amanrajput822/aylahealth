@@ -95,7 +95,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
     });
 
     var response = await http.post(
-      Uri.parse(beasurl+questionOptionList),
+      Uri.parse(Endpoints.baseURL+Endpoints.questionOptionList),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json',
@@ -175,7 +175,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
    print(toMap().toString());
    print(json.encode(toMap()).toString());
     var response = await http.post(
-        Uri.parse(beasurl+addOrUpdateCustomerAnswer),
+        Uri.parse(Endpoints.baseURL+Endpoints.addOrUpdateCustomerAnswer),
         body:(quetype == 'MULTIPLE'|| quetype == 'INDEXING')?json.encode(toMap()):toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -226,7 +226,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl+customerNutritionArea),
+        Uri.parse(Endpoints.baseURL+Endpoints.customerNutritionArea),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json',
@@ -277,7 +277,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
     });
 
     var response = await http.post(
-        Uri.parse(beasurl+ingredientNameList),
+        Uri.parse(Endpoints.baseURL+Endpoints.ingredientNameList),
         headers: {
           'Authorization': 'Bearer $tokanget',
         }
@@ -327,7 +327,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
     });
 
     var response = await http.get(
-        Uri.parse(beasurl+genderList),
+        Uri.parse(Endpoints.baseURL+Endpoints.genderList),
         headers: {
           'Authorization': 'Bearer $tokanget',
         }

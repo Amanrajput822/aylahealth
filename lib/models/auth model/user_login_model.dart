@@ -29,10 +29,10 @@ class Data {
   String? custEmail;
   int? custType;
   int? custLoginBy;
-  Null? image;
+  String? image;
   String? accessToken;
   String? tokenType;
-  int? custLoginStatus;
+  bool? custLoginStatus;
 
   Data(
       {this.custId,

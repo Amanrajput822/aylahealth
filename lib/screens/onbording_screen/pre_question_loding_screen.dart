@@ -39,7 +39,7 @@ class _Pre_Question_ScreenState extends State<Pre_Question_Screen> {
         height: deviceheight(context),
         width: deviceWidth(context),
         child: Center(
-          child:Image.asset('assets/image/Light_Mode_SecondaryLogo_Small 1.png',width: 185,height: 185,) ,
+          child:Image.asset('assets/image/Light_Mode_SecondaryLogo_Small.png',width: 185,height: 185,) ,
         ),
       ),
     );

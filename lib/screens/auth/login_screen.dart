@@ -10,8 +10,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../common/SharedPrefHelper.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
@@ -22,7 +24,9 @@ import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/auth model/user_login_model.dart';
 import '../onbording_screen/pre_question_loding_screen.dart';
-import 'forgotpassword_screen.dart';
+import '../tabbar_screens/home/homeScreenProvider.dart';
+import '../tabbar_screens/my_meals/My_Meals_Provider.dart';
+import 'forgot_password_screens/forgotpassword_screen.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -86,7 +90,7 @@ class _LogInState extends State<LogIn> {
 
     print(toMap());
     var response = await http.post(
-      Uri.parse(beasurl+Login),
+      Uri.parse(Endpoints.baseURL+Endpoints.Login),
       body: toMap(),
     );
 print(response.body.toString());
@@ -97,9 +101,13 @@ print(response.body.toString());
       if (success == 200) {
         Navigator.pop(context);
 
+        final user = user_login_model.fromJson(json.decode(response.body)).data!;
         FlutterToast_message(message??"");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool("isLoggedIn", true);
+
+        // SharedPrefHelper.authToken = user.accessToken ?? "";
+
         prefs.setString(
           'login_user_id',
           json.encode(
@@ -137,7 +145,14 @@ print(response.body.toString());
           ),
         );
 
-
+        prefs.setBool(
+          'user_login_time',
+           true,
+        );
+        SharedPrefHelper.userId = int.tryParse(user.custId.toString());
+        SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
+        SharedPrefHelper.email = user.custEmail ?? "";
+        SharedPrefHelper.authToken = user.accessToken ?? "";
 
         Get.offAll(() => New_Bottombar_Screen());
         txt_email.clear();
@@ -212,7 +227,7 @@ print(response.body.toString());
                height: deviceheight(context, 0.7),
                width: deviceWidth(context),
                decoration: BoxDecoration(
-                 borderRadius: BorderRadius.only(
+                 borderRadius: const BorderRadius.only(
                    topLeft: Radius.circular(20),
                    topRight: Radius.circular(20),
                  ),

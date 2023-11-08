@@ -1,11 +1,17 @@
+import 'package:aylahealth/screens/auth/forgot_password_screens/forgot_pass_provider.dart';
 import 'package:aylahealth/screens/food_natrition_settings/Food_Nutrition_Settings_provider.dart';
 import 'package:aylahealth/screens/help_screen/faq_screen_provider.dart';
+import 'package:aylahealth/screens/notification_screen/PushNotificationNotifier.dart';
+import 'package:aylahealth/screens/notification_screen/PushNotificationService.dart';
 import 'package:aylahealth/screens/onbording_screen/pre_question_loding_screen.dart';
 import 'package:aylahealth/screens/onbording_screen/screen1.dart';
 import 'package:aylahealth/screens/onbording_screen/screen7.dart';
 import 'package:aylahealth/screens/profile_settings/personal_setting/personal_setting_provider.dart';
 import 'package:aylahealth/screens/subscription_screens/subscription_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/home.dart';
+import 'package:aylahealth/screens/tabbar_screens/home/homeScreenProvider.dart';
+import 'package:aylahealth/screens/tabbar_screens/modules/module_description_screen/ModuleDescriptionProvider.dart';
+import 'package:aylahealth/screens/tabbar_screens/modules/modules_screen/modules_screen_provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/My_Meals_Provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/ShoppingListScreen.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/shoping_list_provider.dart';
@@ -24,10 +30,25 @@ import 'common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import 'demo/appleLogin_demo.dart';
 import 'demo/deno.dart';
 import 'home_screen.dart';
+import 'inetrnet_connection_interupt.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+
+  final PushNotificationService _notificationService = PushNotificationService();
+
+  @override
+  void initState() {
+    _notificationService.initialize();
+    super.initState();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -42,14 +63,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => Food_Nutrition_Settings_provider()),
         ChangeNotifierProvider(create: (context) => ShoppingListProvider()),
         ChangeNotifierProvider(create: (context) => FAQsScreenProvider()),
-        // ChangeNotifierProvider(create: (context) => Show_Updete_Settings_provider()),
+        ChangeNotifierProvider(create: (context) => ModulesScreenProvider()),
+        ChangeNotifierProvider(create: (context) => ModulesDescriptionScreenProvider()),
+        ChangeNotifierProvider(create: (context) => ForgotPassProvider()),
+        ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
+
+        ChangeNotifierProvider(create: (context) => PushNotificationNotifier()),
+
       ],
       // create: (context) => RecipeDataProvider(),
       child: GetMaterialApp(
         title: 'Ayla Health',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-
+          backgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
               // Status bar color
@@ -67,21 +94,23 @@ class MyApp extends StatelessWidget {
             child: child!,
           );
         },
+
         initialRoute: '/',
         routes: {
 
-          '/': (context) => Splesh(),
-          'HomeScreen': (context) => HomeScreen(),
-          'd': (context) => Pre_Question_Screen(),
-          'Screen1': (context) => Screen1(),
-          'SubscriptionScreen': (context) => SubscriptionScreen(),
+          '/': (context) => const Splesh(),
+          'HomeScreen': (context) => const HomeScreen(),
+          'd': (context) => const Pre_Question_Screen(),
+          'Screen1': (context) => const Screen1(),
+          'SubscriptionScreen': (context) => const SubscriptionScreen(),
           'Screen7': (context) => Screen7(),
           'demo': (context) => SliverWithTabBar(),
-          'New_Bottombar_Screen': (context) => New_Bottombar_Screen(),
-          'Home': (context) => Home(),
-          'Recipes_Screen': (context) => Recipes_Screen(),
+          'New_Bottombar_Screen': (context) => const New_Bottombar_Screen(),
+          'Home': (context) => const Home(),
+          'Recipes_Screen': (context) => const Recipes_Screen(),
           'apple_login_demo': (context) => apple_login_demo(),
-          'ShoppingListScreen': (context) => ShoppingListScreen(),
+          'ShoppingListScreen': (context) => const ShoppingListScreen(),
+          'InternetConnection': (context) => const InternetConnection(),
           // 'CalendarApp': (context) => CalendarApp(),
 
 

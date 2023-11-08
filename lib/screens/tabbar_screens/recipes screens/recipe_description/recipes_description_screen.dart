@@ -39,6 +39,8 @@ class Recipes_Description_Screen extends StatefulWidget {
 class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen> with SingleTickerProviderStateMixin{
    final GlobalKey _childKey = GlobalKey();
 
+  int tab_value = 0;
+
   bool isHeightCalculated = false;
   double height12 = 0.0;
   TabController? controller;
@@ -72,7 +74,9 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
    isHeightCalculated = false;
     super.dispose();
   }
-int tab_value = 0;
+
+
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -112,7 +116,7 @@ int tab_value = 0;
               backgroundColor: colorWhite,
               body:recipeDescreptioModel.loading
                   ? Container(
-                child: Center(child: CircularProgressIndicator()),
+                child: const Center(child: CircularProgressIndicator()),
               ) :NestedScrollView(
                   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                     return [
@@ -139,7 +143,9 @@ int tab_value = 0;
                                     Container(
                                       height: deviceheight(context,0.25),
                                       width: deviceWidth(context),
-                                      child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??"",fit: BoxFit.fill,
+                                      child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",fit: BoxFit.fill,
+                                        errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                          fit: BoxFit.fill,),
                                         loadingBuilder: (BuildContext context, Widget child,
                                             ImageChunkEvent? loadingProgress) {
                                           if (loadingProgress == null) return child;
@@ -283,7 +289,7 @@ int tab_value = 0;
                                           fontFamily: fontFamilyText,
                                           color: colorRichblack,
                                           fontWeight: fontWeight600,
-                                          overflow: TextOverflow.ellipsis
+
                                       ),),
                                     Text(recipeDescreptioModel.recipe_ditels_data!.recDescription??"",
                                       style: TextStyle(
@@ -293,30 +299,10 @@ int tab_value = 0;
                                         fontWeight: fontWeight400,
                                       ),),
                                     sizedboxheight(8.0),
-                                    Container(
-                                      child: Wrap(
-
-                                        children: [
-                                          for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeCategory!)...[
-                                            Card(
-                                              elevation: 0,
-                                              color: HexColor('#F6F8F9'),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
-                                                child: Text(item.catName??"", style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: fontFamilyText,
-                                                  color: colorShadowBlue,
-                                                  fontWeight: fontWeight400,
-
-                                                ),),
-                                              ),
-                                            ),
-                                          ],
-                                          recipeDescreptioModel.recipe_ditels_data!.eatName!=null?Card(
+                                    Wrap(
+                                      children: [
+                                        for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeCategory!)...[
+                                          Card(
                                             elevation: 0,
                                             color: HexColor('#F6F8F9'),
                                             shape: RoundedRectangleBorder(
@@ -324,7 +310,7 @@ int tab_value = 0;
                                             ),
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
-                                              child: Text(recipeDescreptioModel.recipe_ditels_data!.eatName??"", style: TextStyle(
+                                              child: Text(item.catName??"", style: TextStyle(
                                                 fontSize: 14,
                                                 fontFamily: fontFamilyText,
                                                 color: colorShadowBlue,
@@ -332,28 +318,45 @@ int tab_value = 0;
 
                                               ),),
                                             ),
-                                          ):Container(),
-                                          for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeTag!)...[
-                                            Card(
-                                              elevation: 0,
-                                              color: HexColor('#F6F8F9'),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(15.0),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
-                                                child: Text(item.tagName??"", style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: fontFamilyText,
-                                                  color: colorShadowBlue,
-                                                  fontWeight: fontWeight400,
-
-                                                ),),
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ],
-                                      ),
+                                        recipeDescreptioModel.recipe_ditels_data!.eatName!=null?Card(
+                                          elevation: 0,
+                                          color: HexColor('#F6F8F9'),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15.0),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
+                                            child: Text(recipeDescreptioModel.recipe_ditels_data!.eatName??"", style: TextStyle(
+                                              fontSize: 14,
+                                              fontFamily: fontFamilyText,
+                                              color: colorShadowBlue,
+                                              fontWeight: fontWeight400,
+
+                                            ),),
+                                          ),
+                                        ):Container(),
+                                        for(var item in recipeDescreptioModel.recipe_ditels_data!.recipeTag!)...[
+                                          Card(
+                                            elevation: 0,
+                                            color: HexColor('#F6F8F9'),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(15.0),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(left: 10.0,right: 10,top: 6,bottom: 6),
+                                              child: Text(item.tagName??"", style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: fontFamilyText,
+                                                color: colorShadowBlue,
+                                                fontWeight: fontWeight400,
+
+                                              ),),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                     sizedboxheight(18.0),
                                     Row(
@@ -459,15 +462,15 @@ int tab_value = 0;
                   },
                   body:  recipeDescreptioModel.loading
                       ? Container(
-                    child: Center(child: CircularProgressIndicator()),
+                    child: const Center(child: CircularProgressIndicator()),
                   ) :
                   Container(
 
                     width: deviceWidth(context),
                     height: deviceheight(context),
-                    padding: EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 50),
+                    padding: const EdgeInsets.only(left: 15,right: 15,top: 8,bottom: 50),
                     child: TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                       children: [
                         ingredients_container(recipeDescreptioModel:recipeDescreptioModel),
                         method_container(),
@@ -524,7 +527,7 @@ int tab_value = 0;
                             fontWeight: fontWeight400,
                           ),),
 
-                          Text(item.varName!=null?('${item.varName??""} ${item.ingredientRecipeDescription??""}'):('${item.ingredientRecipeDescription??""}'),style: TextStyle(
+                          Text(item.varName!=null?('${item.varName??""} ${item.ingredientRecipeDescription??""}'):(item.ingredientRecipeDescription??""),style: TextStyle(
                             fontSize: 12,
                             fontFamily: fontFamilyText,
                             color: colorShadowBlue,
@@ -811,7 +814,8 @@ int tab_value = 0;
                                  Navigator.pop(context);
                                  DateFormat('EEEE d MMM yyyy').format(selectedDay);
                                  print(DateFormat('EE d MMM').format(selectedDay));
-                                 mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0");
+                                 mealsModel.get_meals_calendardata_api(context, selectedDay.year.toString(),selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",selectedDay);
+                                // mealsModel.get_meals_calendardata_multiple_months_api(context,selectedDay,int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                                  // only_year_json_create_fuction(selectedDay.year.toString(), selectedDay.month.toString(),selectedDay.day.toString());
 
                                  // int s = getTotalDaysInMonth(_selectedDay!.year, _selectedDay!.month);
@@ -950,14 +954,40 @@ int tab_value = 0;
                                          height: 160,
                                          width: 260,
 
-                                         decoration: BoxDecoration(
-                                             color: Colors.black12,
-                                             borderRadius: BorderRadius.circular(5),
-                                             image: DecorationImage(
-                                                 image: NetworkImage(recipe_data_List!.image??""),fit: BoxFit.fill
-                                             )
-                                         ),
+                                         // decoration: BoxDecoration(
+                                         //     color: Colors.black12,
+                                         //     borderRadius: BorderRadius.circular(5),
+                                         //     image: DecorationImage(
+                                         //         image: NetworkImage(recipe_data_List!.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="),
+                                         //         fit: BoxFit.fill
+                                         //
+                                         //     )
+                                         // ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          child: Image.network(recipe_data_List!.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                            height: 160,
+                                            width: 260,
+                                            fit: BoxFit.fill,
+                                            errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                              height: 160,
+                                              width: 260,
 
+                                              fit: BoxFit.fill,),
+                                            loadingBuilder: (BuildContext context, Widget child,
+                                                ImageChunkEvent? loadingProgress) {
+                                              if (loadingProgress == null) return child;
+                                              return Center(
+                                                child: CircularProgressIndicator(
+                                                  value: loadingProgress.expectedTotalBytes != null
+                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                      loadingProgress.expectedTotalBytes!
+                                                      : null,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
                                        ),
                                        sizedboxheight(deviceheight(context,0.01),),
                                        Text(recipe_data_List.recTitle??"",style:TextStyle(

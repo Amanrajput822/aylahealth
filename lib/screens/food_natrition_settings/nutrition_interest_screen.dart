@@ -41,6 +41,8 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
   Future? _future;
   var success, message,tokanget;
 
+  bool loading = false;
+
   final List<String> _selectedItems = [];
   void _itemChange(String itemValue, bool isSelected) {
     setState(() {
@@ -65,8 +67,8 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
     check().then((intenet) {
       if (intenet != null && intenet) {
         // Internet Present Case
-        showLoaderDialog1(context);
-
+      //  showLoaderDialog1(context);
+        loading = true;
       } else {
         FlutterToast_Internet();
       }
@@ -80,18 +82,19 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
     }
     print(toMap());
     var response = await http.post(
-        Uri.parse(beasurl+customerFoodSettingData),
+        Uri.parse(Endpoints.baseURL+Endpoints.customerFoodSettingData),
         body: toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
           'Accept': 'application/json'
         }
     );
+    loading = false;
     print(response.body.toString());
     success = (customerFoodSettingData_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
     if (success == 200) {
-      Navigator.pop(context);
+    //  Navigator.pop(context);
       // options_list = (customerFoodSettingData_model.fromJson(json.decode(response.body)).data!.options);
       customerAnswer_list = (customerFoodSettingData_model.fromJson(json.decode(response.body)).data!.customerAnswer);
       for(int i=0;i<customerAnswer_list!.length;i++)
@@ -103,7 +106,8 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
       }
       // Get.to(() => Pre_Question_Screen());
     } else {
-      Navigator.pop(context);
+     // Navigator.pop(context);
+      loading = false;
       print('else==============');
 
       FlutterToast_message('No Question Data');
@@ -142,7 +146,7 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
     print(toMap().toString());
     print(json.encode(toMap()).toString());
     var response = await http.post(
-        Uri.parse(beasurl+addOrUpdateCustomerAnswer),
+        Uri.parse(Endpoints.baseURL+Endpoints.addOrUpdateCustomerAnswer),
         body:(quetype == 'MULTIPLE'|| quetype == 'INDEXING')?json.encode(toMap()):toMap(),
         headers: {
           'Authorization': 'Bearer $tokanget',
@@ -216,7 +220,9 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
         width: deviceWidth(context),
         child: Stack(
           children: [
-            Container(
+           loading ? Container(
+              child: const Center(child: CircularProgressIndicator(),),
+            ) :  Container(
               height: deviceheight(context),
               width: deviceWidth(context),
               padding: EdgeInsets.all(15),
