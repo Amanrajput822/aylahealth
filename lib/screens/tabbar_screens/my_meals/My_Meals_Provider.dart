@@ -469,6 +469,7 @@ class MyMeals_Provider with ChangeNotifier {
           loaderFunction(false);
           FlutterToast_message(json.decode(response.body)['message']);
         }
+
       }
       else{
         loaderFunction(false);
