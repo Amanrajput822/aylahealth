@@ -1186,21 +1186,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
 
         daysOfWeekVisible: true,
         headerVisible: false,
-        // headerStyle: HeaderStyle(
-        //
-        //     leftChevronMargin: EdgeInsets.only(left: 0),
-        //     leftChevronIcon: Icon(Icons.chevron_left,color: colorBluePigment,),
-        //     rightChevronIcon: Icon(Icons.chevron_right,color: colorBluePigment,),
-        //     rightChevronVisible: false,
-        //     titleTextFormatter: (date, locale) => DateFormat.MMMM(locale).format(date),
-        //     formatButtonVisible : false,
-        //     titleTextStyle: TextStyle(
-        //       color: colorBluePigment,
-        //       fontSize: 16,
-        //       fontWeight: fontWeight400,
-        //       fontFamily: fontFamilyText,
-        //     )
-        // ),
+
 
         daysOfWeekStyle: DaysOfWeekStyle(
           dowTextFormatter: (date, locale) => DateFormat.E(locale).format(date)[0],
@@ -1208,35 +1194,9 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
           weekendStyle:TextStyle(color: colorShadowBlue ,fontSize: 16, fontWeight: fontWeight400, fontFamily: fontFamilyText, ),
         ),
 
-        // onFormatChanged: (format) {
-        //   setState(() {
-        //     _calendarFormat = format;
-        //   });
-        // },
-        // onHeaderTapped: (_) {
-        //   setState(() {
-        //
-        //     recipeModel.listviewCalendar_hideShow(true);
-        //     recipeModel.selectDate(DateTime.now());
-        //     recipeModel.listviwe_months_set(36);
-        //     recipeModel.listviwe_controller(ScrollController());
-        //     WidgetsBinding.instance.addPostFrameCallback((_) {
-        //       // Calculate the initial scroll offset to center the list
-        //       double itemHeight = 350.0; // Set the height of each list item
-        //       int initialIndex = 12; // Set the index of the item you want to center on
-        //       double initialOffset = (initialIndex * itemHeight) -
-        //           (MediaQuery.of(context).size.height / 2) +
-        //           (itemHeight / 2);
-        //       recipeModel.scrollController!.jumpTo(initialOffset);
-        //     });
-        //   });
-        // },
         onPageChanged: (focusedDay) {
           setState(() {
             mealsModel.singlecalendar_focuseday(focusedDay);
-           // mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"2");
-           // mealsModel.get_meals_calendardata_multiple_months_api(context);
-          //  print(focusedDay.toString());
           });
         },
         onDaySelected: (selectedDay, focusedDay) {
@@ -1251,22 +1211,12 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
               //mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
               /// single day data api
              //  mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
-              mealsModel.singal_day_data_gate_api(selectedDay,true,0);
+             // mealsModel.singal_day_data_gate_api(selectedDay,true,0);
 
               //  _selectedDay = selectedDay;
               mealsModel.select_tab_data_list!.clear();
               mealsModel.boolDataList.clear();
-              // for(var item in mealsModel.mealData!){
-              //   print(item);
-              //   print(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId);
-              //   if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
-              //     print('value6');
-              //     print(item.mtId.toString());
-              //     mealsModel.boolDataList.add(false);
-              //     mealsModel.select_tab_data_list!.add(item);
-              //     print(mealsModel.select_tab_data_list!.length.toString());
-              //   }
-              // }
+
               /// tab controller ///
               _controller = TabController(vsync: this, length:mealsModel.get_meals_planlist_data!.length,initialIndex: 0);
               mealsModel.selecttab_fuction(0);

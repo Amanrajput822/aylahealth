@@ -54,6 +54,7 @@ class HomeScreenProvider extends ChangeNotifier {
   }
 
 
+
   /// recipeList_ditels_api ///
 
   List<RecipeList_data_Response>? _recipe_data_List ;
@@ -83,7 +84,6 @@ class HomeScreenProvider extends ChangeNotifier {
 
       return map;
     }
-
     print(toMap().toString());
     print(Endpoints.baseURL+Endpoints.recipeList.toString());
     var response = await http.post(
@@ -95,27 +95,34 @@ class HomeScreenProvider extends ChangeNotifier {
           'Content-Type': 'application/json'
         }
     );
+    if(response.statusCode == 200 ){
+     loaderFunction(false);
+     _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
+
+      if (_success == 200) {
 
     loaderFunction(false);
-    _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
-    print("success 123 ==${_success}");
-    if (_success == 200) {
+    _recipe_data_List = (RecipeList_data_model.fromJson(json.decode(response.body)).data);
+    notifyListeners();
 
+  } else {
+       loaderFunction(false);
+       _recipe_data_List = [];
+       print('else==============');
+
+     }
+   }else{
       loaderFunction(false);
-      _recipe_data_List = (RecipeList_data_model.fromJson(json.decode(response.body)).data);
+      _recipe_data_List = [];
       notifyListeners();
-
-    } else {
-      loaderFunction(false);
-
-      print('else==============');
-
+      FlutterToast_message(json.decode(response.body)['message']);
     }
+
     return RecipeList_data_model.fromJson(json.decode(response.body));
   }
 
   /// Home screen single day api
-  final List<MealData_list> _select_tab_data_list1 = [];
+   List<MealData_list> _select_tab_data_list1 = [];
   List<MealData_list>? get select_tab_data_list1 =>_select_tab_data_list1;
 
 
@@ -157,30 +164,40 @@ class HomeScreenProvider extends ChangeNotifier {
         }
     );
 
-    _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);
-    if (success == 200)  {
-      _mealData1!.clear();
-      _mealData1 =  (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body))).data!.mealData;
-      notifyListeners();
+    if(response.statusCode == 200){
+      _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);
+      if (success == 200)  {
+        _mealData1!.clear();
+        _mealData1 =  (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body))).data!.mealData;
+        notifyListeners();
 
-      for(var item1 in get_meals_planlist_data!){
-        for(var item in mealData1!){
+        for(var item1 in get_meals_planlist_data!){
+          for(var item in mealData1!){
 
-          if(int.parse(item.mtId.toString()) == item1.mtId){
-            _select_tab_data_list1.add(item);
-           // notifyListeners();
-            print(select_tab_data_list1!.length.toString());
+            if(int.parse(item.mtId.toString()) == item1.mtId){
+              _select_tab_data_list1.add(item);
+              // notifyListeners();
+              print(select_tab_data_list1!.length.toString());
+            }
           }
         }
-      }
-      loaderFunction2(false);
-      notifyListeners();
-    } else {
+        loaderFunction2(false);
+        notifyListeners();
+      } else {
 
-      loaderFunction2(false);
-      print('else==============');
-      // FlutterToast_message('No meals includes on the selected date.');
+        loaderFunction2(false);
+        print('else==============');
+        // FlutterToast_message('No meals includes on the selected date.');
+      }
     }
+    else{
+      loaderFunction(false);
+      _mealData1 = [];
+      _select_tab_data_list1 = [];
+      notifyListeners();
+      FlutterToast_message(json.decode(response.body)['message']);
+    }
+
 
     return Meal_Plan_Date_Data_model.fromJson(json.decode(response.body));
   }
@@ -208,20 +225,30 @@ class HomeScreenProvider extends ChangeNotifier {
           'Accept': 'application/json'
         }
     );
-    _success = (MealPlaneLestData_Model.fromJson(json.decode(response.body)).status);
-    print("json.decode(response.body)${json.decode(response.body)}");
-    if (success == 200) {
+    if(response.statusCode ==200){
+      _success = (MealPlaneLestData_Model.fromJson(json.decode(response.body)).status);
+      print("json.decode(response.body)${json.decode(response.body)}");
+      if (success == 200) {
 
-      _get_meals_planlist_data = (MealPlaneLestData_Model.fromJson(json.decode(response.body))).data;
-      singal_day_data_gate_api1(DateTime.now());
-      recipeList_ditels_api();
-      notifyListeners();
-      // Get.to(() => Pre_Question_Screen());
-    } else {
-      // Navigator.pop(context);
-      print('else==============');
-      FlutterToast_message('No Data');
+        _get_meals_planlist_data = (MealPlaneLestData_Model.fromJson(json.decode(response.body))).data;
+        singal_day_data_gate_api1(DateTime.now());
+        recipeList_ditels_api();
+        notifyListeners();
+        // Get.to(() => Pre_Question_Screen());
+      } else {
+        // Navigator.pop(context);
+        print('else==============');
+        FlutterToast_message('No Data');
+      }
     }
+    else{
+      loaderFunction(false);
+      _get_meals_planlist_data = [];
+
+      notifyListeners();
+      FlutterToast_message(json.decode(response.body)['message']);
+    }
+
 
     return (MealPlaneLestData_Model.fromJson(json.decode(response.body)));
   }

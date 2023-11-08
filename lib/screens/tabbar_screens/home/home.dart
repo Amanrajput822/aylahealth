@@ -249,30 +249,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       prefs.setBool('Home_Screen', true,);
                     });
 
-
-                    // setState(() {
-                    //   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
-                    //   mealsModel.singlecalendarstartdate_set(DateTime.now());
-                    //   mealsModel.singlecalendar_selectedDay(DateTime.now());
-                    //   mealsModel.userSelectDay_set('Today');
-                    //   mealsModel.singal_day_data_gate_api(DateTime.now(),true,0);
-                    //   mealsModel.select_tab_data_list!.clear();
-                    //   mealsModel.boolDataList.clear();
-                    //   for(var item in mealsModel.mealData!){
-                    //     if(int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId){
-                    //       setState(() {
-                    //         mealsModel.boolDataList.add(false);
-                    //         mealsModel.select_tab_data_list!.add(item);
-                    //       });
-                    //     }
-                    //   }
-                    //   mealsModel.selecttab_fuction(0);
-                    //   mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
-                    //   mealsModel.get_meals_calendardata_multiple_months_api(context,DateTime.now(),0);
-                    //   mealsModel.multiple_calender_selected(DateTime.now());
-                    //   mealsModel.singlecalendar_focuseday(DateTime.now());
-                    // });
-
                     meaBottomNavBarProviderModel.setcontrollervalue(2);
 
                   }),
