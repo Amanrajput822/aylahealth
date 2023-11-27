@@ -8,7 +8,6 @@ import "package:intl/intl.dart";
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 import "package:provider/provider.dart";
 
-import "../../screens/notification_screen/PushNotificationNotifier.dart";
 import "../../screens/tabbar_screens/home/home.dart";
 import '../../screens/tabbar_screens/modules/modules_screen/modules_screen.dart';
 import "../../screens/tabbar_screens/my_meals/My_Meals_Provider.dart";
@@ -316,7 +315,6 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   @override
   Widget build(final BuildContext context) {
     final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context);
-    final notifier = Provider.of<PushNotificationNotifier>(context);
 
     return WillPopScope(
      onWillPop: () {

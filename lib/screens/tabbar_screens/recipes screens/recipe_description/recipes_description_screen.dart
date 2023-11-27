@@ -21,6 +21,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../../common/commonwidgets/button.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../models/recipelist/Recipe_details_data_model.dart';
+import '../../home/homeScreenProvider.dart';
 import '../../my_meals/My_Meals_Provider.dart';
 import '../../my_meals/calendar_evryday_json.dart';
 import '../recipe_screen/RecipeData_Provider.dart';
@@ -235,6 +236,36 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                                         //   }
                                                         // }
                                                       }
+                                                    else if(widget.screen=="Home"){
+                                                        final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
+                                                        if(homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus == 0){
+                                                          homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus = 1;
+                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                          homeScreenProviderData.likeRecipeData1(context,homeScreenProviderData.recipe_data_List![widget.rec_index!].recId);
+                                                        }
+                                                        else if(homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus == 1){
+                                                          homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus = 0;
+                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                          homeScreenProviderData.unlikeRecipeData1(context,homeScreenProviderData.recipe_data_List![widget.rec_index!].recId,'','0');
+                                                        }
+
+                                                      }
+
+                                                      else if(widget.screen=="HomeToday"){
+                                                        final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
+                                                        if(homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus == 0){
+                                                          homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus = 1;
+                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                          homeScreenProviderData.likeRecipeData1(context,homeScreenProviderData.select_tab_data_list1![widget.rec_index!].recId);
+                                                        }
+                                                        else if(homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus == 1){
+                                                          homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus = 0;
+                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                          homeScreenProviderData.unlikeRecipeData1(context,homeScreenProviderData.select_tab_data_list1![widget.rec_index!].recId,'','0');
+                                                        }
+
+                                                      }
+
                                                       else{
                                                         if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 0){
                                                           recipeModel.recipe_data_List![widget.rec_index!].favStatus = 1;

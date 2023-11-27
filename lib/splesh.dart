@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:aylahealth/common/styles/const.dart';
+import 'package:aylahealth/screens/notification_screen/FirebaseNotifications.dart';
+import 'package:aylahealth/screens/notification_screen/ReceivedNotification.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -19,6 +22,13 @@ class Splesh extends StatefulWidget {
 
 class _SpleshState extends State<Splesh> {
   var status;
+
+  getAuthToken() async {
+    var token = await FirebaseMessaging.instance.getToken();
+    print('Firebase Token Motivaiton $token');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('firebase_token', token!);
+  }
 
   @override
   getValuesSF() async {
@@ -42,6 +52,11 @@ class _SpleshState extends State<Splesh> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    LocalNotification().configureDidReceiveLocalNotificationSubject(context);
+    LocalNotification().configureSelectNotificationSubject();
+    FirebaseNotifications().firebaseInitialization();
+    LocalNotification().initialize();
+    getAuthToken();
     getValuesSF();
   }
 

@@ -47,4 +47,6 @@ class Endpoints {
   static const verifyForgotPasswordCode = 'verifyForgotPasswordCode';
   static const resetPassword = 'resetPassword';
 
+  static const recipeCollectionList = 'recipeCollectionList';
+
 }

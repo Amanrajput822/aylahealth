@@ -49,6 +49,7 @@ class _Signup_screenState extends State<Signup_screen> {
   int? field5 = 0;
 
   var success, message, id, email;
+  var fcmToken ;
   String? divece_type;
 
   @override
@@ -71,6 +72,10 @@ class _Signup_screenState extends State<Signup_screen> {
 
 
   Future<user_login_model> signup() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    fcmToken = prefs.getString('fcm_token');
+    fcmToken = fcmToken!.replaceAll('"', '');
+
     check().then((intenet) {
       if (intenet != null && intenet) {
         // Internet Present Case
@@ -521,6 +526,7 @@ class _Signup_screenState extends State<Signup_screen> {
     map["cust_password"] = txt_pass.text.toString().trim();
     map["cust_login_by"] = divece_type;
     map["cust_type"] = '3';
+    map["cust_device_id"] = fcmToken??"";
 
     return map;
   }

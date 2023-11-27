@@ -87,25 +87,32 @@ class Recipe_Description_DataProvider with ChangeNotifier {
             'Accept': 'application/json'
           }
       );
-      print(response.body.toString());
-      _success = (Recipe_details_data_model
-          .fromJson(json.decode(response.body))
-          .status);
-      print("json.decode(response.body)${json.decode(response.body)}");
-      if (success == 200) {
-        final item = json.decode(response.body);
-        result = (Recipe_details_data_model.fromJson(item));
-        _recipe_ditels_data = (Recipe_details_data_model
-            .fromJson(item)
-            .data);
-        notifyListeners();
-        // Get.to(() => Pre_Question_Screen());
-      } else {
-        // Navigator.pop(context);
-        print('else==============');
-        FlutterToast_message('No Data');
+      if(response.statusCode == 200){
 
+        _success = (Recipe_details_data_model
+            .fromJson(json.decode(response.body))
+            .status);
+        print("json.decode(response.body)${json.decode(response.body)}");
+        if (success == 200) {
+          final item = json.decode(response.body);
+          result = (Recipe_details_data_model.fromJson(item));
+          _recipe_ditels_data = (Recipe_details_data_model
+              .fromJson(item)
+              .data);
+          notifyListeners();
+          // Get.to(() => Pre_Question_Screen());
+        } else {
+          // Navigator.pop(context);
+          print('else==============');
+          FlutterToast_message('No Data');
+
+        }
       }
+      else{
+
+        FlutterToast_message(json.decode(response.body)['message']);
+      }
+
     } catch (e) {
       error = e.toString();
     }

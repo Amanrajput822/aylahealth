@@ -4,6 +4,7 @@ import 'package:aylahealth/common/SharedPrefHelper.dart';
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/auth/login_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:flutter_svg/svg.dart';
@@ -289,55 +290,103 @@ class _Profile_screenState extends State<Profile_screen> {
     );
   }
 
-  showAlertDialog(BuildContext context) {
-    // set up the button
+  // showAlertDialog(BuildContext context) {
+  //   // set up the button
+  //
+  //   // set up the AlertDialog
+  //   AlertDialog alert = AlertDialog(
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(15.0),
+  //     ),
+  //     title: Text('Are you sure you want to log out?',style:  TextStyle(
+  //       fontSize: 20,
+  //       fontFamily: fontFamilyText,
+  //       color: colorBlack,
+  //       fontWeight: fontWeight600,
+  //     ),),
+  //
+  //     actions: <Widget>[
+  //       TextButton(
+  //         onPressed: () {
+  //           print("you choose no");
+  //           Navigator.of(context).pop(false);
+  //         },
+  //         child: Text('No',style:  TextStyle(
+  //           fontSize: 16,
+  //           fontFamily: fontFamilyText,
+  //           color: colorBluePigment,
+  //           fontWeight: fontWeight600,
+  //         ),),
+  //       ),
+  //       TextButton(
+  //         onPressed: () async {
+  //           logout_api();
+  //         },
+  //         child: Text('Yes',style:  TextStyle(
+  //           fontSize: 16,
+  //           fontFamily: fontFamilyText,
+  //           color: colorBluePigment,
+  //           fontWeight: fontWeight600,
+  //         ),),
+  //       ),
+  //     ],
+  //   );
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      title: Text('Are you sure you want to log out?',style:  TextStyle(
-        fontSize: 20,
-        fontFamily: fontFamilyText,
-        color: colorBlack,
-        fontWeight: fontWeight600,
-      ),),
+  Future showAlertDialog(context){
+    return   showCupertinoDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return CupertinoAlertDialog(
 
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            print("you choose no");
-            Navigator.of(context).pop(false);
-          },
-          child: Text('No',style:  TextStyle(
-            fontSize: 16,
-            fontFamily: fontFamilyText,
-            color: colorBluePigment,
-            fontWeight: fontWeight600,
-          ),),
-        ),
-        TextButton(
-          onPressed: () async {
-            logout_api();
-          },
-          child: Text('Yes',style:  TextStyle(
-            fontSize: 16,
-            fontFamily: fontFamilyText,
-            color: colorBluePigment,
-            fontWeight: fontWeight600,
-          ),),
-        ),
-      ],
-    );
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
+            content: Text('Are you sure you want to log out?',style:  TextStyle(
+              fontSize: 20,
+              fontFamily: fontFamilyText,
+              color: colorBlack,
+              fontWeight: fontWeight600,
+            ),),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop("Discard");
+                },
+
+                child: Text('No',style:  TextStyle(
+                  fontSize: 16,
+                  fontFamily: fontFamilyText,
+                  color: colorBluePigment,
+                  fontWeight: fontWeight600,
+                ),)
+              ),
+              CupertinoDialogAction(
+                  onPressed: () {
+                    logout_api();
+                  },
+
+                  child: Text('Yes',style:  TextStyle(
+                    fontSize: 16,
+                    fontFamily: fontFamilyText,
+                    color: colorBluePigment,
+                    fontWeight: fontWeight600,
+                  ),)
+              ),
+              // The "Yes" button
+
+              // The "No" butt
+
+            ],
+          );
+        }
     );
   }
+
   //  topcommenlisttile('Contact usn', 'Get in touch for support.', (){
   // Get.to(() => Contact_us_screen());
   // }),

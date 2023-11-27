@@ -55,6 +55,8 @@ class _LogInState extends State<LogIn> {
 
 
   var success, message, id, email;
+  var fcmToken ;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -78,6 +80,9 @@ class _LogInState extends State<LogIn> {
   Future<user_login_model> signin() async {
 
     // Or, use a predicate getter.
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    fcmToken = prefs.getString('fcm_token');
+    fcmToken = fcmToken!.replaceAll('"', '');
 
     check().then((intenet) {
       if (intenet != null && intenet) {
@@ -87,7 +92,15 @@ class _LogInState extends State<LogIn> {
         FlutterToast_Internet();
       }
     });
+    Map toMap() {
+      var map =  Map<String, dynamic>();
+      map["cust_email"] = txt_email.text.toString().trim();
+      map["cust_password"] = txt_pass.text.toString().trim();
+      map["cust_login_by"] = divece_type;
+      map["cust_device_id"] = fcmToken??"";
 
+      return map;
+    }
     print(toMap());
     var response = await http.post(
       Uri.parse(Endpoints.baseURL+Endpoints.Login),
@@ -462,13 +475,5 @@ print(response.body.toString());
 
 
   }
-  Map toMap() {
-    var map =  Map<String, dynamic>();
 
-    map["cust_email"] = txt_email.text.toString().trim();
-    map["cust_password"] = txt_pass.text.toString().trim();
-    map["cust_login_by"] = divece_type;
-
-    return map;
-  }
 }

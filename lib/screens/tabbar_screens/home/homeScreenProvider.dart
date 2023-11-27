@@ -8,10 +8,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
+import '../../../models/home model/RecipeCollectionListModel.dart';
 import '../../../models/meals plans/MealPlaneLestData_Model.dart';
 import '../../../models/meals plans/Meal_Plan_Date_Data_model.dart';
 import '../../../models/recipelist/RecipeList_data_model.dart';
 import '../../../models/recipelist/filtter_list_models/Recipe_Filtter_model.dart';
+import '../../../models/recipelist/recipe_like_unlike_data_model.dart';
 
 
 
@@ -22,6 +24,9 @@ class HomeScreenProvider extends ChangeNotifier {
   int? _success ;
   int? get success => _success;
 
+
+  String? _user_id ;
+  String? get user_id => _user_id;
 
   String? _message ;
   String? get message => _message;
@@ -96,6 +101,7 @@ class HomeScreenProvider extends ChangeNotifier {
         }
     );
     if(response.statusCode == 200 ){
+
      loaderFunction(false);
      _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
 
@@ -165,6 +171,7 @@ class HomeScreenProvider extends ChangeNotifier {
     );
 
     if(response.statusCode == 200){
+      loaderFunction2(false);
       _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);
       if (success == 200)  {
         _mealData1!.clear();
@@ -191,10 +198,8 @@ class HomeScreenProvider extends ChangeNotifier {
       }
     }
     else{
-      loaderFunction(false);
-      _mealData1 = [];
-      _select_tab_data_list1 = [];
-      notifyListeners();
+      loaderFunction2(false);
+
       FlutterToast_message(json.decode(response.body)['message']);
     }
 
@@ -252,4 +257,188 @@ class HomeScreenProvider extends ChangeNotifier {
 
     return (MealPlaneLestData_Model.fromJson(json.decode(response.body)));
   }
+
+
+
+  /// Recipe like api function  ///
+  likeRecipeData1(context,recipeId) async {
+    recipe_like_api(recipeId);
+    notifyListeners();
+  }
+  /// recipe_like_api //////////////////
+
+  Future<recipe_like_unlike_data_model> recipe_like_api(recipeId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _tokanget = prefs.getString('login_user_token');
+    _tokanget = _tokanget!.replaceAll('"', '');
+    _user_id = prefs.getString('login_user_id');
+    _user_id = _user_id!.replaceAll('"', '');
+
+    print(_tokanget.toString());
+    check().then((intenet) async {
+      if (intenet != null && intenet) {
+
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+
+    Map toMap() {
+      var map = Map<String, dynamic>();
+      map["rec_id"] = recipeId.toString();
+      map["cust_id"] = _user_id.toString();
+
+      return map;
+    }
+    var response = await http.post(
+        Uri.parse(Endpoints.baseURL + Endpoints.markRecipeFavorite),
+        body: toMap(),
+        headers: {
+          'Authorization': 'Bearer $_tokanget',
+          'Accept': 'application/json'
+        }
+    );
+    if (response.statusCode == 200) {
+      print(response.body.toString());
+      _success = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .status);
+      _message = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .message);
+      print("success 123 ==${_success}");
+      if (_success == 200) {
+        // Navigator.pop(context);
+        FlutterToast_message(_message);
+        notifyListeners();
+        // Get.to(() => Pre_Question_Screen());
+      }else {
+        print('else==============');
+        FlutterToast_message(_message);
+
+      }
+    }
+    else{
+      loaderFunction(false);
+      FlutterToast_message(json.decode(response.body)['message']);
+    }
+    return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
+  }
+
+
+
+  /// Recipe like api function  ///
+  unlikeRecipeData1(context,recipeId,txtSearch,favFilter) async {
+    recipe_unlike_api(context,recipeId,txtSearch,favFilter);
+    notifyListeners();
+  }
+
+  /// recipe_unlike_api ///////////////////
+
+  Future<recipe_like_unlike_data_model> recipe_unlike_api(context,recipeId,txtSearch,favFilter) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _tokanget = prefs.getString('login_user_token');
+    _tokanget = _tokanget!.replaceAll('"', '');
+    _user_id = prefs.getString('login_user_id');
+    _user_id = _user_id!.replaceAll('"', '');
+
+    print(_tokanget.toString());
+    check().then((intenet) async {
+      if (intenet) {
+
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+
+    Map toMap() {
+      var map = Map<String, dynamic>();
+      map["rec_id"] = recipeId.toString();
+      map["cust_id"] = _user_id.toString();
+      return map;
+    }
+    var response = await http.post(
+        Uri.parse(Endpoints.baseURL + Endpoints.unmarkRecipeFromFavorite),
+        body: toMap(),
+        headers: {
+          'Authorization': 'Bearer $_tokanget',
+          'Accept': 'application/json'
+        }
+    );
+    if (response.statusCode == 200) {
+      print(response.body.toString());
+      _success = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .status);
+      _message = (recipe_like_unlike_data_model
+          .fromJson(json.decode(response.body))
+          .message);
+      print("success 123 ==${_success}");
+      if (_success == 200) {
+        FlutterToast_message(_message);
+        notifyListeners();
+      }else {
+        print('else==============');
+        FlutterToast_message(_message);
+
+      }
+    }
+    else{
+      loaderFunction(false);
+      FlutterToast_message(json.decode(response.body)['message']);
+    }
+    return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
+  }
+
+  /// recipe Collection List ///////////////////
+
+  List<RecipeCollectionListResponse>? _recipeCollectionList = [];
+  List<RecipeCollectionListResponse>? get recipeCollectionList => _recipeCollectionList;
+
+  Future<RecipeCollectionListModel> recipeCollectionList_api() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _tokanget = prefs.getString('login_user_token');
+    _tokanget = _tokanget!.replaceAll('"', '');
+
+    print(_tokanget.toString());
+    check().then((intenet) async {
+      if (intenet) {
+
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+
+    var response = await http.get(
+        Uri.parse(Endpoints.baseURL + Endpoints.recipeCollectionList),
+        headers: {
+          'Authorization': 'Bearer $_tokanget',
+          'Accept': 'application/json'
+        }
+    );
+    if (response.statusCode == 200) {
+      print(response.body.toString());
+      _success = (RecipeCollectionListModel
+          .fromJson(json.decode(response.body))
+          .status);
+
+      print("success 123 ==${_success}");
+      if (_success == 200) {
+        _recipeCollectionList =  (RecipeCollectionListModel.fromJson(json.decode(response.body)).data);
+        notifyListeners();
+      }else {
+        print('else==============');
+
+      }
+    }
+    else{
+      loaderFunction(false);
+      FlutterToast_message(json.decode(response.body)['message']);
+    }
+    return RecipeCollectionListModel.fromJson(json.decode(response.body));
+  }
+
 }

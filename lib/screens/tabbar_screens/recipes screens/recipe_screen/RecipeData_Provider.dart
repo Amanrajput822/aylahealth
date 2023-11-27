@@ -117,7 +117,7 @@ class RecipeData_Provider with ChangeNotifier {
   }
 
   /// Recipe data data call function  ///
-  getRecipeData(context,search_test,favorite,cat_id,eat_id,tagIds_list) async {
+  getRecipeData(context,search_test,favorite,cat_id,eat_id,tagIds_list,) async {
      post = await recipeList_ditels_api(search_test:search_test,favorite:favorite,cat_id: cat_id,eat_id: eat_id,tagIds_list:tagIds_list);
 
     _controller = ScrollController()..addListener(() {
@@ -256,6 +256,7 @@ class RecipeData_Provider with ChangeNotifier {
       map["cat_id"] = cat_id??'0';
       map["eat_id"] = eat_id??'0';
       map["tagIds"] = tagIds;
+      map["coll_id"] = tagIds??"0";
       // map["rec_isfeatured"] = "1";
       // map["sortby"] = '';
       // map["orderby"] = '';

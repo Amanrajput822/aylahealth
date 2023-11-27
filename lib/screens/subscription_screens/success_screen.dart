@@ -34,14 +34,18 @@ class Success_Screen extends StatelessWidget {
                 color: HexColor('#F2F2F2').withOpacity(0.8),
                 child: Container(
                   width: deviceWidth(context,0.7),
+                  height: 120,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10)
                   ),
                   padding: EdgeInsets.only(top: 10,bottom: 10),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+
                     children: [
+
                       Text('You’re all set',style: TextStyle(
                         fontSize: 17,
                         fontFamily: fontFamilyText,
@@ -54,10 +58,12 @@ class Success_Screen extends StatelessWidget {
                         color: colorBlack,
                         fontWeight: fontWeight400,
                       )),
+
                       Divider(
                         color: colorgrey,
                         thickness: 1,
                       ),
+
                       InkWell(
                         onTap: (){
                           Get.offAll(() => New_Bottombar_Screen());
@@ -69,6 +75,7 @@ class Success_Screen extends StatelessWidget {
                           fontWeight: fontWeight600,
                         )),
                       ),
+
                     ],
                   ),
                 ),

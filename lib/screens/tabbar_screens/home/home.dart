@@ -65,6 +65,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
     homeScreenProviderData.get_meals_plantypelist_api();
+    homeScreenProviderData.recipeCollectionList_api();
   }
 
   @override
@@ -258,29 +259,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     height: 200,
                     child: Center(child: CircularProgressIndicator()),
                   ):   homeScreenProviderData.mealData1!.isEmpty? recipescard():toDayMealsDataCard(),
-                //  sizedboxheight(15.0),
 
-                  // benarcard('Favourites','A place for your favourite recipes.',
-                  //     'assets/banera_favouritesimage.png', HexColor('#E9ECF1'),(){}),
-                  // sizedboxheight(15.0),
-
-                 //  hedingtile('My Meals',(){
-                 //    Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
-                 //
-                 //  }),
-                 // sizedboxheight(15.0),
-                 // mymealscard(),
-
-                  // sizedboxheight(15.0),
-                  // benarcard('Favourite Recipes','View your favourite meals and snacks',
-                  //     'assets/Favourites.png', HexColor('#D4F1FA'),(){}),
-                  // sizedboxheight(15.0),
-                  // benarcard('Book a Video Appointment','For quality one-on-one coaching',
-                  //     'assets/VideoConsultations.png', HexColor('#D4F1FA'),(){}),
-                  // sizedboxheight(15.0),
-                  // benarcard('Shopping List','Shop for your planned meals & snacks.',
-                  //     'assets/ShoppingList.png', HexColor('#D4F1FA'),(){}),
-                 //  sizedboxheight(15.0),
                   sizedboxheight(15.0),
                   benarcard('Favourite Recipes','View your favourite meals and snacks',
                       'assets/banner_icon/Favourites.png', HexColor('#D0EEB2'),(){
@@ -291,9 +270,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
                       }),
                   sizedboxheight(15.0),
-                  // hedingtile('Featured',(){}),
-                  // sizedboxheight(15.0),
-                  // featuredcard(),
+
                   hedingtile('Recipe collections',(){}),
                   sizedboxheight(15.0),
                   recipecollectionscard(),
@@ -313,20 +290,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         );
                       }),
                   sizedboxheight(15.0),
-                  // benarcard('Book a Video Appointment','For quality one-on-one coaching',
-                  //     'assets/booking_appointment.png', HexColor('#EBFADC'),(){
-                  //       PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                  //         context,
-                  //         settings: const RouteSettings(name: "/Support"),
-                  //         screen:  VideoAppointment(),
-                  //       );
-                  //     }),
-                 // sizedboxheight(15.0),
 
-                  // hedingtile('Recipe collections',(){}),
-                  // sizedboxheight(15.0),
-                  // recipecollectionscard(),
-                  // sizedboxheight(15.0),
                 ],
               ),
             ),
@@ -472,7 +436,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
                           settings: const RouteSettings(name: "/Recipes_Screen"),
-                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0'),
+                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"Home"),
                         );
                       },
                       child: Container(
@@ -586,7 +550,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                     context,
                     settings: const RouteSettings(name: "/Recipes_Screen"),
-                    screen:  Recipes_Description_Screen(rec_id:todayMealsData.recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"meals"),
+                    screen:  Recipes_Description_Screen(rec_id:todayMealsData.recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"HomeToday"),
                   );
                 },
                 child: Container(
@@ -792,65 +756,94 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  List<String> collectionList = ["Picnic faves","Brunch goals"];
+ // List<String> collectionList = ["Picnic faves","Brunch goals"];
   Widget recipecollectionscard(){
+    final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
+    final meaBottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);
+
     return Container(
       height: 150,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: collectionList.length,
+          itemCount: homeScreenProviderData.recipeCollectionList!.length,
           itemBuilder: (BuildContext context, int index){
             return Padding(
               padding: const EdgeInsets.only(right: 15.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+              child: InkWell(
+                onTap: (){
+                  // meaBottomNavBarProviderModel.setcontrollervalue(3);
+                  // final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+                  // if(recipeModel.fav_filter == '1'){
+                  //   recipeModel.selectedfav_filter("0");
+                  //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                  // }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
 
-                ),
-                width: deviceWidth(context,0.35),
-                height: 140,
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage('assets/Rectangle 1794.png')
-                        ),
-
-                      ),
-                      width: deviceWidth(context,0.35),
-                      height: 140,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
+                  ),
+                  width: deviceWidth(context,0.35),
+                  height: 140,
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          gradient:  LinearGradient(
-                              colors: [
-                                HexColor('#3B4250').withOpacity(0.6),
-                                HexColor('#3B4250').withOpacity(0.0),
-                              ],
-                              begin: FractionalOffset.bottomCenter,
-                              end: FractionalOffset.topCenter,
-                              tileMode: TileMode.repeated
-                          )
+                        ),
+                        width: deviceWidth(context,0.35),
+                        height: 140,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Image.network(homeScreenProviderData.recipeCollectionList![index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                            height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                            errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                              height: 110,
+
+                              fit: BoxFit.fill,),
+                            loadingBuilder: (BuildContext context, Widget child,
+                                ImageChunkEvent? loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                      : null,
+                                ),
+                              );
+                            },),
+                        ),
                       ),
-                      width: deviceWidth(context,0.35),
-                      height: 140,
-                      padding: EdgeInsets.only(bottom: 10,left: 20),
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(collectionList[index]??"",style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: fontFamilyText,
-                            color: colorWhite,
-                            fontWeight: fontWeight600,
-                            overflow: TextOverflow.ellipsis
-                        ),),
-                      ),
-                    )
-                  ],
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            gradient:  LinearGradient(
+                                colors: [
+                                  HexColor('#3B4250').withOpacity(0.6),
+                                  HexColor('#3B4250').withOpacity(0.0),
+                                ],
+                                begin: FractionalOffset.bottomCenter,
+                                end: FractionalOffset.topCenter,
+                                tileMode: TileMode.repeated
+                            )
+                        ),
+                        width: deviceWidth(context,0.35),
+                        height: 140,
+                        padding: EdgeInsets.only(bottom: 10,left: 20),
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(homeScreenProviderData.recipeCollectionList![index].collName??"",style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: fontFamilyText,
+                              color: colorWhite,
+                              fontWeight: fontWeight600,
+                              overflow: TextOverflow.ellipsis
+                          ),),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             );

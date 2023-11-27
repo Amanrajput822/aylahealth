@@ -237,7 +237,13 @@ class _Signup_typeState extends State<Signup_type> {
   /////////////// social_login api /////////////
 
   var success, message, id, email;
+  var fcmToken ;
+
   Future<user_login_model> social_login(social_name,social_id,user_name,user_email) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    fcmToken = prefs.getString('fcm_token');
+    fcmToken = fcmToken!.replaceAll('"', '');
 
     check().then((intenet) {
       if (intenet != null && intenet) {
@@ -259,7 +265,7 @@ class _Signup_typeState extends State<Signup_type> {
      if(user_email != null) {
         map["cust_email"] = user_email.toString();
       }
-
+      map["cust_device_id"] = fcmToken??"";
       return map;
     }
     print(toMap());

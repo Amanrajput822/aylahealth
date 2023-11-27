@@ -374,9 +374,16 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
       child:  recipeModel.recipe_data_List!.isEmpty?SizedBox(
         width: deviceWidth(context),
         height: deviceheight(context,0.4),
+
         child: Align(
             alignment: Alignment.topCenter,
-            child: recipeModel.fav_filter=='1'?const Text('You have not added any recipes to favorite the list.'):const Text('No Recipe Found')),) :
+            child: recipeModel.fav_filter=='1'?
+             Text('You have not added any recipes to your favourites list yet. '
+                'Simply tap the ‘heart’ on a recipe to add it to this list!',
+              style: TextStyle(fontFamily: fontFamilyText ,fontSize: 16),
+              textAlign: TextAlign.center,
+            ): Text('No Recipe Found', style: TextStyle(fontFamily: fontFamilyText ,fontSize: 16),
+          textAlign: TextAlign.center,)).paddingOnly(left: 20,right: 20),) :
 
       recipeModel.isFirstLoadRunning
           ? const Center(
