@@ -33,12 +33,11 @@
 				<string>com.googleusercontent.apps.691184521472-vluv22j64h0ua9q0eflaheq8baf2e0gm</string>
 			</array>
 		</dict>
-
 	</array>
 	<key>NSAppTransportSecurity</key>
     <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
+         <key>NSAllowsArbitraryLoads</key>
+         <true/>
     </dict>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
@@ -50,8 +49,14 @@
 	<string>Firebase Auth Demo</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+	    <string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -71,15 +76,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-
-    <key>NSAppTransportSecurity</key>
-    <dict>
-    	<key>NSAllowsArbitraryLoadsInWebContent</key>
-    	 <true/>
-    </dict>
 </dict>
 </plist>

@@ -138,107 +138,109 @@ class _Contact_us_screenState extends State<Contact_us_screen> {
         height: deviceheight(context),
         width: deviceWidth(context),
         padding: EdgeInsets.only(left: 20,right: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Contact us',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontFamily: fontFamilyText,
-                  color: colorPrimaryColor,
-                  fontWeight: fontWeight600,
-              ),
-            ),
-            sizedboxheight(5.0),
-            Text('We want to hear from you! Fill out this form to get in touch with us.',
-              style: TextStyle(
-                  fontSize: 14,
-                  height: 1.5,
-                  fontFamily: fontFamilyText,
-                  color: HexColor('#6A707F'),
-                  fontWeight: fontWeight600,
-              ),
-            ),
-            sizedboxheight(20.0),
-            Text('Message' ,style: TextStyle(
-              fontSize: 12,
-              fontFamily: fontFamilyText,
-              color: colorRichblack,
-              fontWeight: fontWeight600,
-            ),),
-          Focus(
-          child: Builder(
-            builder: (BuildContext context) {
-              final FocusNode focusNode = Focus.of(context);
-               hasFocus = focusNode.hasFocus;
-              return  TextFormField(
-                minLines: 5,
-                maxLines: 5,
-                textCapitalization:TextCapitalization.sentences,
-                controller: _textMessageController,
-                style:  TextStyle(
-                  fontSize: 16,
-                  fontFamily: fontFamilyText,
-                  color: colorRichblack,
-                  fontWeight: fontWeight600,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Contact us',
+                style: TextStyle(
+                    fontSize: 24,
+                    fontFamily: fontFamilyText,
+                    color: colorPrimaryColor,
+                    fontWeight: fontWeight600,
                 ),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: HexColor('#EFF1F9').withOpacity(0.6),
-                  border: InputBorder.none,
-                  hintText: "Placeholder",
-                  helperStyle:  TextStyle(
+              ),
+              sizedboxheight(5.0),
+              Text('We want to hear from you! Fill out this form to get in touch with us.',
+                style: TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    fontFamily: fontFamilyText,
+                    color: HexColor('#6A707F'),
+                    fontWeight: fontWeight600,
+                ),
+              ),
+              sizedboxheight(20.0),
+              Text('Message' ,style: TextStyle(
+                fontSize: 12,
+                fontFamily: fontFamilyText,
+                color: colorRichblack,
+                fontWeight: fontWeight600,
+              ),),
+            Focus(
+            child: Builder(
+              builder: (BuildContext context) {
+                final FocusNode focusNode = Focus.of(context);
+                 hasFocus = focusNode.hasFocus;
+                return  TextFormField(
+                  minLines: 5,
+                  maxLines: 5,
+                  textCapitalization:TextCapitalization.sentences,
+                  controller: _textMessageController,
+                  style:  TextStyle(
                     fontSize: 16,
                     fontFamily: fontFamilyText,
-                    color: colorShadowBlue,
-                    fontWeight: fontWeight400,
+                    color: colorRichblack,
+                    fontWeight: fontWeight600,
+                  ),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: HexColor('#EFF1F9').withOpacity(0.6),
+                    border: InputBorder.none,
+                    hintText: "Placeholder",
+                    helperStyle:  TextStyle(
+                      fontSize: 16,
+                      fontFamily: fontFamilyText,
+                      color: colorShadowBlue,
+                      fontWeight: fontWeight400,
+                    ),
+                  ),
+                  onChanged: (val){
+                    setState(() {
+                      print(val.length);
+                      field1 = val.length;
+                    });
+                  },
+                );
+
+              },
+            ),
+          ),
+              sizedboxheight(8.0),
+              Container(
+                height: 50,
+                width: deviceWidth(context),
+                child: Custom_chackbox(
+                  screentype: 1,
+                  action:(){
+                    setState(() {
+                      if(messageBox==0){
+                        messageBox = 1;
+                      }else if(messageBox==1){
+                        messageBox = 0;
+                      }
+                     // messageBox = !messageBox;
+                    });
+                  },
+                  buttoninout:messageBox==0?false:true,
+                  buttontext:"Please contact me about my message",
+                  unchackborderclor: HexColor('#CCCCCC'),
+                  chackborderclor: colorBluePigment,
+                  chackboxunchackcolor: colorWhite,
+                  chackboxchackcolor: colorWhite,
+                  titel_textstyle: TextStyle(
+                      fontSize: 14,
+                      fontFamily: fontFamilyText,
+                      color: colorRichblack,
+                      fontWeight: fontWeight400,
+                      overflow: TextOverflow.ellipsis
                   ),
                 ),
-                onChanged: (val){
-                  setState(() {
-                    print(val.length);
-                    field1 = val.length;
-                  });
-                },
-              );
-
-            },
-          ),
-        ),
-            sizedboxheight(8.0),
-            Container(
-              height: 50,
-              width: deviceWidth(context),
-              child: Custom_chackbox(
-                screentype: 1,
-                action:(){
-                  setState(() {
-                    if(messageBox==0){
-                      messageBox = 1;
-                    }else if(messageBox==1){
-                      messageBox = 0;
-                    }
-                   // messageBox = !messageBox;
-                  });
-                },
-                buttoninout:messageBox==0?false:true,
-                buttontext:"Please contact me about my message",
-                unchackborderclor: HexColor('#CCCCCC'),
-                chackborderclor: colorBluePigment,
-                chackboxunchackcolor: colorWhite,
-                chackboxchackcolor: colorWhite,
-                titel_textstyle: TextStyle(
-                    fontSize: 14,
-                    fontFamily: fontFamilyText,
-                    color: colorRichblack,
-                    fontWeight: fontWeight400,
-                    overflow: TextOverflow.ellipsis
-                ),
               ),
-            ),
-            sizedboxheight(10.0),
-            submitBtn(context)
-          ],
+              sizedboxheight(10.0),
+              submitBtn(context)
+            ],
+          ),
         ),
       ),
     );

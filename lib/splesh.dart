@@ -25,7 +25,7 @@ class _SpleshState extends State<Splesh> {
 
   getAuthToken() async {
     var token = await FirebaseMessaging.instance.getToken();
-    print('Firebase Token Motivaiton $token');
+    print('Firebase Token Motivation $token');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('firebase_token', token!);
   }
@@ -52,10 +52,10 @@ class _SpleshState extends State<Splesh> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    LocalNotification().configureDidReceiveLocalNotificationSubject(context);
-    LocalNotification().configureSelectNotificationSubject();
-    FirebaseNotifications().firebaseInitialization();
-    LocalNotification().initialize();
+     // LocalNotification().configureDidReceiveLocalNotificationSubject(context);
+     // LocalNotification().configureSelectNotificationSubject();
+     // FirebaseNotifications().firebaseInitialization();
+     LocalNotification().initialize();
     getAuthToken();
     getValuesSF();
   }

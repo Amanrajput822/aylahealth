@@ -119,60 +119,62 @@ class _Edit_Passwers_ScreenState extends State<Edit_Passwers_Screen> {
         child: Container(
           height: deviceheight(context),
           width: deviceWidth(context),
-          padding: EdgeInsets.only(left: 15,right: 15,bottom: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Reset password',
-                style: TextStyle(
-                    fontSize: 24,
+          padding: const EdgeInsets.only(left: 15,right: 15,bottom: 15),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Reset password',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontFamily: fontFamilyText,
+                      color: colorPrimaryColor,
+                      fontWeight: fontWeight600,
+                      overflow: TextOverflow.ellipsis
+                  ),
+                  maxLines: 1,
+                ),
+
+                sizedboxheight(20.0),
+
+                Text('Current password',
+                  style: TextStyle(
+                    fontSize: 14,
                     fontFamily: fontFamilyText,
-                    color: colorPrimaryColor,
-                    fontWeight: fontWeight600,
-                    overflow: TextOverflow.ellipsis
+                    color: colorRichblack,
+                    fontWeight: fontWeight400,
+                  ),
                 ),
-                maxLines: 1,
-              ),
+                sizedboxheight(8.0),
+                current_passwordfield(),
+                sizedboxheight(15.0),
 
-              sizedboxheight(20.0),
-
-              Text('Current password',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: fontFamilyText,
-                  color: colorRichblack,
-                  fontWeight: fontWeight400,
+                Text('New password',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: fontFamilyText,
+                    color: colorRichblack,
+                    fontWeight: fontWeight400,
+                  ),
                 ),
-              ),
-              sizedboxheight(8.0),
-              current_passwordfield(),
-              sizedboxheight(15.0),
+                sizedboxheight(8.0),
+                new_passwordfield(),
+                sizedboxheight(15.0),
 
-              Text('New password',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: fontFamilyText,
-                  color: colorRichblack,
-                  fontWeight: fontWeight400,
+                Text('Confirm new password',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: fontFamilyText,
+                    color: colorRichblack,
+                    fontWeight: fontWeight400,
+                  ),
                 ),
-              ),
-              sizedboxheight(8.0),
-              new_passwordfield(),
-              sizedboxheight(15.0),
-
-              Text('Confirm new password',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: fontFamilyText,
-                  color: colorRichblack,
-                  fontWeight: fontWeight400,
-                ),
-              ),
-              sizedboxheight(8.0),
-              confirm_passwordfield(),
-              sizedboxheight(40.0),
-              updateBtn(context)
-            ],
+                sizedboxheight(8.0),
+                confirm_passwordfield(),
+                sizedboxheight(40.0),
+                updateBtn(context)
+              ],
+            ),
           ),
         ),
       ),

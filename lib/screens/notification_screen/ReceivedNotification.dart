@@ -55,7 +55,8 @@ class LocalNotification {
       requestBadgePermission: false,
       requestSoundPermission: false);
 
-  final InitializationSettings initializationSettings = InitializationSettings(
+  final InitializationSettings initializationSettings =
+  InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
       macOS: initializationSettingsMacOS);

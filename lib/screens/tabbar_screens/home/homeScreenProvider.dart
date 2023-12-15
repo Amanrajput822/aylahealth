@@ -62,7 +62,7 @@ class HomeScreenProvider extends ChangeNotifier {
 
   /// recipeList_ditels_api ///
 
-  List<RecipeList_data_Response>? _recipe_data_List ;
+  List<RecipeList_data_Response>? _recipe_data_List = [];
   List<RecipeList_data_Response>? get recipe_data_List => _recipe_data_List;
 
   Future<RecipeList_data_model> recipeList_ditels_api() async {

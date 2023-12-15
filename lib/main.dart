@@ -11,7 +11,6 @@ import 'common/SharedPrefHelper.dart';
 import 'myapp.dart';
 
 
-final navigatorKey = GlobalKey<NavigatorState>();
 final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
 final BehaviorSubject<String> selectNotificationSubject =

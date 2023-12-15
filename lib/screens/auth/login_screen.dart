@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/auth/signup_type.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -62,6 +63,7 @@ class _LogInState extends State<LogIn> {
     // TODO: implement initState
     super.initState();
     type_check();
+
   }
 
   void type_check(){
@@ -77,15 +79,12 @@ class _LogInState extends State<LogIn> {
     }
   }
 
+
+
   Future<user_login_model> signin() async {
-
-    // Or, use a predicate getter.
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    fcmToken = prefs.getString('fcm_token');
-    fcmToken = fcmToken!.replaceAll('"', '');
-
+    fcmToken = await FirebaseMessaging.instance.getToken();
     check().then((intenet) {
-      if (intenet != null && intenet) {
+      if (intenet) {
         // Internet Present Case
         showLoaderDialog_popup(context,"Sign In...");
       } else {
@@ -106,12 +105,13 @@ class _LogInState extends State<LogIn> {
       Uri.parse(Endpoints.baseURL+Endpoints.Login),
       body: toMap(),
     );
-print(response.body.toString());
+
+    print(response.body.toString());
     success = (user_login_model.fromJson(json.decode(response.body)).status);
     message = (user_login_model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success??""}");
     if (success == 200) {
-      if (success == 200) {
+
         Navigator.pop(context);
 
         final user = user_login_model.fromJson(json.decode(response.body)).data!;
@@ -171,7 +171,7 @@ print(response.body.toString());
         txt_email.clear();
         txt_pass.clear();
         FlutterToast_message(message??"");
-      }
+
     } else {
       Navigator.pop(context);
       error_dialog(message??"");
@@ -385,9 +385,8 @@ print(response.body.toString());
           if(field1 !=0 && field2 !=0){
             if (formkey.currentState!.validate()) {
               signin();
-            } else {
-              // model.toggleautovalidate();
             }
+
 
            // Get.to(() => Pre_Question_Screen());
           }

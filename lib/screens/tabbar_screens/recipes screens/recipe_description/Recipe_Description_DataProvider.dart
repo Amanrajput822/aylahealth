@@ -74,7 +74,7 @@ class Recipe_Description_DataProvider with ChangeNotifier {
         var map = Map<String, dynamic>();
         map["rec_id"] = rec_id.toString();
         map["cust_id"] = user_id.toString();
-        map["checkNutritionSetting"] = '1';
+        // map["checkNutritionSetting"] = '1';
         return map;
       }
       print(toMap());

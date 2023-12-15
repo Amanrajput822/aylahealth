@@ -144,7 +144,9 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                     Container(
                                       height: deviceheight(context,0.25),
                                       width: deviceWidth(context),
-                                      child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",fit: BoxFit.fill,
+                                      child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??
+                                         "https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="
+                                        ,fit: BoxFit.fill,
                                         errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
                                           fit: BoxFit.fill,),
                                         loadingBuilder: (BuildContext context, Widget child,
@@ -657,7 +659,8 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
              color: colorRichblack,
              fontWeight: fontWeight400,
            ),),
-           postMdl.recipe_ditels_data!.recipeNutrition!.isNotEmpty?  Wrap(
+           postMdl.recipe_ditels_data!.recipeNutritionExists == 1?
+           Wrap(
              children: [
                for(var item in postMdl.recipe_ditels_data!.recipeNutrition!)
 
@@ -685,7 +688,8 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                  ),
                ),
              ],
-           ):Container(child:  Text('To view the nutrition content for the recipe, '
+           ):
+           Container(child:  Text('To view the nutrition content for the recipe, '
                'go to the Food and Nutrition Settings > Nutrient Content '
                'Information and select ‘Show Nutrition Content’',style: TextStyle(
              fontSize: 14,

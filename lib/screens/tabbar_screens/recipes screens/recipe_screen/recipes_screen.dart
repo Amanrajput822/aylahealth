@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:aylahealth/common/MultiSelectChip.dart';
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/models/recipelist/filtter_list_models/RecipeCategoryList_Model.dart';
@@ -73,6 +75,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                 _selectedRecipeCategory = null;
 
                 recipeModel.selectedcategory_id('0');
+
                 recipeModel.getRecipeData(context,txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
               }
               else{
@@ -132,7 +135,16 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
 
-                    seach_field(),
+                    if (recipeModel.selectedCollectionIDName == '0') seach_field() else Container(
+                      width: deviceWidth(context,0.92),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(recipeModel.selectedCollectionIDName??"",
+                          style: TextStyle(fontSize: 24,
+                              color: colorRichblack,
+                              fontFamily: fontFamilyText,fontWeight: fontWeight700),),
+                      ),
+                    ),
                     textfieldfocus? TextButton(onPressed: (){
 
                       FocusScopeNode currentFocus = FocusScope.of(context);
@@ -162,7 +174,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
               ),
               // searchbar_container(),
 
-              Container(
+              recipeModel.selectedCollectionIDName == '0'? Container(
                 color: colorWhite,
                 padding:  EdgeInsets.only(left: 15,right: 15),
                 height: 55,
@@ -170,7 +182,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                   scrollDirection: Axis.horizontal,
                   children: choiceChips_RecipeCategory(recipecategory_list:recipeModel.recipecategory_list_data!,recipeModel:recipeModel),
                 ),
-              ),
+              ):Container(),
               sizedboxheight(5.0),
               recipes_itam_listview(),
               // sizedboxheight(50.0),
@@ -189,6 +201,8 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
         onPressed: (){
          // fav_filter = "1";
           recipeModel.selectedfav_filter("1");
+          recipeModel.selectedCollectionIDFunction('0');
+          recipeModel.selectedCollectionIDNameFunction('0');
           recipeModel.getRecipeData(context,txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
         },
         icon: SvgPicture.asset('assets/image/heart.svg',width: 18,height: 18,
@@ -213,7 +227,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
         ),),
 
       actions: [
-        Padding(
+        recipeModel.selectedCollectionIDName == '0'? Padding(
           padding: const EdgeInsets.only(right: 2.0,top: 5),
           child: InkWell(
             onTap: (){
@@ -261,7 +275,14 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
               ),
             ),
           ),
-        )
+        ):Container(child: TextButton(onPressed: (){
+          recipeModel.selectedfav_filter("0");
+          recipeModel.selectedCollectionIDFunction('0');
+          recipeModel.selectedCollectionIDNameFunction('0');
+          recipeModel.getRecipeData(context,txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+        },
+            child: Text('All Recipes',
+                style: TextStyle(color: colorRichblack,fontSize: 14))),)
 
       ],
       backgroundColor: colorWhite,
@@ -392,7 +413,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           : Column(
             children: [
               Container(
-                height: deviceheight(context,0.7),
+                height:Platform.isAndroid ?deviceheight(context,0.7):deviceheight(context,0.62),
                 width: deviceWidth(context),
                 color: HexColor('#F6F7FB'),
 

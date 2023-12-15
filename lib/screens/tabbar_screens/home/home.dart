@@ -20,6 +20,7 @@ import '../../../common/styles/Fluttertoast_internet.dart';
 import '../../Profile_screens/Profile_screen.dart';
 import 'package:intl/intl.dart';
 
+import '../../notification_screen/FirebaseNotifications.dart';
 import '../my_meals/My_Meals_Provider.dart';
 import '../my_meals/calendar_evryday_json.dart';
 import '../my_meals/shopping_list_screen/ShoppingListScreen.dart';
@@ -113,11 +114,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
      formattedTime = DateFormat('EEEE d MMM yyyy').format(now);
 
   }
-  var loginTimeStatus ;
+  var loginTimeStatus = false;
  Future<void> loginTimeStatusFunction() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(()  {
-        loginTimeStatus = prefs.getBool('user_login_time');
+        loginTimeStatus = prefs.getBool('user_login_time')!;
     });
 
 }
@@ -231,6 +232,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   sizedboxheight(25.0),
+                 // TextButton(onPressed: (){notificationPopup();}, child: Text('button')),
                   hedingtile('Start Learning',(){}),
                   sizedboxheight(15.0),
                   startlearningcard(),
@@ -243,6 +245,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       recipeModel.selectedfav_filter("0");
                       recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                     }
+                   else if(recipeModel.selectedCollectionIDName!='0'){
+                      recipeModel.selectedCollectionIDFunction('0');
+                      recipeModel.selectedCollectionIDNameFunction('0');
+                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    }
+
                   }):
                   hedingtile('Today\'s Meals',() async {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -266,12 +274,26 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
                         recipeModel.selectedfav_filter("1");
+                        recipeModel.selectedCollectionIDFunction('0');
+                        recipeModel.selectedCollectionIDNameFunction('0');
                         recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                         Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
                       }),
                   sizedboxheight(15.0),
 
-                  hedingtile('Recipe collections',(){}),
+                  hedingtile('Recipe collections',(){
+                    meaBottomNavBarProviderModel.setcontrollervalue(3);
+                    final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+                    if(recipeModel.fav_filter == '1'){
+                      recipeModel.selectedfav_filter("0");
+                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    }
+                    else if(recipeModel.selectedCollectionIDName!='0'){
+                      recipeModel.selectedCollectionIDFunction('0');
+                      recipeModel.selectedCollectionIDNameFunction('0');
+                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    }
+                  }),
                   sizedboxheight(15.0),
                   recipecollectionscard(),
 
@@ -771,12 +793,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               padding: const EdgeInsets.only(right: 15.0),
               child: InkWell(
                 onTap: (){
-                  // meaBottomNavBarProviderModel.setcontrollervalue(3);
-                  // final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-                  // if(recipeModel.fav_filter == '1'){
-                  //   recipeModel.selectedfav_filter("0");
-                  //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                  // }
+                  meaBottomNavBarProviderModel.setcontrollervalue(3);
+                  final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+
+                    recipeModel.selectedfav_filter("0");
+                    recipeModel.selectedCollectionIDFunction(homeScreenProviderData.recipeCollectionList![index].collId.toString());
+                    recipeModel.selectedCollectionIDNameFunction(homeScreenProviderData.recipeCollectionList![index].collName.toString());
+                    recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+
                 },
                 child: Container(
                   decoration: BoxDecoration(

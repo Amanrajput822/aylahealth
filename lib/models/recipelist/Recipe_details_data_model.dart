@@ -29,6 +29,7 @@ class Recipe_details_data_recponse {
   int? eatId;
   String? image;
   int? favStatus;
+  int? recipeNutritionExists;
   List<RecipeCategory>? recipeCategory;
  // List<EatingPattern>? eatingPattern;
   List<RecipeTag>? recipeTag;
@@ -46,6 +47,7 @@ class Recipe_details_data_recponse {
         this.eatId,
         this.image,
         this.favStatus,
+        this.recipeNutritionExists,
         this.recipeCategory,
        // this.eatingPattern,
         this.recipeTag,
@@ -63,6 +65,7 @@ class Recipe_details_data_recponse {
     eatId = json['eat_id'];
     image = json['image'];
     favStatus = json['fav_status'];
+    recipeNutritionExists = json['recipeNutritionExists'];
     if (json['recipeCategory'] != null) {
       recipeCategory = <RecipeCategory>[];
       json['recipeCategory'].forEach((v) {
@@ -112,6 +115,7 @@ class Recipe_details_data_recponse {
     data['eat_id'] = this.eatId;
     data['image'] = this.image;
     data['fav_status'] = this.favStatus;
+    data['recipeNutritionExists'] = this.recipeNutritionExists;
     if (this.recipeCategory != null) {
       data['recipeCategory'] =
           this.recipeCategory!.map((v) => v.toJson()).toList();

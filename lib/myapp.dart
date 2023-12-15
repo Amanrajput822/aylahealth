@@ -31,6 +31,8 @@ import 'demo/deno.dart';
 import 'home_screen.dart';
 import 'inetrnet_connection_interupt.dart';
 
+GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -72,6 +74,7 @@ class _MyAppState extends State<MyApp> {
       child: GetMaterialApp(
         title: 'Ayla Health',
         debugShowCheckedModeBanner: false,
+        navigatorKey: navigationKey,
         theme: ThemeData(
           backgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(

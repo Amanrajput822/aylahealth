@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:aylahealth/common/formtextfield/validations_field.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -72,9 +73,7 @@ class _Signup_screenState extends State<Signup_screen> {
 
 
   Future<user_login_model> signup() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    fcmToken = prefs.getString('fcm_token');
-    fcmToken = fcmToken!.replaceAll('"', '');
+    fcmToken = await FirebaseMessaging.instance.getToken();
 
     check().then((intenet) {
       if (intenet != null && intenet) {

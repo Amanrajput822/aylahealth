@@ -7,6 +7,7 @@ import 'package:aylahealth/screens/auth/signup_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -241,9 +242,7 @@ class _Signup_typeState extends State<Signup_type> {
 
   Future<user_login_model> social_login(social_name,social_id,user_name,user_email) async {
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    fcmToken = prefs.getString('fcm_token');
-    fcmToken = fcmToken!.replaceAll('"', '');
+    fcmToken = await FirebaseMessaging.instance.getToken();
 
     check().then((intenet) {
       if (intenet != null && intenet) {

@@ -285,7 +285,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
       Provider.of<Food_Nutrition_Settings_provider>(context, listen: false).customerFoodSettingHeadingList_api(context);
 
 
-      select = null;
+    //  select = null;
       _selectedItems.clear();
     } else {
       Navigator.pop(context);

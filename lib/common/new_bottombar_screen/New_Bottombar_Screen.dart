@@ -8,6 +8,8 @@ import "package:intl/intl.dart";
 import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 import "package:provider/provider.dart";
 
+import "../../screens/notification_screen/FirebaseNotifications.dart";
+import "../../screens/notification_screen/ReceivedNotification.dart";
 import "../../screens/tabbar_screens/home/home.dart";
 import '../../screens/tabbar_screens/modules/modules_screen/modules_screen.dart';
 import "../../screens/tabbar_screens/my_meals/My_Meals_Provider.dart";
@@ -38,6 +40,12 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   @override
   void initState() {
     super.initState();
+
+    LocalNotification().configureDidReceiveLocalNotificationSubject(context);
+    LocalNotification().configureSelectNotificationSubject();
+    FirebaseNotifications().firebaseInitialization();
+    // LocalNotification().initialize();
+
     final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);
     BottomNavBarProviderModel.setcontrollervalue(0);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
@@ -330,18 +338,23 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             if(mealsModel.notes){
               Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(value);
               //  recipe_screen_tap();
+             if(value==3){
+              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+              final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+              if(recipeModel.fav_filter == '1'){
+                recipeModel.selectedfav_filter("0");
+                recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+              }
+              else if(recipeModel.selectedCollectionIDName!='0'){
+                recipeModel.selectedCollectionIDFunction('0');
+                recipeModel.selectedCollectionIDNameFunction('0');
+                recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+              }
+            }
             }
             else{
               warning_popup();
               Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
-            }
-            if(value==3){
-              Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
-              final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-              if(recipeModel.fav_filter == '1'){
-              recipeModel.selectedfav_filter("0");
-              recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-              }
             }
             FocusManager.instance.primaryFocus?.unfocus();
           },

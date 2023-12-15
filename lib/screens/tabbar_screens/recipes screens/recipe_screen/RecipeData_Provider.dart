@@ -222,6 +222,24 @@ class RecipeData_Provider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Home param recipe collection
+
+  String? _selectedCollectionID = '0';
+  String? get selectedCollectionID => _selectedCollectionID;
+
+  void selectedCollectionIDFunction( newMessage) {
+    _selectedCollectionID = newMessage;
+    notifyListeners();
+  }
+
+  String? _selectedCollectionIDName = '0';
+  String? get selectedCollectionIDName => _selectedCollectionIDName;
+
+
+  void selectedCollectionIDNameFunction( newMessage) {
+    _selectedCollectionIDName = newMessage;
+    notifyListeners();
+  }
 
     /// recipeList_ditels_api ///
 
@@ -256,7 +274,7 @@ class RecipeData_Provider with ChangeNotifier {
       map["cat_id"] = cat_id??'0';
       map["eat_id"] = eat_id??'0';
       map["tagIds"] = tagIds;
-      map["coll_id"] = tagIds??"0";
+      map["coll_id"] = selectedCollectionID??"0";
       // map["rec_isfeatured"] = "1";
       // map["sortby"] = '';
       // map["orderby"] = '';
@@ -330,6 +348,7 @@ class RecipeData_Provider with ChangeNotifier {
         map["cat_id"] = cat_id??'0';
         map["eat_id"] = eat_id??'0';
         map["tagIds"] = tagIds;
+        map["coll_id"] = selectedCollectionID??"0";
         // map["sortby"] = '';
         // map["orderby"] = '';
         return map;

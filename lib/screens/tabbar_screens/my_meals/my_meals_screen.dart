@@ -472,9 +472,14 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                                                           final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
                                                           if(recipeModel.fav_filter == '1'){
                                                             recipeModel.selectedfav_filter("0");
+
                                                             recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                                                           }
-
+                                                          else if(recipeModel.selectedCollectionIDName!='0'){
+                                                            recipeModel.selectedCollectionIDFunction('0');
+                                                            recipeModel.selectedCollectionIDNameFunction('0');
+                                                            recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                                                          }
 
                                                           recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.select_tab_data_list![index].mtId);
                                                           recipeModel.selectedDay_data(mealsModel.selectedDay);
@@ -769,6 +774,12 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
 
         if(recipeModel.fav_filter == '1'){
           recipeModel.selectedfav_filter("0");
+
+          recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+        }
+        else if(recipeModel.selectedCollectionIDName!='0'){
+          recipeModel.selectedCollectionIDFunction('0');
+          recipeModel.selectedCollectionIDNameFunction('0');
           recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
         }
         mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0", mealsModel.selectedDay);
