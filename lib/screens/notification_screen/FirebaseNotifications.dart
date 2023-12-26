@@ -2,18 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../common/styles/const.dart';
 import '../../main.dart';
 import '../../myapp.dart';
-import '../Profile_screens/Profile_screen.dart';
-import '../tabbar_screens/support_screen/message/chat/chat_list.dart';
+
 import 'ReceivedNotification.dart';
 
 class FirebaseNotifications extends ChangeNotifier {
@@ -21,13 +18,12 @@ class FirebaseNotifications extends ChangeNotifier {
 
   String newUUID() => Uuid().v4();
 
-  void
-
-   firebaseInitialization() {
+  Future<void> firebaseInitialization() async {
 
     _firebaseMessaging.getToken().then((token) {
       setToken(token);
     });
+
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
@@ -74,20 +70,18 @@ class FirebaseNotifications extends ChangeNotifier {
 
   Future<void> notificationDialogManage(RemoteMessage message) async {
     print('message get or not yet');
-    var title = message.notification!.title??"";
-    var body = message.notification!.body??"";
-    print('message ${title}');
-    print('message ${message.data}');
-    print('message ${body}');
-    print('message ${message.data['action_type']}');
+    var title = message.notification!.title;
+    var body = message.notification!.body;
+
     // String type = "${message.data["type"]},${message.data["reference_id"]}";
     if (Platform.isAndroid) {
       print('notification get isAndroid');
-      LocalNotification().showNotification(title, message, body, 0);
+      LocalNotification().showNotification(message);
+     // LocalNotification().showNotification(title!, message, body!, 0);
     }
     if (Platform.isIOS) {
       print('notification get isIOS');
-      LocalNotification().showNotification(title, message, body, 0);
+      LocalNotification().showNotification(message);
 
       // if (message.data['action_type'] == 'callReceiver') {
       //   var _currentUuid = Uuid().v4();
@@ -114,9 +108,7 @@ class FirebaseNotifications extends ChangeNotifier {
       //   );
       // }
     }
-    else{
-      LocalNotification().showNotification(title, message, body, 0);
-    }
+
   }
 
 }
@@ -222,7 +214,6 @@ Future<void> notificationClickIos(var payload) async {
 }
 
 Future<void> notificationClick(var payload) async {
-
   showDialog(
       context: navigationKey.currentContext!,
       builder: (BuildContext context) => AlertDialog(
@@ -426,6 +417,7 @@ Future<void> notificationClickLocal(var payload) async {
   // String? _refrenceId;
 
 }
+
 Future notificationPopup() async {
   return showDialog(
       context: navigationKey.currentContext!,

@@ -141,7 +141,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                 color: colorgrey,
                                 child: Stack(
                                   children: [
-                                    Container(
+                                    SizedBox(
                                       height: deviceheight(context,0.25),
                                       width: deviceWidth(context),
                                       child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??
@@ -187,7 +187,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                                 child: CircleAvatar(
                                                     backgroundColor: Colors.transparent,
                                                     radius: 15,
-                                                    child: SvgPicture.asset('assets/backbutton.svg',color: colorWhite,height: 15,))),
+                                                    child: SvgPicture.asset('assets/backbutton.svg',color: colorBluePigment,height: 15,))),
                                             Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [

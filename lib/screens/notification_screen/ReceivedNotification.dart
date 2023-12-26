@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -61,38 +62,64 @@ class LocalNotification {
       iOS: initializationSettingsIOS,
       macOS: initializationSettingsMacOS);
 
+
+
   initialize() async {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: (payload) async {
           selectNotificationSubject.add(payload.toString());
         });
-  }
 
-  Future<void> showNotification(
-      String title, var type, String body, int value) async {
-    AndroidNotificationDetails androidPlatformChannelSpecifics =
-    const AndroidNotificationDetails(
-      'id',
-      'name',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-    );
-    IOSNotificationDetails iosNotificationDetails =
-    const IOSNotificationDetails(
-      presentAlert: true,
-      presentSound: true,
-      presentBadge: true,
-    );
-
-    NotificationDetails platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics, iOS: iosNotificationDetails);
-    print('type ${type.data}');
-    print('notification catch');
-    await flutterLocalNotificationsPlugin.show(
-        value, title, body, platformChannelSpecifics,
-        payload: jsonEncode(type.data));
   }
+  showNotification(RemoteMessage message) {
+    Map<String, dynamic> data = message.data;
+    if (data["body"] != null) {
+      flutterLocalNotificationsPlugin.show(
+        data.hashCode,
+        data["title"],
+        data["body"],
+      //  payload: jsonEncode(message.data),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'id',
+            'name',
+            icon: '@mipmap/ic_launcher',
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true,
+          ),
+          iOS: IOSNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true),
+        ),
+      );
+    }
+  }
+  // Future<void> showNotification(String title, var type, String body, int value) async {
+  //   AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //   const AndroidNotificationDetails(
+  //     'id',
+  //     'name',
+  //     importance: Importance.max,
+  //     priority: Priority.high,
+  //     playSound: true,
+  //   );
+  //   IOSNotificationDetails iosNotificationDetails =
+  //   const IOSNotificationDetails(
+  //     presentAlert: true,
+  //     presentSound: true,
+  //     presentBadge: true,
+  //   );
+  //
+  //   NotificationDetails platformChannelSpecifics = NotificationDetails(
+  //       android: androidPlatformChannelSpecifics, iOS: iosNotificationDetails);
+  //   print('type ${type.data}');
+  //   print('notification catch');
+  //   await flutterLocalNotificationsPlugin.show(
+  //       value, title, body, platformChannelSpecifics,
+  //       payload: jsonEncode(type.data));
+  // }
 
   void configureDidReceiveLocalNotificationSubject(context) {
     didReceiveLocalNotificationSubject.stream

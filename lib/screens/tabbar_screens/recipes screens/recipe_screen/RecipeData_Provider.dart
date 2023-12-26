@@ -16,6 +16,8 @@ import '../../../../common/styles/Fluttertoast_internet.dart';
 
 class RecipeData_Provider with ChangeNotifier {
 
+  TextEditingController txt_search = TextEditingController();
+
   int? _success ;
   int? get success => _success;
 

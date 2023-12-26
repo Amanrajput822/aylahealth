@@ -169,7 +169,7 @@ class HomeScreenProvider extends ChangeNotifier {
           'Accept': 'application/json'
         }
     );
-
+     print(response.body);
     if(response.statusCode == 200){
       loaderFunction2(false);
       _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);

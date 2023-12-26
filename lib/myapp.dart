@@ -2,6 +2,7 @@ import 'package:aylahealth/screens/auth/forgot_password_screens/forgot_pass_prov
 import 'package:aylahealth/screens/food_natrition_settings/Food_Nutrition_Settings_provider.dart';
 import 'package:aylahealth/screens/help_screen/faq_screen_provider.dart';
 import 'package:aylahealth/screens/notification_screen/FirebaseNotifications.dart';
+import 'package:aylahealth/screens/notification_screen/notificationScreenProvider.dart';
 import 'package:aylahealth/screens/onbording_screen/pre_question_loding_screen.dart';
 import 'package:aylahealth/screens/onbording_screen/screen1.dart';
 import 'package:aylahealth/screens/onbording_screen/screen7.dart';
@@ -10,13 +11,17 @@ import 'package:aylahealth/screens/subscription_screens/subscription_screen.dart
 import 'package:aylahealth/screens/tabbar_screens/home/home.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/homeScreenProvider.dart';
 import 'package:aylahealth/screens/tabbar_screens/modules/module_description_screen/ModuleDescriptionProvider.dart';
+import 'package:aylahealth/screens/tabbar_screens/modules/modules_screen/modules_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/modules/modules_screen/modules_screen_provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/My_Meals_Provider.dart';
+import 'package:aylahealth/screens/tabbar_screens/my_meals/my_meals_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/ShoppingListScreen.dart';
 import 'package:aylahealth/screens/tabbar_screens/my_meals/shopping_list_screen/shoping_list_provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_description/Recipe_Description_DataProvider.dart';
+import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_description/recipes_description_screen.dart';
 import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_screen/RecipeData_Provider.dart';
 import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_screen/recipes_screen.dart';
+import 'package:aylahealth/screens/tabbar_screens/support_screen/support_screen.dart';
 import 'package:aylahealth/splesh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +73,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ForgotPassProvider()),
         ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
         ChangeNotifierProvider(create: (context) => FirebaseNotifications()),
+        ChangeNotifierProvider(create: (context) => NotificationScreenProvider()),
 
       ],
       // create: (context) => RecipeDataProvider(),
@@ -111,6 +117,12 @@ class _MyAppState extends State<MyApp> {
           'apple_login_demo': (context) => apple_login_demo(),
           'ShoppingListScreen': (context) => const ShoppingListScreen(),
           'InternetConnection': (context) => const InternetConnection(),
+          '/Recipes_Screen': (context) => Recipes_Screen(),
+          '/Recipes_Description_Screen': (context) => Recipes_Description_Screen(),
+          '/Home': (context) => Home(),
+          '/Modules_Screen': (context) => Modules_Screen(),
+          '/MyMealsScreen': (context) => MyMealsScreen(),
+          '/SupportScreen': (context) => SupportScreen(),
           // 'CalendarApp': (context) => CalendarApp(),
 
 

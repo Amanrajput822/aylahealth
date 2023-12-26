@@ -25,6 +25,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await SharedPrefHelper.init();
+
   SystemChrome.setPreferredOrientations(
     [
       DeviceOrientation.portraitUp,

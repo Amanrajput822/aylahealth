@@ -59,6 +59,17 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
 
     recipeModel.select_screen_data(false);
     mealsModel.singleDayMeals_change(false);
+    recipeModel.txt_search.clear();
+
+    recipeModel.updateeatingPattern_is(null);
+    recipeModel.updateselectedeatingPattern_index(null);
+     /// filter params
+    recipeModel.selectedfiltercount('0');
+    recipeModel.selected_filter.clear();
+    recipeModel.save_filter.clear();
+    recipeModel.save_select_eatingPattern_id("0");
+    recipeModel.save_select_eatingPattern_index(null);
+     ///*
     recipeModel.getRecipeData1(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
     const Duration duration = Duration(milliseconds: 400);
     const Curve curve = Curves.ease;
@@ -138,6 +149,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
         PersistentBottomNavBarItem(
 
           onSelectedTabPressWhenNoScreensPushed: (){
+            print('PersistentBottomNavBarItem');
             Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(0);
           },
 
@@ -168,10 +180,10 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
             activeColorPrimary: HexColor('#2D3091'),
             inactiveColorPrimary: HexColor('#79879C'),
             ),
-         PersistentBottomNavBarItem(
+        PersistentBottomNavBarItem(
           onSelectedTabPressWhenNoScreensPushed: (){
             Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(1);
-
+            print('PersistentBottomNavBarItem');
           },
 
           icon: Column(
@@ -204,6 +216,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
         ),
         PersistentBottomNavBarItem(
           onSelectedTabPressWhenNoScreensPushed: (){
+            print('PersistentBottomNavBarItem');
             Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
           },
 
@@ -238,6 +251,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
            recipe_screen_tap();
            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
 
+           print('PersistentBottomNavBarItem');
           },
 
           icon: Column(
@@ -268,6 +282,7 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
         ),
         PersistentBottomNavBarItem(
           onSelectedTabPressWhenNoScreensPushed: (){
+            print('PersistentBottomNavBarItem');
             Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
 
           },
@@ -332,7 +347,12 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
      },
      child: Scaffold(
         body: PersistentTabView(
+          context,
+          controller: BottomNavBarProviderModel.controller,
+          popAllScreensOnTapAnyTabs: true,
+
           onItemSelected: (value){
+          print('onItemSelected');
             final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
             if(mealsModel.notes){
@@ -343,12 +363,13 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
               final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
               if(recipeModel.fav_filter == '1'){
                 recipeModel.selectedfav_filter("0");
+                recipeModel.txt_search.clear();
                 recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
               }
               else if(recipeModel.selectedCollectionIDName!='0'){
                 recipeModel.selectedCollectionIDFunction('0');
                 recipeModel.selectedCollectionIDNameFunction('0');
-                recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                recipeModel.getRecipeData(context,recipeModel.txt_search.text,'0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
               }
             }
             }
@@ -365,14 +386,14 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
           popAllScreensOnTapOfSelectedTab: true,
           popActionScreens: PopActionScreensType.all,
           navBarHeight: 60,
-          context,
-          controller: BottomNavBarProviderModel.controller,
+
           screens: _buildScreens(),
           items: _navBarsItems(),
           resizeToAvoidBottomInset: true,
           bottomScreenMargin: 0,
           selectedTabScreenContext: ( context) {
             testContext = context;
+            print('selectedTabScreenContext');
           },
 
           backgroundColor: colorWhite,
@@ -396,7 +417,8 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
           screenTransitionAnimation: const ScreenTransitionAnimation(
             animateTabTransition: true,
           ),
-          navBarStyle: NavBarStyle.simple, // Choose the nav bar style with this property
+          navBarStyle: NavBarStyle.simple,
+          // Choose the nav bar style with this property
         ),
       ),
    );

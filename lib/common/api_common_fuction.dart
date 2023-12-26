@@ -49,4 +49,8 @@ class Endpoints {
 
   static const recipeCollectionList = 'recipeCollectionList';
 
+  static const customerNotificationSetting = 'customerNotificationSetting';
+  static const updateCustomerNotificationSetting = 'updateCustomerNotificationSetting';
+
+
 }

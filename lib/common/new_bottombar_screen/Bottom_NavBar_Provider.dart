@@ -9,6 +9,7 @@ class Bottom_NavBar_Provider extends ChangeNotifier {
   PersistentTabController? get controller => _controller;
 
   void setcontrollervalue(value) {
+    print('setcontrollervalue');
     _controller.index = value;
     notifyListeners();
   }

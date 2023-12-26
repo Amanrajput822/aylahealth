@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/styles/const.dart';
+import 'notificationScreenProvider.dart';
 
 class Notifocation_Screen extends StatefulWidget {
   const Notifocation_Screen({Key? key}) : super(key: key);
@@ -12,11 +14,21 @@ class Notifocation_Screen extends StatefulWidget {
 }
 
 class _Notifocation_ScreenState extends State<Notifocation_Screen> {
-  bool isSwitched1 = false;
-  bool isSwitched2 = false;
-  bool isSwitched3 = false;
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    final NotificationScreenModelData =  Provider.of<NotificationScreenProvider>(context, listen: false);
+    NotificationScreenModelData.customerNotificationSetting_api();
+
+  }
+
   @override
   Widget build(BuildContext context) {
+    final NotificationScreenModelData = Provider.of<NotificationScreenProvider>(context);
     return Scaffold(
       backgroundColor: colorWhite,
       appBar: AppBar(
@@ -33,7 +45,11 @@ class _Notifocation_ScreenState extends State<Notifocation_Screen> {
         height: deviceheight(context),
         width: deviceWidth(context),
         padding: EdgeInsets.all(15),
-        child: Column(
+        child:NotificationScreenModelData.loading
+            ? const SizedBox(
+          height: 200,
+          child: Center(child: CircularProgressIndicator()),
+        ):   Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('  Notifications',
@@ -56,7 +72,7 @@ class _Notifocation_ScreenState extends State<Notifocation_Screen> {
             ),
 
             ListTile(
-              title: Text('Notification type 1',
+              title: Text('New Modules',
                 style: TextStyle(
                     fontSize: 16,
                     fontFamily: fontFamilyText,
@@ -66,7 +82,7 @@ class _Notifocation_ScreenState extends State<Notifocation_Screen> {
                 ),
                 maxLines: 1,
               ),
-              subtitle:Text('Description of notification goes here.',
+              subtitle:Text('Be notified when we add a new module!',
                 style: TextStyle(
                     fontSize: 12,
                     fontFamily: fontFamilyText,
@@ -82,26 +98,39 @@ class _Notifocation_ScreenState extends State<Notifocation_Screen> {
 
                 onChanged: (a){
                   setState(() {
-                    isSwitched1 = a ;
+                    if(NotificationScreenModelData.notificationSettingData!.first.cnsModuleStatus == true)
+                    {
+                      NotificationScreenModelData.updateCustomerNotificationSetting_api(
+                          NotificationScreenModelData.notificationSettingData!.first.cnsId!,
+                          NotificationScreenModelData.notificationSettingData!.first.cnsRecipeStatus == true?1:0,0,'cns_module_status');
+
+                      NotificationScreenModelData.notificationSettingData!.first.cnsModuleStatus = false;
+                    }
+                    else if(NotificationScreenModelData.notificationSettingData!.first.cnsModuleStatus == false)
+                    {
+                      NotificationScreenModelData.updateCustomerNotificationSetting_api(
+                          NotificationScreenModelData.notificationSettingData!.first.cnsId!,
+                          NotificationScreenModelData.notificationSettingData!.first.cnsRecipeStatus == true?1:0,1,'cns_module_status');
+
+                      NotificationScreenModelData.notificationSettingData!.first.cnsModuleStatus = true;
+                    }
+
                   });
                 },
-                value: isSwitched1,
+                value: NotificationScreenModelData.notificationSettingData!.first.cnsModuleStatus!,
                 activeColor: HexColor('#2D3091'),
                 activeTrackColor: HexColor('#2D3091').withOpacity(0.4),
                 inactiveThumbColor: colorgrey,
                 inactiveTrackColor: HexColor('#2D3091').withOpacity(0.4),
               ),
 
-              onTap: (){
-               // Get.to(() => Notifocation_Screen());
-              },
             ),
             Divider(
               thickness: 1,height: 1,
               color: HexColor('#E9ECF1'),
             ),
             ListTile(
-              title: Text('Notification type 2',
+              title: Text('New Recipes',
                 style: TextStyle(
                     fontSize: 16,
                     fontFamily: fontFamilyText,
@@ -111,7 +140,7 @@ class _Notifocation_ScreenState extends State<Notifocation_Screen> {
                 ),
                 maxLines: 1,
               ),
-              subtitle:Text('Description of notification',
+              subtitle:Text('Be notified when we add new recipes!',
                 style: TextStyle(
                     fontSize: 12,
                     fontFamily: fontFamilyText,
@@ -124,72 +153,40 @@ class _Notifocation_ScreenState extends State<Notifocation_Screen> {
               tileColor: colorWhite,
               textColor: colorRichblack,
               trailing: Switch(
-
-                onChanged: (a){
+                onChanged: (value){
                   setState(() {
-                    isSwitched2 = a ;
+                    if(NotificationScreenModelData.notificationSettingData!.first.cnsRecipeStatus == true)
+                      {
+                        NotificationScreenModelData.updateCustomerNotificationSetting_api(
+                            NotificationScreenModelData.notificationSettingData!.first.cnsId!,
+                            0,NotificationScreenModelData.notificationSettingData!.first.cnsModuleStatus == true?1:0,'cns_recipe_status');
+
+                        NotificationScreenModelData.notificationSettingData!.first.cnsRecipeStatus = false;
+                      }
+                   else if(NotificationScreenModelData.notificationSettingData!.first.cnsRecipeStatus == false)
+                    {
+                      NotificationScreenModelData.updateCustomerNotificationSetting_api(
+                          NotificationScreenModelData.notificationSettingData!.first.cnsId!,
+                          1,NotificationScreenModelData.notificationSettingData!.first.cnsModuleStatus == true?1:0,'cns_recipe_status');
+
+                      NotificationScreenModelData.notificationSettingData!.first.cnsRecipeStatus = true;
+                    }
+
                   });
                 },
-                value: isSwitched2,
+                value: NotificationScreenModelData.notificationSettingData!.first.cnsRecipeStatus!,
                 activeColor: HexColor('#2D3091'),
                 activeTrackColor: HexColor('#2D3091').withOpacity(0.4),
                 inactiveThumbColor: colorgrey,
                 inactiveTrackColor: HexColor('#2D3091').withOpacity(0.4),
               ),
 
-              onTap: (){
-                // Get.to(() => Notifocation_Screen());
-              },
             ),
             Divider(
               thickness: 1,height: 1,
               color: HexColor('#E9ECF1'),
             ),
-            ListTile(
-              title: Text('Notification type 3',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: fontFamilyText,
-                    color: colorRichblack,
-                    fontWeight: fontWeight400,
-                    overflow: TextOverflow.ellipsis
-                ),
-                maxLines: 1,
-              ),
-              subtitle:Text('Description of notification goes here.',
-                style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: fontFamilyText,
-                    color: HexColor('#6A707F'),
-                    fontWeight: fontWeight400,
-                    overflow: TextOverflow.ellipsis
-                ),
-                maxLines: 1,
-              ) ,
-              tileColor: colorWhite,
-              textColor: colorRichblack,
-              trailing: Switch(
 
-                onChanged: (a){
-                  setState(() {
-                    isSwitched3 = a ;
-                  });
-                },
-                value: isSwitched3,
-                activeColor: HexColor('#2D3091'),
-                activeTrackColor: HexColor('#2D3091').withOpacity(0.4),
-                inactiveThumbColor: colorgrey,
-                inactiveTrackColor: HexColor('#2D3091').withOpacity(0.4),
-              ),
-
-              onTap: (){
-                // Get.to(() => Notifocation_Screen());
-              },
-            ),
-            Divider(
-              thickness: 1,height: 1,
-              color: HexColor('#E9ECF1'),
-            ),
           ],
         ),
       ),

@@ -239,15 +239,24 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
                  sizedboxheight(15.0),
                   homeScreenProviderData.mealData1!.isEmpty? hedingtile('Recipes',(){
+
                     meaBottomNavBarProviderModel.setcontrollervalue(3);
                     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+
                     if(recipeModel.fav_filter == '1'){
+                      recipeModel.txt_search.clear();
                       recipeModel.selectedfav_filter("0");
                       recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                     }
                    else if(recipeModel.selectedCollectionIDName!='0'){
+                      recipeModel.txt_search.clear();
                       recipeModel.selectedCollectionIDFunction('0');
                       recipeModel.selectedCollectionIDNameFunction('0');
+                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    }
+                   else if(recipeModel.txt_search.text.isNotEmpty){
+                     print('recipeModel.txt_search.text.isNotEmpty');
+                      recipeModel.txt_search.clear();
                       recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                     }
 
@@ -257,6 +266,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     setState(() {
                       prefs.setBool('Home_Screen', true,);
                     });
+
 
                     meaBottomNavBarProviderModel.setcontrollervalue(2);
 
@@ -276,21 +286,30 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         recipeModel.selectedfav_filter("1");
                         recipeModel.selectedCollectionIDFunction('0');
                         recipeModel.selectedCollectionIDNameFunction('0');
+                        recipeModel.txt_search.clear();
                         recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                         Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+
                       }),
                   sizedboxheight(15.0),
 
                   hedingtile('Recipe collections',(){
                     meaBottomNavBarProviderModel.setcontrollervalue(3);
                     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+
                     if(recipeModel.fav_filter == '1'){
+                      recipeModel.txt_search.clear();
                       recipeModel.selectedfav_filter("0");
                       recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                     }
                     else if(recipeModel.selectedCollectionIDName!='0'){
+                      recipeModel.txt_search.clear();
                       recipeModel.selectedCollectionIDFunction('0');
                       recipeModel.selectedCollectionIDNameFunction('0');
+                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    }
+                    else if(recipeModel.txt_search.text.isNotEmpty){
+                      recipeModel.txt_search.clear();
                       recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
                     }
                   }),
@@ -457,7 +476,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       onTap: () {
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
-                          settings: const RouteSettings(name: "/Recipes_Screen"),
+                          settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                           screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"Home"),
                         );
                       },
@@ -494,7 +513,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       onTap: () {
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
-                          settings: const RouteSettings(name: "/Recipes_Screen"),
+                          settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                           screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0'),
                         );
                       },
@@ -571,7 +590,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 onTap: (){
                   PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                     context,
-                    settings: const RouteSettings(name: "/Recipes_Screen"),
+                    settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                     screen:  Recipes_Description_Screen(rec_id:todayMealsData.recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"HomeToday"),
                   );
                 },
@@ -795,7 +814,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 onTap: (){
                   meaBottomNavBarProviderModel.setcontrollervalue(3);
                   final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
+                  recipeModel.txt_search.clear();
                     recipeModel.selectedfav_filter("0");
                     recipeModel.selectedCollectionIDFunction(homeScreenProviderData.recipeCollectionList![index].collId.toString());
                     recipeModel.selectedCollectionIDNameFunction(homeScreenProviderData.recipeCollectionList![index].collName.toString());

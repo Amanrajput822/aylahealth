@@ -770,16 +770,23 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
         onPressed: () {
         /// tab bar tab controller
         Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+
        /// calendar data save api
 
         if(recipeModel.fav_filter == '1'){
+          recipeModel.txt_search.clear();
           recipeModel.selectedfav_filter("0");
-
+          recipeModel.txt_search.clear();
+          recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+        }
+        else if(recipeModel.txt_search.text.isNotEmpty){
+          recipeModel.txt_search.clear();
+          recipeModel.selectedCollectionIDFunction('0');
+          recipeModel.selectedCollectionIDNameFunction('0');
           recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
         }
         else if(recipeModel.selectedCollectionIDName!='0'){
-          recipeModel.selectedCollectionIDFunction('0');
-          recipeModel.selectedCollectionIDNameFunction('0');
+          recipeModel.txt_search.clear();
           recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
         }
         mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0", mealsModel.selectedDay);
@@ -1921,6 +1928,10 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                                                 /// tab bar tab controller
                                                 Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
 
+                                                if(recipeModel.selectedCollectionIDName!='0'){
+                                                recipeModel.txt_search.clear();
+                                                recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                                                }
                                                 /// screen check function
                                                 recipeModel.select_screen_data(true);
 

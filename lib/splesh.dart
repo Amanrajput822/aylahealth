@@ -55,7 +55,8 @@ class _SpleshState extends State<Splesh> {
      // LocalNotification().configureDidReceiveLocalNotificationSubject(context);
      // LocalNotification().configureSelectNotificationSubject();
      // FirebaseNotifications().firebaseInitialization();
-     LocalNotification().initialize();
+
+    LocalNotification().initialize();
     getAuthToken();
     getValuesSF();
   }
