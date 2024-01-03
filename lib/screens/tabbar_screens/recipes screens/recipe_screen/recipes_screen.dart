@@ -293,8 +293,11 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           recipeModel.selectedCollectionIDNameFunction('0');
           recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
         },
-            child: Text('All Recipes',
-                style: TextStyle(color: colorRichblack,fontSize: 14))),)
+            child: SvgPicture.asset(
+              'assets/image/recipes.svg',
+                width: 18,height: 18,
+                color: HexColor('#131A29')
+            )),)
 
       ],
       backgroundColor: colorWhite,
@@ -425,7 +428,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           : Column(
             children: [
               Container(
-                height:Platform.isAndroid ?deviceheight(context,0.7):deviceheight(context,0.62),
+                height:Platform.isAndroid ?deviceheight(context,0.69):deviceheight(context,0.61),
                 width: deviceWidth(context),
                 color: HexColor('#F6F7FB'),
 
@@ -461,7 +464,12 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                       PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                         context,
                                         settings: const RouteSettings(name: "/Recipes_Screen"),
-                                        screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index * 2].recId,rec_index:index * 2,txt_search:recipeModel.txt_search.text.toString(),fav_filter:recipeModel.fav_filter),
+                                        screen:  Recipes_Description_Screen(
+                                            rec_id:recipeModel.recipe_data_List![index * 2].recId,
+                                            rec_index:index * 2,
+                                            txt_search:recipeModel.txt_search.text.toString(),
+                                            fav_filter:recipeModel.fav_filter
+                                        ),
                                       );
                                     },
                                     child: Container(

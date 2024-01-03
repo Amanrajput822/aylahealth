@@ -39,7 +39,8 @@ dependencies:
   firebase_auth: ^4.10.0
   firebase_core: ^2.16.0
   firebase_messaging: ^14.7.3
-  flutter_local_notifications: ^9.1.5
+  flutter_local_notifications: ^16.3.0
+#  flutter_local_notifications: ^10.0.0
   rxdart: ^0.27.3
 
   flutter_holo_date_picker: ^1.1.2+1
@@ -69,6 +70,7 @@ dependencies:
   video_player: ^2.7.2
 #  webview_flutter: 4.0.0
   webview_flutter: ^2.0.13
+
 
 #  vimeo_video_player: ^0.0.10
 

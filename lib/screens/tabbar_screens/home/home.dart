@@ -232,7 +232,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   sizedboxheight(25.0),
-                 // TextButton(onPressed: (){notificationPopup();}, child: Text('button')),
+
+                //  TextButton(onPressed: (){notificationPopup();}, child: Text('button')),
+
                   hedingtile('Start Learning',(){}),
                   sizedboxheight(15.0),
                   startlearningcard(),
@@ -294,24 +296,24 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   sizedboxheight(15.0),
 
                   hedingtile('Recipe collections',(){
-                    meaBottomNavBarProviderModel.setcontrollervalue(3);
-                    final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
-                    if(recipeModel.fav_filter == '1'){
-                      recipeModel.txt_search.clear();
-                      recipeModel.selectedfav_filter("0");
-                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                    }
-                    else if(recipeModel.selectedCollectionIDName!='0'){
-                      recipeModel.txt_search.clear();
-                      recipeModel.selectedCollectionIDFunction('0');
-                      recipeModel.selectedCollectionIDNameFunction('0');
-                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                    }
-                    else if(recipeModel.txt_search.text.isNotEmpty){
-                      recipeModel.txt_search.clear();
-                      recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                    }
+                    // meaBottomNavBarProviderModel.setcontrollervalue(3);
+                    // final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
+                    //
+                    // if(recipeModel.fav_filter == '1'){
+                    //   recipeModel.txt_search.clear();
+                    //   recipeModel.selectedfav_filter("0");
+                    //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    // }
+                    // else if(recipeModel.selectedCollectionIDName!='0'){
+                    //   recipeModel.txt_search.clear();
+                    //   recipeModel.selectedCollectionIDFunction('0');
+                    //   recipeModel.selectedCollectionIDNameFunction('0');
+                    //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    // }
+                    // else if(recipeModel.txt_search.text.isNotEmpty){
+                    //   recipeModel.txt_search.clear();
+                    //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    // }
                   }),
                   sizedboxheight(15.0),
                   recipecollectionscard(),
@@ -362,7 +364,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               ),),
             ),
 
-            Container(
+          (hedingtext=='Recipe collections')?Container() : Container(
                 width: 25,
                 height: 20,
                 child: const Icon(Icons.arrow_forward_ios_rounded,size: 18,),

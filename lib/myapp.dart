@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => ModulesDescriptionScreenProvider()),
         ChangeNotifierProvider(create: (context) => ForgotPassProvider()),
         ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
-        ChangeNotifierProvider(create: (context) => FirebaseNotifications()),
+      //  ChangeNotifierProvider(create: (context) => FirebaseNotifications()),
         ChangeNotifierProvider(create: (context) => NotificationScreenProvider()),
 
       ],

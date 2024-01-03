@@ -10,6 +10,7 @@ import "package:provider/provider.dart";
 
 import "../../screens/notification_screen/FirebaseNotifications.dart";
 import "../../screens/notification_screen/ReceivedNotification.dart";
+import "../../screens/notification_screen/newNotificationFile.dart";
 import "../../screens/tabbar_screens/home/home.dart";
 import '../../screens/tabbar_screens/modules/modules_screen/modules_screen.dart';
 import "../../screens/tabbar_screens/my_meals/My_Meals_Provider.dart";
@@ -40,10 +41,10 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   @override
   void initState() {
     super.initState();
-
-    LocalNotification().configureDidReceiveLocalNotificationSubject(context);
-    LocalNotification().configureSelectNotificationSubject();
-    FirebaseNotifications().firebaseInitialization();
+     NotificationHandler.firebaseInit();
+    // LocalNotification().configureDidReceiveLocalNotificationSubject(context);
+    // LocalNotification().configureSelectNotificationSubject();
+    // FirebaseNotifications().firebaseInitialization();
     // LocalNotification().initialize();
 
     final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);

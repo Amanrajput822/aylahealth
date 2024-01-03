@@ -144,6 +144,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                 child: Container(
 
                                   child: Text('For tech support please head to the ‘Help’ section in your profile.',
+                                 textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: fontFamilyText,
