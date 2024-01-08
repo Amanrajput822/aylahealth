@@ -87,6 +87,14 @@ class _FAQs_screenState extends State<FAQs_screen> {
       trailing: const Icon(Icons.arrow_forward_ios_rounded),
       title: Html(
         data: _title.toString(),
+        style: {
+          "span": Style(
+            fontSize: FontSize(16.0),
+            fontWeight: fontWeight400,
+            color: colorRichblack,
+            fontFamily: fontFamilyText,
+          ),
+        },
 
       ),
       // Text(_title.toString(),

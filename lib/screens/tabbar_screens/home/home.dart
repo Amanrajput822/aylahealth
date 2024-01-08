@@ -233,7 +233,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 children: [
                   sizedboxheight(25.0),
 
-                //  TextButton(onPressed: (){notificationPopup();}, child: Text('button')),
+                  TextButton(onPressed: (){
+                    notificationPopup();}, child: Text('button')),
 
                   hedingtile('Start Learning',(){}),
                   sizedboxheight(15.0),
@@ -489,7 +490,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
                             child: Image.network(homeScreenProviderData.recipe_data_List![index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                              height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                              height: 110,width: deviceWidth(context),fit: BoxFit.fill,
                               errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
                                 height: 110,
 
@@ -828,7 +829,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     borderRadius: BorderRadius.circular(5),
 
                   ),
-                  width: deviceWidth(context,0.35),
+                  width: 140,
                   height: 140,
                   child: Stack(
                     children: [
@@ -836,14 +837,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        width: deviceWidth(context,0.35),
+                        width: 140,
                         height: 140,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(5),
                           child: Image.network(homeScreenProviderData.recipeCollectionList![index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                            height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                            height: 140,width: 140,fit: BoxFit.fill,
                             errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
-                              height: 110,
+                              height: 140,
 
                               fit: BoxFit.fill,),
                             loadingBuilder: (BuildContext context, Widget child,
@@ -873,18 +874,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                 tileMode: TileMode.repeated
                             )
                         ),
-                        width: deviceWidth(context,0.35),
+                        width: 140,
                         height: 140,
-                        padding: EdgeInsets.only(bottom: 10,left: 20),
+                        padding: EdgeInsets.only(bottom: 10),
                         child: Align(
-                          alignment: Alignment.bottomLeft,
+                          alignment: Alignment.bottomCenter,
                           child: Text(homeScreenProviderData.recipeCollectionList![index].collName??"",style: TextStyle(
                               fontSize: 16,
                               fontFamily: fontFamilyText,
                               color: colorWhite,
                               fontWeight: fontWeight600,
-                              overflow: TextOverflow.ellipsis
-                          ),),
+                             // overflow: TextOverflow.ellipsis
+                          ),textAlign: TextAlign.center,),
                         ),
                       )
                     ],

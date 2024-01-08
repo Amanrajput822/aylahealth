@@ -150,8 +150,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   }),
             ),
             Padding(
-              padding:  const EdgeInsets.only(
-                  left: 20, right: 20,  bottom: 20),
+              padding:   EdgeInsets.only(
+                  left: 20, right: 20,  bottom: Platform.isAndroid ?20:15),
               child: Container(
                 child: messageField(),
               ),

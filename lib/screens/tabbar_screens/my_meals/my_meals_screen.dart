@@ -1078,7 +1078,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                            //   recipeModel.listviewCalendar_hideShow(false);
                           });
                         },
-                      ).paddingOnly(bottom: 30):
+                      ).paddingOnly(bottom:Platform.isAndroid ?80: 40):
                       TableCalendar(
 
                         rowHeight:48,
@@ -1149,7 +1149,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                             //   recipeModel.listviewCalendar_hideShow(false);
                           });
                         },
-                      ).paddingOnly(bottom: 30);
+                      ).paddingOnly(bottom:Platform.isAndroid ?80: 40);
                     },
                   ),
                 ),
@@ -1604,7 +1604,8 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                         onPressed: () {
                           Navigator.of(context, rootNavigator: true).pop("Discard");
                         },
-
+                        isDefaultAction: true,
+                        isDestructiveAction: true,
                         child:  Text('No',style: TextStyle(color: colorBluePigment ),),
                       ),
                       // The "Yes" button

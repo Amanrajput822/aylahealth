@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -117,7 +119,7 @@ class _CompleteApplyingScreenState extends State<CompleteApplyingScreen> {
             ),
           ),
           Positioned(
-              bottom: 30,
+              bottom: 20,
               left: deviceWidth(context,0.04),
               right: deviceWidth(context,0.04),
               child: compleate_Btn(context))
@@ -176,7 +178,7 @@ class _CompleteApplyingScreenState extends State<CompleteApplyingScreen> {
       child: Column(
         children: [
           Container(
-            height: deviceheight(context,0.7),
+            height: Platform.isAndroid ?deviceheight(context,0.7):deviceheight(context,0.7),
             width: deviceWidth(context),
             color: HexColor('#F6F7FB'),
 

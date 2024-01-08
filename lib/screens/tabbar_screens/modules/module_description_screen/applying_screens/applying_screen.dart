@@ -324,7 +324,7 @@ class _ApplyingScreenState extends State<ApplyingScreen> {
                 ),
               ),
               Positioned(
-                  bottom: 0,
+                  bottom: 10,
                   left: deviceWidth(context,0.04),
                   right: deviceWidth(context,0.04),
                   child: Next_Btn(context))

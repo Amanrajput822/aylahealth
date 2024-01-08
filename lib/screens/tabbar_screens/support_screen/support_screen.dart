@@ -28,6 +28,7 @@ class _SupportScreenState extends State<SupportScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor:  colorWhite,
+        centerTitle: true,
         title:  Text("Get Support",
           style: TextStyle(
               fontSize: 30,
@@ -140,17 +141,17 @@ class _SupportScreenState extends State<SupportScreen> {
                               ),
                               sizedboxwidth(8.0),
                               Expanded(
-                                flex: 3,
+                                flex:6,
                                 child: Container(
-
-                                  child: Text('For tech support please head to the ‘Help’ section in your profile.',
+                                 child: Text('For tech support please head to the ‘Help’ section in your profile.',
                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontFamily: fontFamilyText,
                                     fontWeight: fontWeight400,
-                                    color: colorSlateGray
-                                  ),)
+                                    color: colorSlateGray,
+                                    overflow: TextOverflow.ellipsis
+                                  ),maxLines: 2,)
                                 ),
                               ),
                               sizedboxwidth(8.0),

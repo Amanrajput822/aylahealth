@@ -64,6 +64,8 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
        });
      }
    });
+   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+   mealsModel.get_meals_plantypelist_api();
    //widgetheight(_childKey1);
  }
 
@@ -185,14 +187,15 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                                   }
                                                 },
                                                 child: CircleAvatar(
-                                                    backgroundColor: Colors.transparent,
-                                                    radius: 15,
-                                                    child: SvgPicture.asset('assets/backbutton.svg',color: colorBluePigment,height: 15,))),
+                                                    backgroundColor: Colors.white,
+                                                    radius: 12.5,
+                                                    child: SvgPicture.asset('assets/backbutton.svg',color: colorBluePigment,height: 13,))),
                                             Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 InkWell(
                                                     onTap: (){
+                                                      print(recipeModel.meals_screen);
                                                       if(recipeModel.meals_screen){
                                                         print(recipeModel.select_mealplanID_recipe.toString());
                                                       }else{
@@ -209,7 +212,9 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                                 InkWell(
                                                   onTap: (){
                                                     setState(() {
-
+                                                    print('widget.screen');
+                                                    print(widget.screen);
+                                                    print(widget.screen=="Notification");
                                                       if(widget.screen=="meals"){
                                                         final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
                                                         if(mealsModel.select_tab_data_list![widget.rec_index!].favStatus == 0){
@@ -265,9 +270,18 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                                           recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
                                                           homeScreenProviderData.unlikeRecipeData1(context,homeScreenProviderData.select_tab_data_list1![widget.rec_index!].recId,'','0');
                                                         }
-
                                                       }
 
+                                                      else if(widget.screen=="Notification"){
+                                                        if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 0){
+                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                          recipeDescreptioModel.recipe_like_api(context,recipeDescreptioModel.recipe_ditels_data!.recId!);
+                                                        }
+                                                        else if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 1){
+                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                          recipeDescreptioModel.recipe_unlike_api(context,recipeDescreptioModel.recipe_ditels_data!.recId);
+                                                        }
+                                                      }
                                                       else{
                                                         if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 0){
                                                           recipeModel.recipe_data_List![widget.rec_index!].favStatus = 1;
@@ -521,7 +535,8 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
     );
   }
 
-  Widget ingredients_container({required Recipe_Description_DataProvider recipeDescreptioModel}){
+
+   Widget ingredients_container({required Recipe_Description_DataProvider recipeDescreptioModel}){
     final postMdl = Provider.of<Recipe_Description_DataProvider>(context);
     return Container(
 
@@ -669,7 +684,6 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                  child: Row(
                    mainAxisSize: MainAxisSize.min,
                    children: [
-                     Text(MixedFraction.fromDouble(1.5).toString()),
                      Text(item.nutName != null?'${item.nutName!.replaceAll("(", ", ").split(")")[0]}: ':"",style: TextStyle(
                        fontSize: 16,
                        height: 1.5,
@@ -725,48 +739,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                      child: Column(
                        mainAxisSize: MainAxisSize.min,
                        children: [
-                         // calendar_listview? Container(
-                         //   child: Column(
-                         //     children: [
-                         //        Text('Select Month',style: TextStyle(
-                         //           color: colorBluePigment,
-                         //           fontSize: 18,
-                         //           fontFamily: fontFamilyText,
-                         //           fontWeight: fontWeight400
-                         //       ),),
-                         //       sizedboxheight(10.0),
-                         //       Wrap(
-                         //         spacing: 5.0,
-                         //         runSpacing: 0.0,
-                         //        // children: _buildChoiceList(),
-                         //         children: _monthNames
-                         //             .asMap()
-                         //             .entries
-                         //             .map((entry) => ChoiceChip(
-                         //           label: Text(_monthNames[entry.key]),
-                         //           labelStyle: TextStyle(
-                         //               color: selectedChoiceIndex == entry.key?colorWhite:colorBluePigment,
-                         //               fontSize: 14,
-                         //               fontFamily: fontFamilyText,
-                         //               fontWeight: fontWeight400
-                         //           ),
-                         //           selected: selectedChoiceIndex == entry.key,
-                         //           selectedColor: colorBluePigment,
-                         //           shape: StadiumBorder(side: BorderSide(color: colorBluePigment)),
-                         //           backgroundColor: colorWhite,
-                         //           onSelected: (bool isSelected) {
-                         //             setState(() {
-                         //               selectedChoiceIndex = isSelected ? entry.key : -1;
-                         //               calendar_listview = false;
-                         //               (context as Element).reassemble();
-                         //             });
-                         //           },
-                         //         ))
-                         //             .toList(),
-                         //       ),
-                         //     ],
-                         //   ),
-                         // ).paddingAll(10.0):
+
                          Container(
                            margin: EdgeInsets.symmetric(horizontal: 20.0),
                            padding: EdgeInsets.only(bottom: 10),
@@ -775,8 +748,6 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                              firstDay: DateTime(2022),
                              lastDay: DateTime(2050),
                              focusedDay:recipeModel.focusedDay,
-
-
                              startingDayOfWeek: StartingDayOfWeek.monday,
                              selectedDayPredicate: (day) => isSameDay(recipeModel.selectedDay, day),
                              calendarFormat: CalendarFormat.month,
@@ -844,7 +815,6 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                setState(() {
                                  recipeModel.selectedDay_data(selectedDay);
                                  recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(selectedDay));
-
 
                                  Navigator.pop(context);
                                  DateFormat('EEEE d MMM yyyy').format(selectedDay);
@@ -918,9 +888,8 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                  squeeze: 1.0,diameterRatio: 1.5,
 
                  onSelectedItemChanged: (int value) {
-                   print(value);
-                   recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
-
+                     print(value);
+                     recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
                  },
                  children: mealsModel.get_meals_planlist_data!.map((item) {
                    return Text(

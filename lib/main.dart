@@ -32,7 +32,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await SharedPrefHelper.init();
-  await NotificationHandler.initialize();
+  // await NotificationHandler.initialize();
   // await NotificationHandler.firebaseInit();
 
   SystemChrome.setPreferredOrientations(

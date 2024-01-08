@@ -42,7 +42,14 @@ class _questionAnswerScreenState extends State<questionAnswerScreen> {
             children: [
               Html(
                 data: widget.faqHeading??"",
-
+                style: {
+                  "span": Style(
+                    fontSize: FontSize(24.0),
+                    fontWeight: fontWeight600,
+                    color: colorPrimaryColor,
+                    fontFamily: fontFamilyText,
+                  ),
+                },
               ).paddingOnly(left: 15,right: 15),
               // Text(widget.faqHeading??"",
               //   style: TextStyle(
@@ -78,7 +85,14 @@ class _questionAnswerScreenState extends State<questionAnswerScreen> {
                   title:
                   Html(
                     data: item.fqueText??"",
-
+                    style: {
+                      "b": Style(
+                        fontSize: FontSize(16.0),
+                        fontWeight: fontWeight600,
+                        color: HexColor('#3B4250'),
+                        fontFamily: fontFamilyText,
+                      ),
+                    },
                   ),
                   // Text(item.fqueText??"",
                   //   style: TextStyle(
@@ -104,7 +118,14 @@ class _questionAnswerScreenState extends State<questionAnswerScreen> {
                       color: colorWhite,
                       child: Html(
                           data: item.answerData!.fansText??"",
-
+                        style: {
+                          "b": Style(
+                            fontSize: FontSize(16.0),
+                            fontWeight: fontWeight600,
+                            color: HexColor('#3B4250'),
+                            fontFamily: fontFamilyText,
+                          ),
+                        },
                       ),
                     ).paddingOnly(left: 15,right: 15)
 

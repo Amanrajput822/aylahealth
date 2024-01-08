@@ -111,8 +111,8 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
   Future<void> _onRefresh() async {
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
     recipeModel.getRecipeData1(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
-    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
-    mealsModel.get_meals_plantypelist_api();
+   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+   mealsModel.get_meals_plantypelist_api();
   }
 
   @override
@@ -296,7 +296,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
             child: SvgPicture.asset(
               'assets/image/recipes.svg',
                 width: 18,height: 18,
-                color: HexColor('#131A29')
+                color: colorBluePigment
             )),)
 
       ],
@@ -481,7 +481,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                             child: ClipRRect(
                                               borderRadius: BorderRadius.circular(5),
                                               child: Image.network(recipeModel.recipe_data_List![index * 2].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                                                height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                                                height: 110,width: deviceWidth(context),fit: BoxFit.fill,
                                                 errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
                                                   height: 110,
                                                   fit: BoxFit.fill,),
@@ -618,7 +618,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(5),
                                                 child: Image.network(recipeModel.recipe_data_List![index * 2 + 1].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                                                  height: 110,width: deviceWidth(context),fit: BoxFit.cover,
+                                                  height: 110,width: deviceWidth(context),fit: BoxFit.fill,
                                                   errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
                                                     height: 110,
                                                     fit: BoxFit.fill,),

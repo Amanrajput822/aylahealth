@@ -42,10 +42,8 @@ class _New_Bottombar_ScreenState extends State<New_Bottombar_Screen> {
   void initState() {
     super.initState();
      NotificationHandler.firebaseInit();
-    // LocalNotification().configureDidReceiveLocalNotificationSubject(context);
-    // LocalNotification().configureSelectNotificationSubject();
-    // FirebaseNotifications().firebaseInitialization();
-    // LocalNotification().initialize();
+     NotificationHandler.initialize();
+
 
     final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);
     BottomNavBarProviderModel.setcontrollervalue(0);
