@@ -461,6 +461,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                 children: [
                                   InkWell(
                                     onTap: () {
+
                                       PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                         context,
                                         settings: const RouteSettings(name: "/Recipes_Screen"),

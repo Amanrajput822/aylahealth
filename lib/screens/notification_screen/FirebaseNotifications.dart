@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import '../../common/styles/const.dart';
 import '../../main.dart';
 import '../../myapp.dart';
@@ -179,7 +180,7 @@ Future<void> notificationClick( payload) async {
                   case '1':
                    {
                      PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                       context,
+                       testContext!,
                        settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                        screen:  Recipes_Description_Screen(rec_id:payload['data']['id'],rec_index:0,txt_search:'',fav_filter:'0',screen:"Notification"),
                      );
@@ -189,7 +190,7 @@ Future<void> notificationClick( payload) async {
                   case '2':
                     {
                       // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                      //   context,
+                      //   testContext!,
                       //   settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                       //   screen:  Recipes_Description_Screen(rec_id:1,rec_index:0,txt_search:'',fav_filter:'0',screen:"Home"),
                       // );
@@ -199,7 +200,7 @@ Future<void> notificationClick( payload) async {
 
                   default:{
                     PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                      context,
+                      testContext!,
                       settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                       screen:  Recipes_Description_Screen(rec_id:payload['data']['id'],rec_index:0,txt_search:'',fav_filter:'0',screen:"Notification"),
                     );
@@ -296,7 +297,7 @@ Future<void> notificationClickLocal( payload) async {
                   case '1':
                     {
                       PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                        context,
+                        testContext!,
                         settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                         screen:  Recipes_Description_Screen(rec_id:payload['id'],rec_index:0,txt_search:'',fav_filter:'0',screen:"Notification"),
                       );
@@ -306,7 +307,7 @@ Future<void> notificationClickLocal( payload) async {
                   case '2':
                     {
                       // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                      //   context,
+                      //   testContext!,
                       //   settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                       //   screen:  Recipes_Description_Screen(rec_id:1,rec_index:0,txt_search:'',fav_filter:'0',screen:"Home"),
                       // );
@@ -314,7 +315,7 @@ Future<void> notificationClickLocal( payload) async {
                     break;
                   default:{
                     PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                      context,
+                      testContext!,
                       settings: const RouteSettings(name: "/Recipes_Description_Screen"),
                       screen:  Recipes_Description_Screen(rec_id:payload['id'],rec_index:0,txt_search:'',fav_filter:'0',screen:"Notification"),
                     );
@@ -407,9 +408,8 @@ Future notificationPopup() async {
               ),
               onPressed: () {
                 Navigator.of(context).pop(false);
-                Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(0);
                 PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                  context,
+                  testContext!,
                   settings: const RouteSettings(name: "/Home"),
                   screen:  Recipes_Description_Screen(rec_id:1,rec_index:0,txt_search:'',fav_filter:'0',screen:"Notification"),
                 );

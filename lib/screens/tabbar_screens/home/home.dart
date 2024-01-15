@@ -233,8 +233,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 children: [
                   sizedboxheight(25.0),
 
-                  TextButton(onPressed: (){
-                    notificationPopup();}, child: Text('button')),
+                 // TextButton(onPressed: (){notificationPopup();}, child: Text('button')),
 
                   hedingtile('Start Learning',(){}),
                   sizedboxheight(15.0),
@@ -845,7 +844,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                             height: 140,width: 140,fit: BoxFit.fill,
                             errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
                               height: 140,
-
                               fit: BoxFit.fill,),
                             loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {

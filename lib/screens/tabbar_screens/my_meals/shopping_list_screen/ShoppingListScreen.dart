@@ -121,9 +121,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                     });
                                   },
                                   screentype: 1,
-                                   buttoninout: shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus==0?false:true,
+                                  buttoninout: shoppingListModel.customerShoppingList_data![index].ingData![index1].slItemStatus==0?false:true,
                                   buttontext:shoppingListModel.customerShoppingList_data![index].ingData![index1].ingName??"",
-                                  button_sub_text:" ${(MixedFraction.fromDouble(double.tryParse(shoppingListModel.customerShoppingList_data![index].ingData![index1].slQuantity!)??0.0).toString().replaceAll("0/1",'')).trim()} " "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingUnit??""}",
+                                  button_sub_text:" ${(MixedFraction.fromDouble(double.tryParse(shoppingListModel.customerShoppingList_data![index].ingData![index1].slQuantity??"")??0.0).toString().replaceAll("0/1",'')).trim()} " "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingUnit??""}"
+                                      "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingVariation == null?'':shoppingListModel.customerShoppingList_data![index].ingData![index1].ingVariation![0].varName??""}",
                                 //  button_sub_text:" ${Fraction.fromDouble(double.tryParse(shoppingListModel.customerShoppingList_data![index].ingData![index1].slQuantity??"") ?? 0.0)} " "${shoppingListModel.customerShoppingList_data![index].ingData![index1].ingUnit??""}",
                                   unchackborderclor: HexColor('#CCCCCC'),
                                   chackborderclor: colorBluePigment,

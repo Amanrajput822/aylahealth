@@ -431,7 +431,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                           ),
                                         ),
                                         sizedboxwidth(12.0),
-                                        Text('${recipeDescreptioModel.server_count!.toString()} serve',style: TextStyle(
+                                        Text('${recipeDescreptioModel.server_count??""} serve',style: TextStyle(
                                           fontSize: 16,
                                           fontFamily: fontFamilyText,
                                           color: colorSlateGray,
@@ -567,7 +567,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
 
-                          Text('${(MixedFraction.fromDouble(((item.ingredientRecipeQuantity!.interpret()/int.parse(recipeDescreptioModel.recipe_ditels_data!.recServes.toString()))*recipeDescreptioModel.server_count!)).toString().replaceAll("0/1",'')).trim()} ${item.ingUnit??""} ${item.ingName??""}',
+                          Text('${item.ingredientRecipeQuantity==null?"0":(MixedFraction.fromDouble(((item.ingredientRecipeQuantity!.interpret()/int.parse(recipeDescreptioModel.recipe_ditels_data!.recServes.toString()))*recipeDescreptioModel.server_count!)).toString().replaceAll("0/1",'')).trim()} ${item.ingUnit??""} ${item.ingName??""}${item.varName!= null?", ${item.varName!.trim()}":""}',
                             style: TextStyle(
                             fontSize: 16,
                             fontFamily: fontFamilyText,
@@ -575,7 +575,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                             fontWeight: fontWeight400,
                           ),),
 
-                          Text(item.varName!=null?('${item.varName??""} ${item.ingredientRecipeDescription??""}'):(item.ingredientRecipeDescription??""),style: TextStyle(
+                          Text(item.ingredientRecipeDescription??"",style: TextStyle(
                             fontSize: 12,
                             fontFamily: fontFamilyText,
                             color: colorShadowBlue,

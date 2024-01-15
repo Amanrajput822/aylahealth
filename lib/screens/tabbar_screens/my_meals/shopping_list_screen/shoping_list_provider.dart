@@ -197,6 +197,9 @@ class ShoppingListProvider with ChangeNotifier {
           }
       );
       print(customerShoppingListModel.fromJson(json.decode(response.body)).data!.length);
+      print('response.body');
+      print(response.body);
+      print('response.body');
 
       _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
       if (success == 200) {
