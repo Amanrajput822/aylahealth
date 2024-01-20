@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/notification_screen/FirebaseNotifications.dart';
-import 'package:aylahealth/screens/notification_screen/ReceivedNotification.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,6 +61,10 @@ class _SpleshState extends State<Splesh> {
     getValuesSF();
   }
 
+
+  void firebase(){
+    FirebaseAuth.instance.signInWithProvider(FacebookAuthProvider());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -27,6 +27,7 @@ import '../../models/auth model/user_login_model.dart';
 import '../onbording_screen/pre_question_loding_screen.dart';
 import '../tabbar_screens/home/homeScreenProvider.dart';
 import '../tabbar_screens/my_meals/My_Meals_Provider.dart';
+import 'app_cache_clear.dart';
 import 'forgot_password_screens/forgotpassword_screen.dart';
 import 'package:http/http.dart' as http;
 
@@ -82,6 +83,7 @@ class _LogInState extends State<LogIn> {
 
 
   Future<user_login_model> signin() async {
+    deleteCacheDir();
     fcmToken = await FirebaseMessaging.instance.getToken();
     check().then((intenet) {
       if (intenet) {

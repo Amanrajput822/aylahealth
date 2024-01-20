@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
+import '../../../../common/direct_logout.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 
 class RecipeData_Provider with ChangeNotifier {
@@ -297,8 +298,10 @@ class RecipeData_Provider with ChangeNotifier {
 
    if(response.statusCode == 200){
      _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
+      print('Unauthorized error');
 
      if (_success == 200) {
+       print('Unauthorized error1');
        // Navigator.pop(context);
        _hasNextPage = true;
        _recipe_data_List = (RecipeList_data_model.fromJson(json.decode(response.body)).data);
@@ -310,10 +313,15 @@ class RecipeData_Provider with ChangeNotifier {
        _recipe_data_List = [];
        notifyListeners();
        FlutterToast_message('No Data');
+       print('Unauthorized error11');
      }
    }
    else{
-
+     print('Unauthorized error');
+     print(response.statusCode);
+     if(response.statusCode ==401){
+       directLogOutPopup();
+     }
      FlutterToast_message(json.decode(response.body)['message']);
    }
 
@@ -448,6 +456,9 @@ class RecipeData_Provider with ChangeNotifier {
       }
     }
     else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
@@ -511,6 +522,9 @@ class RecipeData_Provider with ChangeNotifier {
       }
     }
     else {
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
 
     }
@@ -564,6 +578,9 @@ class RecipeData_Provider with ChangeNotifier {
     else{
       _filter_list_data = null;
       notifyListeners();
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return Recipe_Filtter_model.fromJson(json.decode(response.body));
@@ -613,6 +630,9 @@ class RecipeData_Provider with ChangeNotifier {
     else{
       _recipecategory_list_data = [];
       notifyListeners();
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return RecipeCategoryList_Model.fromJson(json.decode(response.body));

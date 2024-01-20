@@ -52,12 +52,11 @@ class FirebaseData {
         .doc(SharedPrefHelper.userId.toString())
         .collection("messages")
         .doc()
-        .set({
-      "created": message.created,
-      "text": message.text,
-      "receiverId": message.receiverId,
-      "senderId": message.senderId
-    });
+        .set(message.toMap());
+    // await _userCollection
+    //     .doc(SharedPrefHelper.userId.toString()).update({
+    //   "last_message":message.toMap()
+    // });
   }
 
   Future<void> userUpdateTime() async {

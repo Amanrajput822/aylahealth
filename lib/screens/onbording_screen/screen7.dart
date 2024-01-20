@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 import '../../common/api_common_fuction.dart';
 
 import '../../common/check_screen.dart';
+import '../../common/direct_logout.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/onboarding_screens_models/ingredient_name_list_model.dart';
@@ -66,6 +67,7 @@ class _Screen7State extends State<Screen7> {
           'Authorization': 'Bearer $tokanget',
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (Ingredient_Name_List_Model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -85,6 +87,11 @@ class _Screen7State extends State<Screen7> {
       Navigator.pop(context);
       print('else==============');
       FlutterToast_message('No Question Data');
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return Ingredient_Name_List_Model.fromJson(json.decode(response.body));
   }

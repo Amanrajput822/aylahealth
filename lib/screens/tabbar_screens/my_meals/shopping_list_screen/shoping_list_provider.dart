@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
+import '../../../../common/direct_logout.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../common/styles/const.dart';
 
@@ -146,6 +147,7 @@ class ShoppingListProvider with ChangeNotifier {
           }
       );
       print(response.body);
+      if(response.statusCode==200){
       _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
       print(json.decode(response.body));
       if (success == 200) {
@@ -164,6 +166,12 @@ class ShoppingListProvider with ChangeNotifier {
         // Navigator.pop(context);
         print('else==============');
         FlutterToast_message('No Data');
+      }}
+      else{
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
+        FlutterToast_message(json.decode(response.body)['message']);
       }
 
     return (customerShoppingListModel.fromJson(json.decode(response.body)));
@@ -200,7 +208,7 @@ class ShoppingListProvider with ChangeNotifier {
       print('response.body');
       print(response.body);
       print('response.body');
-
+      if(response.statusCode==200){
       _success = (customerShoppingListModel.fromJson(json.decode(response.body)).status);
       if (success == 200) {
 
@@ -221,9 +229,6 @@ class ShoppingListProvider with ChangeNotifier {
           notifyListeners();
         }
 
-
-
-      //  FlutterToast_message('Shopping List Data');
         notifyListeners();
 
       } else {
@@ -231,6 +236,12 @@ class ShoppingListProvider with ChangeNotifier {
         // Navigator.pop(context);
         print('else==============');
         FlutterToast_message('No Data');
+      }}
+      else{
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
+        FlutterToast_message(json.decode(response.body)['message']);
       }
 
     return (customerShoppingListModel.fromJson(json.decode(response.body)));
@@ -272,6 +283,7 @@ class ShoppingListProvider with ChangeNotifier {
           }
       );
       print(response.body);
+      if(response.statusCode==200){
       _success = (updateShoppingItemStatus_Model.fromJson(json.decode(response.body)).status);
       _message = (updateShoppingItemStatus_Model.fromJson(json.decode(response.body)).message);
       print(json.decode(response.body));
@@ -285,6 +297,12 @@ class ShoppingListProvider with ChangeNotifier {
         // Navigator.pop(context);
         print('else==============');
         FlutterToast_message('No Data');
+      }}
+      else{
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
+        FlutterToast_message(json.decode(response.body)['message']);
       }
     } catch (e) {
       error = e.toString();

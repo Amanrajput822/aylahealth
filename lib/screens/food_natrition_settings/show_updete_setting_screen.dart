@@ -18,6 +18,7 @@ import '../../common/Custom_chackbox_screen.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
+import '../../common/direct_logout.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/const.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
@@ -103,6 +104,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
           'Accept': 'application/json'
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (Ingredient_Name_List_Model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -123,6 +125,11 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
       print('else==============');
 
       FlutterToast_message('No Question Data');
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return Ingredient_Name_List_Model.fromJson(json.decode(response.body));
   }
@@ -168,7 +175,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
     setState(() {
       loading = false;
     });
-
+ if(response.statusCode==200) {
     print(response.body.toString());
     success = (customerFoodSettingData_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -218,7 +225,12 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
 
       FlutterToast_message('No Question Data');
 
-    }
+    }}
+ else{
+   if(response.statusCode ==401){
+     directLogOutPopup();
+   }
+ }
     return customerFoodSettingData_model.fromJson(json.decode(response.body));
   }
 
@@ -274,6 +286,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
           if(quetype == 'MULTIPLE'|| quetype == 'INDEXING') 'Content-Type': 'application/json'
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (Answer_submit_Model.fromJson(json.decode(response.body)).status);
     var message = (Answer_submit_Model.fromJson(json.decode(response.body)).message);
@@ -293,6 +306,11 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
 
       FlutterToast_message(message);
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return Answer_submit_Model.fromJson(json.decode(response.body));
   }
@@ -324,6 +342,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
           'Accept': 'application/json',
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (customerNutritionArea_model.fromJson(json.decode(response.body)).status);
     print("success 1233434 ==${success}");
@@ -340,6 +359,11 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
 
       FlutterToast_message('No Data');
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return customerNutritionArea_model.fromJson(json.decode(response.body));
   }

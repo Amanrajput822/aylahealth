@@ -11,6 +11,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
+import '../../../common/direct_logout.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
 import '../../../models/meals plans/Get_Meals_Plane_multipl_months_model.dart';
 import '../../../models/recipelist/recipe_like_unlike_data_model.dart';
@@ -24,6 +25,7 @@ import '../../../models/month_json_model.dart';
 import 'my_meals_screen.dart';
 
 class MyMeals_Provider with ChangeNotifier {
+
   String error = '';
 
   int? _success ;
@@ -231,11 +233,15 @@ class MyMeals_Provider with ChangeNotifier {
           // Navigator.pop(context);
           print('else==============');
           loaderFunction(false);
+
           FlutterToast_message(json.decode(response.body)['message']);
         }
       }
       else{
         loaderFunction(false);
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
         FlutterToast_message(json.decode(response.body)['message']);
       }
 
@@ -298,7 +304,6 @@ class MyMeals_Provider with ChangeNotifier {
         print("get_meals_calendardata_api${json.decode(response.body)}");
         if (success == 200) {
 
-          final result = (Get_Meals_Plane_model.fromJson(json.decode(response.body)));
           _get_meals_calendar_data = (Get_Meals_Plane_model.fromJson(json.decode(response.body))).data;
           String jsondata = Get_Meals_Plane_model.fromJson(json.decode(response.body)).data!.mlpCalenderData!;
 
@@ -322,6 +327,9 @@ class MyMeals_Provider with ChangeNotifier {
         }
       } else{
         loaderFunction1(false);
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
         FlutterToast_message(json.decode(response.body)['message']);
       }
 
@@ -412,6 +420,9 @@ class MyMeals_Provider with ChangeNotifier {
       }
       else{
         loaderFunction(false);
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
         FlutterToast_message(json.decode(response.body)['message']);
       }
 
@@ -472,6 +483,9 @@ class MyMeals_Provider with ChangeNotifier {
 
       }
       else{
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
         loaderFunction(false);
         FlutterToast_message(json.decode(response.body)['message']);
       }
@@ -623,6 +637,9 @@ class MyMeals_Provider with ChangeNotifier {
      }
      else{
        loaderFunction(false);
+       if(response.statusCode ==401){
+         directLogOutPopup();
+       }
        FlutterToast_message(json.decode(response.body)['message']);
      }
 
@@ -693,6 +710,9 @@ class MyMeals_Provider with ChangeNotifier {
     }
     else{
       loaderFunction(false);
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
@@ -759,6 +779,9 @@ class MyMeals_Provider with ChangeNotifier {
     }
     else{
       loaderFunction(false);
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));

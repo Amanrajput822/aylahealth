@@ -10,6 +10,7 @@ import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 
+import '../../common/direct_logout.dart';
 import '../../models/food_nutrition_settings/customerFoodSettingHeadingList_model.dart';
 
 class Food_Nutrition_Settings_provider with ChangeNotifier {
@@ -77,6 +78,9 @@ class Food_Nutrition_Settings_provider with ChangeNotifier {
       }
     }else{
       loading = false;
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message('No Data');
     }
 

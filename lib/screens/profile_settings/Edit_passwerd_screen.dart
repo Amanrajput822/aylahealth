@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
+import '../../common/direct_logout.dart';
 import '../../common/formtextfield/mytextfield.dart';
 import '../../common/formtextfield/validations_field.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
@@ -74,12 +75,13 @@ class _Edit_Passwers_ScreenState extends State<Edit_Passwers_Screen> {
           'Accept': 'application/json'
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (change_password_model.fromJson(json.decode(response.body)).status);
     message = (change_password_model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success}");
     if (success == 200) {
-      if (success == 200) {
+
         Navigator.pop(context);
 
         FlutterToast_message(message);
@@ -87,12 +89,17 @@ class _Edit_Passwers_ScreenState extends State<Edit_Passwers_Screen> {
         txt_current_pass.clear();
         txt_new_pass.clear();
         txt_confirm_pass.clear();
-      }
+
     } else {
       Navigator.pop(context);
       print('else==============');
       FlutterToast_message(message);
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return change_password_model.fromJson(json.decode(response.body));
   }

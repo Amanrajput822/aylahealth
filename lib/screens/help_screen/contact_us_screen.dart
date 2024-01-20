@@ -10,6 +10,7 @@ import '../../common/Custom_chackbox_screen.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
+import '../../common/direct_logout.dart';
 import '../../common/formtextfield/mytextfield.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/const.dart';
@@ -62,19 +63,25 @@ class _Contact_us_screenState extends State<Contact_us_screen> {
           'Accept': 'application/json',
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (user_login_model.fromJson(json.decode(response.body)).status);
     message = (user_login_model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success}");
     if (success == 200) {
-      if (success == 200) {
+
         Navigator.pop(context);
         _textMessageController.clear();
         _showDialog( context);
-      }
+
     } else {
       Navigator.pop(context);
       FlutterToast_message(message);
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return user_login_model.fromJson(json.decode(response.body));
   }

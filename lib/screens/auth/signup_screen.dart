@@ -25,6 +25,7 @@ import '../onbording_screen/pre_question_loding_screen.dart';
 import 'package:http/http.dart' as http;
 
 import '../tabbar_screens/support_screen/message/chat/firebase_services.dart';
+import 'app_cache_clear.dart';
 
 class Signup_screen extends StatefulWidget {
   const Signup_screen({Key? key}) : super(key: key);
@@ -73,6 +74,7 @@ class _Signup_screenState extends State<Signup_screen> {
 
 
   Future<user_login_model> signup() async {
+    deleteCacheDir();
     fcmToken = await FirebaseMessaging.instance.getToken();
 
     check().then((intenet) {

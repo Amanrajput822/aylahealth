@@ -9,7 +9,6 @@ import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 import "package:provider/provider.dart";
 
 import "../../screens/notification_screen/FirebaseNotifications.dart";
-import "../../screens/notification_screen/ReceivedNotification.dart";
 import "../../screens/notification_screen/newNotificationFile.dart";
 import "../../screens/tabbar_screens/home/home.dart";
 import '../../screens/tabbar_screens/modules/modules_screen/modules_screen.dart';

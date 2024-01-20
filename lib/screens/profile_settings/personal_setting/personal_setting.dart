@@ -31,65 +31,7 @@ class Personal_Setting extends StatefulWidget {
 }
 
 class _Personal_SettingState extends State<Personal_Setting> {
-  // Future? _future;
-  // var success, message;
-  // var tokanget,user_id;
-  // user_details_esponse? user_details_data;
-  // Future<user_details_model> customer_ditels_api() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     tokanget = prefs.getString('login_user_token');
-  //     tokanget = tokanget!.replaceAll('"', '');
-  //     user_id = prefs.getString('login_user_id');
-  //     user_id = user_id!.replaceAll('"', '');
-  //   });
-  //   print(tokanget.toString());
-  //   check().then((intenet) async {
-  //     if (intenet != null && intenet) {
-  //       // Internet Present Case
-  //
-  //       showLoaderDialog_popup(context,"User Details ...");
-  //
-  //     } else {
-  //       FlutterToast_Internet();
-  //     }
-  //   });
-  //
-  //   var response = await http.post(
-  //       Uri.parse(beasurl+customerDetails),
-  //       body: toMap(),
-  //       headers: {
-  //         'Authorization': 'Bearer $tokanget',
-  //         'Accept': 'application/json'
-  //       }
-  //   );
-  //   print(response.body.toString());
-  //   success = (user_details_model.fromJson(json.decode(response.body)).status);
-  //   print("success 123 ==${success}");
-  //   if (success == 200) {
-  //     Navigator.pop(context);
-  //
-  //     user_details_data = (user_details_model.fromJson(json.decode(response.body)).data);
-  //     // Get.to(() => Pre_Question_Screen());
-  //   } else {
-  //     Navigator.pop(context);
-  //     print('else==============');
-  //
-  //     FlutterToast_message('No Data');
-  //
-  //   }
-  //   return user_details_model.fromJson(json.decode(response.body));
-  // }
-  //
-  //
-  //
-  // Map toMap() {
-  //   var map =  Map<String, dynamic>();
-  //
-  //   map["cust_id"] = user_id;
-  //
-  //   return map;
-  // }
+
 
   @override
   void initState() {

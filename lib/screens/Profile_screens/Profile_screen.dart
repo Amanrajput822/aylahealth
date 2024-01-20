@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aylahealth/common/SharedPrefHelper.dart';
+import 'package:aylahealth/common/direct_logout.dart';
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/auth/login_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -12,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +21,7 @@ import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
+import '../auth/app_cache_clear.dart';
 import '../profile_settings/personal_setting/personal_setting_provider.dart';
 import '../tabbar_screens/my_meals/calendar_evryday_json.dart';
 import '../../models/auth model/logout_model.dart';
@@ -47,6 +50,7 @@ class _Profile_screenState extends State<Profile_screen> {
   var tokanget;
   var user_name,user_email;
 
+
   Future<logout_model> logout_api() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -58,7 +62,6 @@ class _Profile_screenState extends State<Profile_screen> {
       if (intenet) {
         // Internet Present Case
         showLoaderDialog_popup(context,"Log out...");
-
       } else {
         FlutterToast_Internet();
       }
@@ -68,10 +71,10 @@ class _Profile_screenState extends State<Profile_screen> {
         Uri.parse(Endpoints.baseURL+Endpoints.logout),
         headers: {
           'Authorization': 'Bearer $tokanget',
-
         }
     );
     print(response.body.toString());
+    if(response.statusCode == 200){
     success = (logout_model.fromJson(json.decode(response.body)).status);
     message = (logout_model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success}");
@@ -97,7 +100,8 @@ class _Profile_screenState extends State<Profile_screen> {
       removeDataFromFile(DateTime.now().year.toString());
       ///
       await Authentication.signOut(context: context);
-
+      deleteCacheDir();
+     // _deleteAppDir();
       FlutterToast_message(message);
 
       // Get.to(() => Pre_Question_Screen());
@@ -105,6 +109,11 @@ class _Profile_screenState extends State<Profile_screen> {
       Navigator.pop(context);
       print('else==============');
       FlutterToast_message(message);
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return logout_model.fromJson(json.decode(response.body));
   }

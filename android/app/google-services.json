@@ -7,6 +7,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:691184521472:android:b48ab73f8f2cc3cc4a63e5",
+        "android_client_info": {
+          "package_name": "app.aylahealth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691184521472-gpsts6feshb6ps0cj3nvnd0s35ha0ktp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.aylahealth",
+            "certificate_hash": "933e65067047a1488e23e9124a0f284effd53c3c"
+          }
+        },
+        {
+          "client_id": "691184521472-mk07a7dvplj1m7888030ui694ghcqaqe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmpUbT4s_4nyM4Z1kmJCpH_w-unk6tbRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691184521472-mk07a7dvplj1m7888030ui694ghcqaqe.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "691184521472-63u75ec260pktarfhtla8bs60hbknfa1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.aylahealth"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:691184521472:android:3b1951e13f553cf54a63e5",
         "android_client_info": {
           "package_name": "com.example.aylahealth"

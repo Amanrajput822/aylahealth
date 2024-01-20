@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
+import '../../../../common/direct_logout.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../models/recipelist/Recipe_details_data_model.dart';
 import '../../../../models/recipelist/recipe_like_unlike_data_model.dart';
@@ -110,7 +111,9 @@ class Recipe_Description_DataProvider with ChangeNotifier {
         }
       }
       else{
-
+        if(response.statusCode ==401){
+          directLogOutPopup();
+        }
         FlutterToast_message(json.decode(response.body)['message']);
       }
 
@@ -176,6 +179,9 @@ class Recipe_Description_DataProvider with ChangeNotifier {
       }
     }
     else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
@@ -235,6 +241,9 @@ class Recipe_Description_DataProvider with ChangeNotifier {
       }
     }
     else {
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
 
     }

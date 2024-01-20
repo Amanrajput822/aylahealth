@@ -34,6 +34,7 @@ import 'common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import 'demo/appleLogin_demo.dart';
 import 'demo/deno.dart';
 import 'home_screen.dart';
+import 'inAppPurchase/payment_service.dart';
 import 'inetrnet_connection_interupt.dart';
 
 GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
@@ -101,7 +102,7 @@ class _MyAppState extends State<MyApp> {
           );
         },
 
-        initialRoute: '/',
+        initialRoute: 'InAppPurchaseScreen',
         routes: {
 
           '/': (context) => const Splesh(),
@@ -123,6 +124,7 @@ class _MyAppState extends State<MyApp> {
           '/Modules_Screen': (context) => Modules_Screen(),
           '/MyMealsScreen': (context) => MyMealsScreen(),
           '/SupportScreen': (context) => SupportScreen(),
+          'InAppPurchaseScreen': (context) => InAppPurchaseScreen(),
           // 'CalendarApp': (context) => CalendarApp(),
 
 

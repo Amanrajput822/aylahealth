@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
+import '../../../common/direct_logout.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
 import '../../../common/styles/const.dart';
 import '../../../models/recipelist/RecipeList_data_model.dart';
@@ -70,6 +71,7 @@ class _Recipes_Search_ScreenState extends State<Recipes_Search_Screen> {
           'Accept': 'application/json'
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -84,6 +86,11 @@ class _Recipes_Search_ScreenState extends State<Recipes_Search_Screen> {
 
       FlutterToast_message('No Data');
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return RecipeList_data_model.fromJson(json.decode(response.body));
   }

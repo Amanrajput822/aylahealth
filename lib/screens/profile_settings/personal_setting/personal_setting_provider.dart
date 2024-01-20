@@ -1,7 +1,4 @@
-import 'package:aylahealth/models/recipelist/RecipeList_data_model.dart';
-import 'package:aylahealth/models/recipelist/filtter_list_models/RecipeCategoryList_Model.dart';
-import 'package:aylahealth/models/recipelist/filtter_list_models/Recipe_Filtter_model.dart';
-import 'package:aylahealth/models/recipelist/recipe_like_unlike_data_model.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
@@ -13,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
+import '../../../common/direct_logout.dart';
 import '../../../common/styles/showLoaderDialog_popup.dart';
 import '../../../models/profile/user_details_model.dart';
 import '../../tabbar_screens/support_screen/message/chat/firebase_services.dart';
@@ -54,9 +52,6 @@ class userprofile_Provider with ChangeNotifier {
     print(tokanget.toString());
     check().then((intenet) async {
       if (intenet != null && intenet) {
-        // Internet Present Case
-
-       // showLoaderDialog_popup(context,"User Details ...");
 
       } else {
         FlutterToast_Internet();
@@ -78,6 +73,7 @@ class userprofile_Provider with ChangeNotifier {
         }
     );
     loading = false;
+    if(response.statusCode==200){
     print(response.body.toString());
     _success = (user_details_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -97,6 +93,10 @@ class userprofile_Provider with ChangeNotifier {
 
       FlutterToast_message('No Data');
 
+    }}else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return user_details_model.fromJson(json.decode(response.body));
   }

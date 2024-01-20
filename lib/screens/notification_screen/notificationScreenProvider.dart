@@ -14,6 +14,7 @@ import '../../../models/meals plans/Meal_Plan_Date_Data_model.dart';
 import '../../../models/recipelist/RecipeList_data_model.dart';
 import '../../../models/recipelist/filtter_list_models/Recipe_Filtter_model.dart';
 import '../../../models/recipelist/recipe_like_unlike_data_model.dart';
+import '../../common/direct_logout.dart';
 import '../../models/notificatio_screen/customerNotificationSettingModel.dart';
 import '../../models/notificatio_screen/updateCustomerNotificationSettingModel.dart';
 
@@ -71,7 +72,9 @@ class NotificationScreenProvider extends ChangeNotifier {
     );
     if (response.statusCode == 200) {
       _loading = false;
+      print('response.body.toString()');
       print(response.body.toString());
+      print('response.body.toString()');
       _success = (customerNotificationSettingModel.fromJson(json.decode(response.body)).status);
 
       if (_success == 200) {
@@ -89,6 +92,9 @@ class NotificationScreenProvider extends ChangeNotifier {
     }
     else{
       loaderFunction(false);
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return customerNotificationSettingModel.fromJson(json.decode(response.body));
@@ -146,6 +152,9 @@ class NotificationScreenProvider extends ChangeNotifier {
     }
     else{
       loaderFunction(false);
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return updateCustomerNotificationSettingModel.fromJson(json.decode(response.body));

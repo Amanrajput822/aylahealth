@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:aylahealth/common/styles/const.dart';
@@ -335,22 +336,18 @@ class _Signup_typeState extends State<Signup_type> {
         SharedPrefHelper.email = user.custEmail ?? "";
         SharedPrefHelper.authToken = user.accessToken ?? "";
 
-        if(user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus == 0){
-          prefs.setBool(
-            'user_login_time', false,
-          );
-          Get.offAll(() => Pre_Question_Screen());
+        if(user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus!){
 
-        }
-        else if(user_login_model.fromJson(json.decode(response.body)).data!.custLoginStatus == 1){
           prefs.setBool(
             'user_login_time', true,
           );
           Get.offAll(() => New_Bottombar_Screen());
-
         }
         else{
-          Get.offAll(() => New_Bottombar_Screen());
+          prefs.setBool(
+            'user_login_time', false,
+          );
+          Get.offAll(() => Pre_Question_Screen());
         }
 
         FlutterToast_message(message);

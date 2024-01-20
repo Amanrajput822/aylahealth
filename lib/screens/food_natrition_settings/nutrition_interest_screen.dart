@@ -14,6 +14,7 @@ import '../../common/Custom_chackbox_screen.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
+import '../../common/direct_logout.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/const.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
@@ -90,9 +91,11 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
         }
     );
     loading = false;
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (customerFoodSettingData_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
+
     if (success == 200) {
     //  Navigator.pop(context);
       // options_list = (customerFoodSettingData_model.fromJson(json.decode(response.body)).data!.options);
@@ -111,6 +114,11 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
       print('else==============');
 
       FlutterToast_message('No Question Data');
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return customerFoodSettingData_model.fromJson(json.decode(response.body));
   }
@@ -154,10 +162,12 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
           if(quetype == 'MULTIPLE'|| quetype == 'INDEXING') 'Content-Type': 'application/json'
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (Answer_submit_Model.fromJson(json.decode(response.body)).status);
     var message = (Answer_submit_Model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success}");
+
     if (success == 200) {
       Navigator.pop(context);
       Get.off(() => Show_Updete_Settings_Screen(
@@ -186,6 +196,11 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
 
       FlutterToast_message(message);
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return Answer_submit_Model.fromJson(json.decode(response.body));
   }

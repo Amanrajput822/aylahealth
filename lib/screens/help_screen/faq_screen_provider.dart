@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
+import '../../common/direct_logout.dart';
 import '../../models/FAQs_Question_Answer_modal.dart';
 
 class FAQsScreenProvider with ChangeNotifier {
@@ -70,6 +71,9 @@ class FAQsScreenProvider with ChangeNotifier {
       }
     }
     else {
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       print('else==============');
       FlutterToast_message("no data found");
     }

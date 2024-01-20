@@ -17,6 +17,7 @@ import '../../../../common/check_screen.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../common/styles/showLoaderDialog_popup.dart';
 import '../../../models/profile/user_details_model.dart';
+import '../../common/direct_logout.dart';
 import '../../models/food_nutrition_settings/customerFoodSettingData_model.dart';
 import '../../models/food_nutrition_settings/customerFoodSettingHeadingList_model.dart';
 import '../../models/onboarding_screens_models/Answer_submit_Model.dart';
@@ -92,26 +93,37 @@ class Show_Updete_Settings_provider with ChangeNotifier {
     );
     loading = false;
     print(response.body.toString());
+    if(response.statusCode == 200) {
     _success = (Ingredient_Name_List_Model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
-    if (success == 200) {
-      loading = false;
-      // Navigator.pop(context);
-      _food_data_list = (Ingredient_Name_List_Model.fromJson(json.decode(response.body)).data);
-      _countries = List<Country>.generate(
-        food_data_list!.length,
-            (index) => Country(
-          name: food_data_list![index].ingName!,
-          iso: food_data_list![index].ingId!,
-        ),
-      );
-      notifyListeners();
-      // Get.to(() => Pre_Question_Screen());
-    } else {
-      loading = false;
-      print('else==============');
 
-      FlutterToast_message('No Question Data');
+      if (success == 200) {
+        loading = false;
+        // Navigator.pop(context);
+        _food_data_list = (Ingredient_Name_List_Model
+            .fromJson(json.decode(response.body))
+            .data);
+        _countries = List<Country>.generate(
+          food_data_list!.length,
+              (index) =>
+              Country(
+                name: food_data_list![index].ingName!,
+                iso: food_data_list![index].ingId!,
+              ),
+        );
+        notifyListeners();
+        // Get.to(() => Pre_Question_Screen());
+      } else {
+        loading = false;
+        print('else==============');
+
+        FlutterToast_message('No Question Data');
+      }
+    }
+    else{
+    if(response.statusCode ==401){
+      directLogOutPopup();
+    }
     }
     return Ingredient_Name_List_Model.fromJson(json.decode(response.body));
   }
@@ -163,8 +175,10 @@ class Show_Updete_Settings_provider with ChangeNotifier {
     );
     loading = false;
     print(response.body.toString());
+    if(response.statusCode==200){
     _success = (customerFoodSettingData_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
+
     if (success == 200) {
       loading = false;
       // options_list = (customerFoodSettingData_model.fromJson(json.decode(response.body)).data!.options);
@@ -210,6 +224,11 @@ class Show_Updete_Settings_provider with ChangeNotifier {
 
       FlutterToast_message('No Question Data');
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return customerFoodSettingData_model.fromJson(json.decode(response.body));
   }
@@ -265,9 +284,11 @@ class Show_Updete_Settings_provider with ChangeNotifier {
         }
     );
     print(response.body.toString());
+    if(response.statusCode==200){
     _success = (Answer_submit_Model.fromJson(json.decode(response.body)).status);
     var message = (Answer_submit_Model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success}");
+
     if (success == 200) {
       Navigator.pop(context);
       // Get.to(() => Pre_Question_Screen());
@@ -284,6 +305,11 @@ class Show_Updete_Settings_provider with ChangeNotifier {
 
       FlutterToast_message(message);
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return Answer_submit_Model.fromJson(json.decode(response.body));
   }
@@ -319,8 +345,10 @@ class Show_Updete_Settings_provider with ChangeNotifier {
     );
 
     print(response.body.toString());
+   if(response.statusCode==200){
     _success = (customerNutritionArea_model.fromJson(json.decode(response.body)).status);
     print("success 1233434 ==${success}");
+
     if (success == 200) {
       // Navigator.pop(context);
       loading = false;
@@ -334,6 +362,11 @@ class Show_Updete_Settings_provider with ChangeNotifier {
 
       FlutterToast_message('No Data');
 
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return customerNutritionArea_model.fromJson(json.decode(response.body));
   }

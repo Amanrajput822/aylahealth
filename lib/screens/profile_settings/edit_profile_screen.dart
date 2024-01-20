@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
 import '../../common/commonwidgets/button.dart';
+import '../../common/direct_logout.dart';
 import '../../common/formtextfield/mytextfield.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/const.dart';
@@ -104,6 +105,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
           'Accept': 'application/json'
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (user_details_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -133,6 +135,11 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
       Navigator.pop(context);
       print('else==============');
       FlutterToast_message('No Data');
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return user_details_model.fromJson(json.decode(response.body));
   }

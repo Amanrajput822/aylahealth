@@ -10,6 +10,15 @@ class Message {
       required this.receiverId,
       required this.senderId});
 
+ Map<String,dynamic> toMap (){
+    return {
+      "created":created,
+      "text":text,
+      "receiverId":receiverId,
+      "senderId":senderId
+    };
+  }
+
   factory Message.fromJson(var json) {
     Timestamp timestamp;
     String receiverId;

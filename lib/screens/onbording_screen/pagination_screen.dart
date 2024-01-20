@@ -26,6 +26,7 @@ import 'package:http/http.dart' as http;
 import '../../common/Custom_chackbox_screen.dart';
 import '../../common/api_common_fuction.dart';
 import '../../common/check_screen.dart';
+import '../../common/direct_logout.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/onboarding_screens_models/Answer_submit_Model.dart';
@@ -104,6 +105,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
     print(response.body.toString());
     success = (qution_list_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
+    if(response.statusCode==200){
     if (success == 200) {
         Navigator.pop(context);
         qustion_data_list = (qution_list_model.fromJson(json.decode(response.body)).data);
@@ -113,6 +115,11 @@ class _Pagination_screenState extends State<Pagination_screen> {
       print('else==============');
 
       FlutterToast_message('No Question Data');
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return qution_list_model.fromJson(json.decode(response.body));
   }
@@ -183,6 +190,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
         if(quetype == 'MULTIPLE'|| quetype == 'INDEXING') 'Content-Type': 'application/json'
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (Answer_submit_Model.fromJson(json.decode(response.body)).status);
     var message = (Answer_submit_Model.fromJson(json.decode(response.body)).message);
@@ -201,6 +209,11 @@ class _Pagination_screenState extends State<Pagination_screen> {
       print('else==============');
 
       FlutterToast_message(message);
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return Answer_submit_Model.fromJson(json.decode(response.body));
   }
@@ -216,10 +229,8 @@ class _Pagination_screenState extends State<Pagination_screen> {
     });
     print(tokanget.toString());
     check().then((intenet) {
-      if (intenet != null && intenet) {
-        // Internet Present Case
+      if (intenet) {
        // showLoaderDialog(context ,"Customer NutritionArea Data...");
-
       } else {
         FlutterToast_Internet();
       }
@@ -232,6 +243,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
           'Accept': 'application/json',
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (customerNutritionArea_model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -247,6 +259,11 @@ class _Pagination_screenState extends State<Pagination_screen> {
       print('else==============');
 
       FlutterToast_message('No Data');
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return customerNutritionArea_model.fromJson(json.decode(response.body));
   }
@@ -282,6 +299,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
           'Authorization': 'Bearer $tokanget',
         }
     );
+    if(response.statusCode==200){
     print(response.body.toString());
     success = (Ingredient_Name_List_Model.fromJson(json.decode(response.body)).status);
     print("success 123 ==${success}");
@@ -301,6 +319,11 @@ class _Pagination_screenState extends State<Pagination_screen> {
     //  Navigator.pop(context);
       print('else==============');
       FlutterToast_message('No Question Data');
+    }}
+    else{
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
     }
     return Ingredient_Name_List_Model.fromJson(json.decode(response.body));
   }

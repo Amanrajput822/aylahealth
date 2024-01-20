@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../common/api_common_fuction.dart';
 import '../../../common/check_screen.dart';
+import '../../../common/direct_logout.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
 import '../../../models/home model/RecipeCollectionListModel.dart';
 import '../../../models/meals plans/MealPlaneLestData_Model.dart';
@@ -121,6 +122,9 @@ class HomeScreenProvider extends ChangeNotifier {
       loaderFunction(false);
       _recipe_data_List = [];
       notifyListeners();
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
 
@@ -193,13 +197,16 @@ class HomeScreenProvider extends ChangeNotifier {
       } else {
 
         loaderFunction2(false);
+
         print('else==============');
         // FlutterToast_message('No meals includes on the selected date.');
       }
     }
     else{
       loaderFunction2(false);
-
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
 
@@ -249,7 +256,9 @@ class HomeScreenProvider extends ChangeNotifier {
     else{
       loaderFunction(false);
       _get_meals_planlist_data = [];
-
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       notifyListeners();
       FlutterToast_message(json.decode(response.body)['message']);
     }
@@ -321,6 +330,9 @@ class HomeScreenProvider extends ChangeNotifier {
     }
     else{
       loaderFunction(false);
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
@@ -387,6 +399,9 @@ class HomeScreenProvider extends ChangeNotifier {
     }
     else{
       loaderFunction(false);
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
@@ -436,6 +451,9 @@ class HomeScreenProvider extends ChangeNotifier {
     }
     else{
       loaderFunction(false);
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
       FlutterToast_message(json.decode(response.body)['message']);
     }
     return RecipeCollectionListModel.fromJson(json.decode(response.body));
