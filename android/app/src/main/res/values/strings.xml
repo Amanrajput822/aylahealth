@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ayla Health</string>
-    <string name="facebook_app_id">1697429554402051</string>
-    <string name="fb_login_protocol_scheme">fb1697429554402051</string>
-    <string name="facebook_client_token">b3cf9f4df306a4c8948d10da03e38cde</string>
+    <string name="facebook_app_id">412431794688732</string>
+    <string name="fb_login_protocol_scheme">fb412431794688732</string>
+    <string name="facebook_client_token">1dd4452636f7e065f2d91474c250ba41</string>
 </resources>
