@@ -102,7 +102,7 @@ class _MyAppState extends State<MyApp> {
           );
         },
 
-        initialRoute: 'InAppPurchaseScreen',
+        initialRoute: '/',
         routes: {
 
           '/': (context) => const Splesh(),

@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDmpUbT4s_4nyM4Z1kmJCpH_w-unk6tbRc',
-    appId: '1:691184521472:android:3b1951e13f553cf54a63e5',
+    appId: '1:691184521472:android:b48ab73f8f2cc3cc4a63e5',
     messagingSenderId: '691184521472',
     projectId: 'ayla-health-15cd4',
     storageBucket: 'ayla-health-15cd4.appspot.com',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAuNoDukMegVzRBNFbW0KKi4ep2BjhoJiw',
-    appId: '1:691184521472:ios:88f0047e05da468f4a63e5',
+    appId: '1:691184521472:ios:5b7ed6cc4d80a62a4a63e5',
     messagingSenderId: '691184521472',
     projectId: 'ayla-health-15cd4',
     storageBucket: 'ayla-health-15cd4.appspot.com',
-    iosClientId: '691184521472-vluv22j64h0ua9q0eflaheq8baf2e0gm.apps.googleusercontent.com',
-    iosBundleId: 'com.applite.aylahealth',
+    iosClientId: '691184521472-38dl7amcu041ek5ob73u05uarpr7vef8.apps.googleusercontent.com',
+    iosBundleId: 'app.aylahealth',
   );
 }

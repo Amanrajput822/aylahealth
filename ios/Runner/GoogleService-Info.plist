@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>691184521472-vluv22j64h0ua9q0eflaheq8baf2e0gm.apps.googleusercontent.com</string>
+	<string>691184521472-qtfudfl72k6q6hd7668ekvnbip4a4iih.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.691184521472-vluv22j64h0ua9q0eflaheq8baf2e0gm</string>
+	<string>com.googleusercontent.apps.691184521472-qtfudfl72k6q6hd7668ekvnbip4a4iih</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>691184521472-38dl7amcu041ek5ob73u05uarpr7vef8.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.applite.aylahealth</string>
+	<string>app.aylahealth</string>
 	<key>PROJECT_ID</key>
 	<string>ayla-health-15cd4</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:691184521472:ios:88f0047e05da468f4a63e5</string>
+	<string>1:691184521472:ios:5b7ed6cc4d80a62a4a63e5</string>
 </dict>
 </plist>
