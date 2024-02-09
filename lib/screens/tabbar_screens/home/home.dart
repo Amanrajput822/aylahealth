@@ -28,6 +28,7 @@ import '../recipes screens/recipe_description/recipes_description_screen.dart';
 import '../recipes screens/recipe_screen/RecipeData_Provider.dart';
 import '../support_screen/video_appoinment.dart';
 
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -40,7 +41,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   ScrollController? _scrollController;
   bool lastStatus = true;
-
+  String? currentDate;
 
   void _scrollListener() {
     if (_isShrink != lastStatus) {
@@ -61,12 +62,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _scrollController = ScrollController()..addListener(_scrollListener);
-    todayDate();
-    loginTimeStatusFunction();
 
+    loginTimeStatusFunction();
     final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
     homeScreenProviderData.get_meals_plantypelist_api();
     homeScreenProviderData.recipeCollectionList_api();
+    currentDate = _formatDateTime(DateTime.now());
+    Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
   }
 
   @override
@@ -90,6 +92,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       print('App is in the foreground');
       foregroundDateTime = DateTime.now().year+DateTime.now().month+DateTime.now().day;
       if(backgroundDateTime != foregroundDateTime){
+
         final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
         homeScreenProviderData.recipeList_ditels_api();
         homeScreenProviderData.get_meals_plantypelist_api();
@@ -108,12 +111,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
 
 
-  String? formattedTime;
-  todayDate() {
-    var now =  DateTime.now();
-     formattedTime = DateFormat('EEEE d MMM yyyy').format(now);
 
-  }
   var loginTimeStatus = false;
  Future<void> loginTimeStatusFunction() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -122,6 +120,22 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     });
 
 }
+
+
+
+
+  void _getTime() {
+    final DateTime now = DateTime.now();
+    final String formattedDateTime = _formatDateTime(now);
+    setState(() {
+      currentDate = formattedDateTime;
+    });
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return DateFormat('EEEE d MMM yyyy').format(dateTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     final homeScreenProviderData = Provider.of<HomeScreenProvider>(context);
@@ -168,7 +182,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       sizedboxheight(deviceheight(context,0.1)),
                       Padding(
                         padding: const EdgeInsets.only(left: 20,right: 20),
-                        child: Text(formattedTime.toString(),
+                        //child: Text(formattedTime.toString(),
+                        child: Text(currentDate!,
                           style: TextStyle(
                             fontSize: 16,
                             fontFamily: fontFamilyText,
@@ -1044,6 +1059,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                       InkWell(
                                           onTap: (){
                                             _showPicker(context);
+                                          //  recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![0].mtId.toString());
+
                                             //  _displayDialog( context);
                                           },
                                           child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')
@@ -1268,7 +1285,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void _showPicker(BuildContext ctx) {
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
+    recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![0].mtId.toString());
     showCupertinoModalPopup(
         barrierDismissible:true,
         context: ctx,

@@ -32,6 +32,7 @@ import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/auth model/user_login_model.dart';
 import '../onbording_screen/pre_question_loding_screen.dart';
+import 'app_cache_clear.dart';
 import 'google_authentication.dart';
 
 import 'package:http/http.dart' as http;
@@ -242,11 +243,12 @@ class _Signup_typeState extends State<Signup_type> {
   var fcmToken ;
 
   Future<user_login_model> social_login(social_name,social_id,user_name,user_email) async {
-
+    deleteCacheDir();
+    deleteAppDir();
     fcmToken = await FirebaseMessaging.instance.getToken();
 
     check().then((intenet) {
-      if (intenet != null && intenet) {
+      if (intenet) {
         // Internet Present Case
         showLoaderDialog_popup(context,"Sign In...");
       } else {

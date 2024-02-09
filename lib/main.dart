@@ -20,8 +20,6 @@ void main() async {
   );
   await SharedPrefHelper.init();
   // await NotificationHandler.initialize();
-  // await NotificationHandler.firebaseInit();
-
   SystemChrome.setPreferredOrientations(
     [
       DeviceOrientation.portraitUp,
@@ -30,22 +28,6 @@ void main() async {
   );
   runApp(const MyApp(),);
 }
-
-// Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
-//
-//   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-//   await LocalNotification().initialize();
-//   await LocalNotification().showNotificationIOS(message);
-// }
-
-
-
-// Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-//
-//   //await LocalNotification().showNotificationIOS(message);
-//   await notificationClick(message);
-// }
 
 
 

@@ -1193,7 +1193,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
   void _showPicker(BuildContext ctx) {
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
+    recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![0].mtId.toString());
     showCupertinoModalPopup(
         barrierDismissible:true,
         context: ctx,
@@ -1329,6 +1329,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                 InkWell(
                                     onTap: (){
                                       _showPicker(context);
+                                     // recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![0].mtId.toString());
                                     //  _displayDialog( context);
                                     },
                                     child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')
@@ -1413,7 +1414,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
         btnWidth: deviceWidth(context,0.92),
         btnColor: colorEnabledButton,
         onPressed: () {
-
+          mealsModel.get_meals_calendardata_api(context, recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",recipeModel.selectedDay);
 
          if(mealsModel.single_day_meals_change!){
            Navigator.pop(context);
@@ -1432,7 +1433,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
            );
          }
          else{
-           if(recipeModel.selectedDay != null){
+           if(recipeModel.selectedDate != null){
              if(recipeModel.select_mealplanID_recipe!=null){
                if(rec_id!=null){
                  Navigator.pop(context);
@@ -1452,10 +1453,10 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
          if(recipeModel.meals_screen){
            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
          }
-
          recipeModel.select_screen_data(false);
          mealsModel.singleDayMeals_change(false);
-         mealsModel.get_meals_calendardata_api(context, recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",recipeModel.selectedDay);
+        // mealsModel.get_meals_calendardata_api(context, recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),int.parse(recipeModel.select_mealplanID_recipe.toString())-1,"0",recipeModel.selectedDay);
+
         },
       ),
     );

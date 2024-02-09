@@ -298,10 +298,9 @@ class RecipeData_Provider with ChangeNotifier {
 
    if(response.statusCode == 200){
      _success = (RecipeList_data_model.fromJson(json.decode(response.body)).status);
-      print('Unauthorized error');
 
      if (_success == 200) {
-       print('Unauthorized error1');
+
        // Navigator.pop(context);
        _hasNextPage = true;
        _recipe_data_List = (RecipeList_data_model.fromJson(json.decode(response.body)).data);

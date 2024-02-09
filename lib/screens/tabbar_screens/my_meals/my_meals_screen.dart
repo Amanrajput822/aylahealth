@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
@@ -48,7 +49,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
 
   TabController? _controller;
 
-
+  late Timer _timer;
   /// initState ///
   @override
   void initState() {
@@ -64,6 +65,10 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
     mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year,mealsModel.selectedDay!.month,0,"1",mealsModel.selectedDay);
     mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,0);
     mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
+
+     _timer = Timer.periodic(Duration(days: 1), (timer) {
+       _updateSelectedDay(mealsModel.focusedDay!);
+     });
   }
 
   @override
@@ -96,11 +101,15 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
 
     }
   }
-
+  void _updateSelectedDay(focusedDay) {
+    setState(() {
+      focusedDay = DateTime.now();
+    });
+  }
    Future<void> toDayDataFunction() async {
      SharedPreferences prefs = await SharedPreferences.getInstance();
      setState(() {
-       bool todayValue = prefs.getBool('Home_Screen')!;
+       bool todayValue = prefs.getBool('Home_Screen')??false;
        if(todayValue){
          prefs.setBool('Home_Screen', false);
          final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
@@ -789,7 +798,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
           recipeModel.txt_search.clear();
           recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
         }
-        mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0", mealsModel.selectedDay);
+       // mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0", mealsModel.selectedDay);
       //  mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,int.parse(mealsModel.select_mealplanID.toString())-1);
        /// select day and focused day save
         recipeModel.selectedDay_data( mealsModel.selectedDay);
@@ -827,6 +836,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
           mealsModel.singlecalendar_focuseday(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
         //  mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
           mealsModel.singal_day_data_gate_api(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day),true,0);
+          mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,0,"0",mealsModel.selectedDays);
 
           mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDays,0);
           //  _selectedDay = selectedDay;
@@ -1226,7 +1236,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
 
               /// get months calendar meals api
               mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0",focusedDay);
-              //mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
+              mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
               /// single day data api
              //  mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
              // mealsModel.singal_day_data_gate_api(selectedDay,true,0);
@@ -1271,7 +1281,6 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
       TableCalendar(
         // firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month==3?mealsModel.singlecalendar_startdate!.month-2:mealsModel.singlecalendar_startdate!.month==2?mealsModel.singlecalendar_startdate!.month-1:mealsModel.singlecalendar_startdate!.month==1?mealsModel.singlecalendar_startdate!.month:mealsModel.singlecalendar_startdate!.month-2),
         // lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month==10?mealsModel.singlecalendar_startdate!.month+3:mealsModel.singlecalendar_startdate!.month==11?mealsModel.singlecalendar_startdate!.month+2:mealsModel.singlecalendar_startdate!.month==12?mealsModel.singlecalendar_startdate!.month+1:mealsModel.singlecalendar_startdate!.month+3,0),
-
         firstDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month-2),
         lastDay: DateTime(mealsModel.singlecalendar_startdate!.year,mealsModel.singlecalendar_startdate!.month+3),
 
@@ -1336,7 +1345,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
 
               /// get months calendar meals api
               mealsModel.get_meals_calendardata_api(context, focusedDay.year,focusedDay.month,0,"0",focusedDay);
-            //  mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
+              mealsModel.get_meals_calendardata_multiple_months_api(context,focusedDay,0);
               /// single day data api
             //  mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
               mealsModel.singal_day_data_gate_api(selectedDay,true,0);
@@ -1787,7 +1796,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
   void _showPicker(BuildContext ctx) {
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
+    recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![0].mtId.toString());
     showCupertinoModalPopup(
         barrierDismissible:true,
         context: ctx,

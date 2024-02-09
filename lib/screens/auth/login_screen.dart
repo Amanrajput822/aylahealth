@@ -84,6 +84,7 @@ class _LogInState extends State<LogIn> {
 
   Future<user_login_model> signin() async {
     deleteCacheDir();
+    deleteAppDir();
     fcmToken = await FirebaseMessaging.instance.getToken();
     check().then((intenet) {
       if (intenet) {

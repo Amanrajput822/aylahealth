@@ -75,6 +75,7 @@ class _Signup_screenState extends State<Signup_screen> {
 
   Future<user_login_model> signup() async {
     deleteCacheDir();
+    deleteAppDir();
     fcmToken = await FirebaseMessaging.instance.getToken();
 
     check().then((intenet) {

@@ -84,6 +84,7 @@ class _MyAppState extends State<MyApp> {
         navigatorKey: navigationKey,
         theme: ThemeData(
           backgroundColor: Colors.white,
+
           appBarTheme: const AppBarTheme(
             systemOverlayStyle: SystemUiOverlayStyle(
               // Status bar color

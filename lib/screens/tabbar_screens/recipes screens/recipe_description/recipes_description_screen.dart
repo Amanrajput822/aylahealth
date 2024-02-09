@@ -851,7 +851,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
    void _showPicker(BuildContext ctx) {
      final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
      final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-
+     recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![0].mtId.toString());
      showCupertinoModalPopup(
          barrierDismissible:true,
          context: ctx,
@@ -1015,6 +1015,8 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                        InkWell(
                                            onTap: (){
                                              _showPicker(context);
+                                             //recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![0].mtId.toString());
+
                                              //  _displayDialog( context);
                                            },
                                            child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')

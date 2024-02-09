@@ -1,13 +1,13 @@
-import 'package:aylahealth/common/styles/const.dart';
+
 import 'package:aylahealth/screens/auth/login_screen.dart';
 import 'package:aylahealth/screens/auth/signup_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+
 import 'package:page_transition/page_transition.dart';
 
 import '../../common/commonwidgets/button.dart';
+import 'common/styles/const.dart';
 
 
 class HomeScreen extends StatelessWidget {

@@ -179,6 +179,7 @@ class HomeScreenProvider extends ChangeNotifier {
       _success = (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body)).status);
       if (success == 200)  {
         _mealData1!.clear();
+        _select_tab_data_list1.clear();
         _mealData1 =  (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body))).data!.mealData;
         notifyListeners();
 
