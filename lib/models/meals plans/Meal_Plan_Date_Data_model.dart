@@ -59,6 +59,7 @@ class MealData_list {
   int? favStatus;
   String? note;
   String? logged;
+  var cust_serves;
 
   MealData_list(
       {this.recId,
@@ -67,7 +68,9 @@ class MealData_list {
         this.image,
         this.favStatus,
         this.note,
-        this.logged});
+        this.logged,
+        this.cust_serves
+      });
 
   MealData_list.fromJson(Map<String, dynamic> json) {
     recId = json['rec_id'];
@@ -77,6 +80,7 @@ class MealData_list {
     favStatus = json['fav_status'];
     note = json['note'];
     logged = json['logged'];
+    cust_serves = json['cust_serves'];
   }
 
   Map<String, dynamic> toJson() {
@@ -88,6 +92,7 @@ class MealData_list {
     data['fav_status'] = this.favStatus;
     data['note'] = this.note;
     data['logged'] = this.logged;
+    data['cust_serves'] = this.cust_serves;
     return data;
   }
 }

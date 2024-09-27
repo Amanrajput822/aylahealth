@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.0.1+4
 
 environment:
   sdk: '>=2.19.5 <3.0.0'
@@ -31,17 +31,17 @@ dependencies:
   flutter:
     sdk: flutter
   chewie: ^1.7.1
-  cloud_firestore: ^4.9.2
+  cloud_firestore: ^4.14.0
   connectivity_plus: ^4.0.2
   cupertino_icons: ^1.0.6
   custom_cupertino_picker: ^2.0.3
   dropdown_button2:
   firebase_auth: ^4.10.0
   firebase_core: ^2.16.0
-  firebase_messaging: ^14.7.3
+  firebase_messaging: ^14.0.0
   flutter_local_notifications: ^16.3.0
 #  flutter_local_notifications: ^10.0.0
-  rxdart: ^0.27.3
+#  rxdart: ^0.27.3
 
   flutter_holo_date_picker: ^1.1.2+1
   flutter_html: ^3.0.0-beta.2
@@ -71,8 +71,15 @@ dependencies:
 #  webview_flutter: 4.0.0
   webview_flutter: ^2.0.13
   in_app_purchase:
-  in_app_purchase_android:
-  in_app_purchase_storekit:
+#  in_app_purchase_android:
+#  in_app_purchase_storekit:
+  flutter_launcher_icons: ^0.13.1
+  flutter_inapp_purchase: ^5.4.2
+  vimeo_player_flutter: ^0.0.3+1
+  url_launcher: ^6.1.11
+#  flutter_inapp_purchase: ^5.6.1
+
+
 
 
 
@@ -84,6 +91,10 @@ dev_dependencies:
   integration_test:
     sdk: flutter
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -108,7 +119,7 @@ flutter:
      - assets/
      - assets/image/
      - assets/banner_icon/
-
+     - assets/done icon/
 
 
 

@@ -51,7 +51,7 @@ class ReceiverMessage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(message.text,
+                  Text(message.text.trim(),
                       style:TextStyle(fontSize: 16,
                           fontFamily: fontFamilyText,
                           fontWeight: fontWeight400,

@@ -6,6 +6,7 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../common/formtextfield/mytextfield.dart';
+import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../common/styles/const.dart';
 import '../modules_search_bar/modulesSearchBar.dart';
 import '../module_description_screen/module_description_screen.dart';
@@ -20,14 +21,15 @@ class Modules_Screen extends StatefulWidget {
 
 class _Modules_ScreenState extends State<Modules_Screen> {
 
-  // bool iconcolor = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     final modulesProviderData = Provider.of<ModulesScreenProvider>(context, listen: false);
-
+    modulesProviderData.get_moduleLibrary_api();
+  //  modulesProviderData.continueLearningModuleList_api();
+    modulesProviderData.freeModuleList_api();
   }
   @override
   Widget build(BuildContext context) {
@@ -47,15 +49,31 @@ class _Modules_ScreenState extends State<Modules_Screen> {
 
 
               sizedboxheight(15.0),
-              headingtile('Continue Learning').paddingOnly(left: 15,right: 15),
+              headingtile(modulesProviderData.learningStatus).paddingOnly(left: 15,right: 15),
               sizedboxheight(15.0),
-              continue_learning().paddingOnly(left: 15,right: 15),
-              headingtile('Recommended for You').paddingOnly(left: 15,right: 15),
+              modulesProviderData.loading1
+                  ? const SizedBox(
+                height: 200,
+                child: Center(child: CircularProgressIndicator()),
+              ): continue_learning(
+                (modulesProviderData.freeModuleListData != null && modulesProviderData.freeModuleListData!.isNotEmpty)
+                    ? modulesProviderData.freeModuleListData!
+                    : (modulesProviderData.continueLearningModuleListData != null && modulesProviderData.continueLearningModuleListData!.isNotEmpty)
+                    ? modulesProviderData.continueLearningModuleListData!
+                    : [],
+              ).paddingOnly(left: 15, right: 15),
+              // continue_learning(modulesProviderData.freeModuleListData != null && modulesProviderData.freeModuleListData!.isNotEmpty
+              //     ?modulesProviderData.freeModuleListData!:modulesProviderData.continueLearningModuleListData!).paddingOnly(left: 15,right: 15),
+              // headingtile('Recommended for You').paddingOnly(left: 15,right: 15),
+              // sizedboxheight(15.0),
+              // recommended_list().paddingOnly(left: 15,right: 15),
+              headingtile('Module Library').paddingOnly(left: 15,right: 15,top: 10),
               sizedboxheight(15.0),
-              recommended_list().paddingOnly(left: 15,right: 15),
-              headingtile('Module Library').paddingOnly(left: 15,right: 15),
-              sizedboxheight(15.0),
-              module_library_list(modulesProviderData),
+              modulesProviderData.loading
+                  ? const SizedBox(
+                height: 200,
+                child: Center(child: CircularProgressIndicator()),
+              ): module_library_list(),
 
               sizedboxheight(70.0),
             ],
@@ -64,7 +82,7 @@ class _Modules_ScreenState extends State<Modules_Screen> {
       ),
     );
   }
-  /// appbar ///////////////////
+  /// appbar ///
 
   AppBar _appbar(){
     return AppBar(
@@ -116,93 +134,7 @@ class _Modules_ScreenState extends State<Modules_Screen> {
       ),
     );
   }
-  // Widget search_field1() {
-  //
-  //   return  Expanded(
-  //     child: Focus(
-  //
-  //       onFocusChange: (a){
-  //         print(a.toString());
-  //         textfieldfocus = a;
-  //         if(a){
-  //           clear_icon = false;
-  //         }
-  //       },
-  //       child: Builder(
-  //         builder: (BuildContext context) {
-  //           final FocusNode focusNode = Focus.of(context);
-  //           final bool hasFocus = focusNode.hasFocus;
-  //           return  AllInputDesign(
-  //             // inputHeaderName: 'Email',
-  //             // key: Key("email1"),
-  //             floatingLabelBehavior: FloatingLabelBehavior.never,
-  //             hintText: 'Search',
-  //             hintTextStyleColor: hasFocus?colorBluePigment:HexColor('#3B4250'),
-  //             controller: txt_search,
-  //             cursorColor: hasFocus?colorBluePigment:HexColor('#3B4250'),
-  //             textStyleColors: hasFocus?colorBluePigment:HexColor('#3B4250'),
-  //
-  //             prefixIcon: Padding(
-  //               padding: const EdgeInsets.all(15),
-  //               child: SvgPicture.asset(
-  //                 'assets/Search.svg',
-  //                 color: hasFocus?colorBluePigment:HexColor('#3B4250'),
-  //               ),
-  //             ),
-  //
-  //             suffixIcon: clear_icon? InkWell(
-  //               onTap: (){
-  //                 if(txt_search.text.isNotEmpty){
-  //                   clear_icon = false;
-  //                   txt_search.clear();
-  //                   // recipeModel.recipeList_ditels_api(search_test:'');
-  //                 }
-  //               },
-  //               child: Padding(
-  //                 padding: const EdgeInsets.all(15),
-  //                 child: SvgPicture.asset(
-  //                   'assets/Close Button Light.svg',
-  //                   height: 1,
-  //                 ),
-  //               ),
-  //             ):Container(width: 1,),
-  //             fillColor:hasFocus ? colorEnabledTextField : colorDisabledTextField,
-  //             autofillHints: const [AutofillHints.name],
-  //             textInputAction: TextInputAction.done,
-  //             keyBoardType: TextInputType.text,
-  //             validatorFieldValue: 'Search',
-  //             onSubmitted: (val){
-  //               setState(() {
-  //                 print(val.length);
-  //                 if(val.length>0){
-  //                   clear_icon = true;
-  //                   search_done = true;
-  //                   // recipeModel.recipeList_ditels_api(search_test:txt_search.text.toString());
-  //                 }
-  //
-  //               });
-  //             },
-  //             onChanged: (val){
-  //               setState(() {
-  //                 clear_icon = false;
-  //                 print(val.length);
-  //                 if(val.length==0){
-  //
-  //                   if(search_done){
-  //                     search_done = false;
-  //                     textfieldfocus = false;
-  //                    // recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-  //                   }
-  //                 }
-  //               });
-  //             },
-  //
-  //           );
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
+
 
   /// heading function
   Widget headingtile(headingtext){
@@ -230,15 +162,30 @@ class _Modules_ScreenState extends State<Modules_Screen> {
     );
   }
 
-  Widget continue_learning(){
+  Widget continue_learning(continueLearningModuleListData){
+  //  final modulesProviderData = Provider.of<ModulesScreenProvider>(context, listen: false);
+
     return  Container(
-      height: 170,
-      child: ListView.builder(
+      height: continueLearningModuleListData!.isEmpty?80:170,
+      child: continueLearningModuleListData!.isEmpty?Container(
+        child: Center(
+          child: Text("When you start a module and don’t complete it, it will be shown here. Start a module now!",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 16,
+              fontFamily: fontFamilyText,
+              color: colorgrey,
+              fontWeight: fontWeight400,
+
+          ),),
+        ),
+      ) : ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: 3,
+          itemCount: continueLearningModuleListData!.length,
           itemBuilder: (BuildContext context, int index){
+            var continueLearningData = continueLearningModuleListData![index];
             return Padding(
-              padding: const EdgeInsets.only(right:20.0),
+              padding: const EdgeInsets.only(top: 10,bottom: 10,right: 10),
               child: InkWell(
                onTap: (){
                  // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
@@ -246,7 +193,15 @@ class _Modules_ScreenState extends State<Modules_Screen> {
                  //   settings: const RouteSettings(name: "/Modules"),
                  //   screen:  const ModuleDescriptionScreen(),
                  // );
+                 PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                   context,
+                   settings: const RouteSettings(name: "/Modules"),
+                   screen:   ModuleDescriptionScreen(
 
+                       moduleId:continueLearningData.mdId.toString(),
+                     screenType:"module"
+                   ),
+                 );
                },
 
                 child: Container(
@@ -254,47 +209,54 @@ class _Modules_ScreenState extends State<Modules_Screen> {
                     borderRadius: BorderRadius.circular(5),
 
                   ),
-                  width: deviceWidth(context,0.68),
-                  height: 155,
+
                   child: Stack(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          image: const DecorationImage(
-                              fit: BoxFit.fill,
-                              image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
-                          ),
-
-                        ),
-                        width: deviceWidth(context,0.68),
-                        height: 155,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
+                      AspectRatio(
+                        aspectRatio: 500/357,
+                        child: Container(
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            gradient:  LinearGradient(
-                                colors: [
-                                  HexColor('#3B4250').withOpacity(0.6),
-                                  HexColor('#3B4250').withOpacity(0.0),
-                                ],
-                                begin: FractionalOffset.bottomCenter,
-                                end: FractionalOffset.topCenter,
-                                tileMode: TileMode.repeated
-                            )
+                            image:  DecorationImage(
+                                fit: BoxFit.fill,
+                               // image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
+                                image: NetworkImage(continueLearningData.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=")
+                            ),
+
+                          ),
+                        //  width: deviceWidth(context,0.68),
+                         // height: 155,
                         ),
-                        width: deviceWidth(context,0.68),
-                        height: 155,
-                        padding: const EdgeInsets.only(bottom: 10,left: 18),
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text('Benefits of Healthy Eating',style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: fontFamilyText,
-                              color: colorWhite,
-                              fontWeight: fontWeight600,
-                              overflow: TextOverflow.ellipsis
-                          ),maxLines: 2,),
+                      ),
+                      AspectRatio(
+                        aspectRatio: 500/357,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              gradient:  LinearGradient(
+                                  colors: [
+                                    HexColor('#3B4250').withOpacity(0.6),
+                                    HexColor('#3B4250').withOpacity(0.0),
+                                  ],
+                                  begin: FractionalOffset.bottomCenter,
+                                  end: FractionalOffset.topCenter,
+                                stops: [0.0, 0.35], // Apply the gradient to only the bottom 30%
+                                tileMode: TileMode.clamp,
+                              )
+                          ),
+                         // width: deviceWidth(context,0.68),
+                        //  height: 155,
+                          padding: const EdgeInsets.only(bottom: 10,left: 18),
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(continueLearningData.mdTitle??"",style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: fontFamilyText,
+                                color: colorWhite,
+                                fontWeight: fontWeight600,
+                                overflow: TextOverflow.ellipsis
+                            ),maxLines: 2,),
+                          ),
                         ),
                       )
                     ],
@@ -306,110 +268,51 @@ class _Modules_ScreenState extends State<Modules_Screen> {
           }),
     );
 
-
-
   }
 
-  Widget recommended_list(){
-    return Container(
-      height: 165,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 5,
-          itemBuilder: (BuildContext context, int index){
-            return Padding(
-              padding: const EdgeInsets.only(right: 15.0),
-              child: InkWell(
-                onTap: (){
-                  PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                    context,
-                    settings: const RouteSettings(name: "/Modules"),
-                    screen:  const ModuleDescriptionScreen(),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
 
-                  ),
-                  width: deviceWidth(context,0.38),
-                  height: 145,
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          image: const DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
-                          ),
-
-                        ),
-                        width: deviceWidth(context,0.38),
-                        height: 145,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            gradient:  LinearGradient(
-                                colors: [
-                                  HexColor('#3B4250').withOpacity(0.6),
-                                  HexColor('#3B4250').withOpacity(0.0),
-                                ],
-                                begin: FractionalOffset.bottomCenter,
-                                end: FractionalOffset.topCenter,
-                                tileMode: TileMode.repeated
-                            )
-                        ),
-                        width: deviceWidth(context,0.38),
-                        height: 145,
-                        padding: EdgeInsets.only(bottom: 10,left: 20),
-                        child: Align(
-                          alignment: Alignment.bottomLeft,
-                          child: Text('True Healthy Eating',style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: fontFamilyText,
-                              color: colorWhite,
-                              fontWeight: fontWeight600,
-                              overflow: TextOverflow.ellipsis
-                          ),maxLines: 2,),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-
-          }),
-    );
-  }
-
-  Widget module_library_list(modulesProviderData){
+  Widget module_library_list(){
+    final modulesProviderData = Provider.of<ModulesScreenProvider>(context, listen: false);
 
     return Container(
 
-      child: ListView.builder(
+      child: (modulesProviderData.moduleLibraryData == null || modulesProviderData.moduleLibraryData!.isEmpty)?Container(
+        child: Center(
+          child: Text("No module library",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: fontFamilyText,
+              color: colorgrey,
+              fontWeight: fontWeight400,
+
+            ),),
+        ),
+      ) :ListView.builder(
           scrollDirection: Axis.vertical,
-          itemCount: 5,
+          itemCount: modulesProviderData.moduleLibraryData!.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index){
+
+           var moduleLibraryListData = modulesProviderData.moduleLibraryData![index];
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: Center(
                 child: ExpansionTile(
+
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(0.0),
                   ),
                   backgroundColor: HexColor('#E9ECF1'),
                   collapsedBackgroundColor: HexColor('#E9ECF1'),
                   trailing:  CircleAvatar(
-                    backgroundColor: modulesProviderData.iconColor?HexColor('#3B4250'):colorWhite,
+                    backgroundColor: moduleLibraryListData.iconColor!?HexColor('#3B4250'):colorWhite,
                     radius: 15,
-                    child: modulesProviderData.iconColor?Icon(Icons.clear,color:colorWhite,size: 20,):Icon(Icons.add,color: HexColor('#3B4250'),size: 20,),
+                    child: moduleLibraryListData.iconColor!?Icon(Icons.clear,color:colorWhite,size: 20,):Icon(Icons.add,color: HexColor('#3B4250'),size: 20,),
                   ),
-                  title: Text('Healthy Eating',
+                  title: Text(moduleLibraryListData.mcName!,
                     style: TextStyle(
                         fontSize: 16,
                         fontFamily: fontFamilyText,
@@ -419,8 +322,8 @@ class _Modules_ScreenState extends State<Modules_Screen> {
                     ),),
                   onExpansionChanged: (value){
                     setState(() {
-                      modulesProviderData.IconColor(value);
-
+                     // modulesProviderData.IconColor(value);
+                      moduleLibraryListData.iconColor = value;
                     });
 
                   },
@@ -428,10 +331,26 @@ class _Modules_ScreenState extends State<Modules_Screen> {
                   children: [
                     Container(
                       color: colorWhite,
-                      child: ListView.builder(
+                      child:moduleLibraryListData.subCategory!.isEmpty?
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text('The content for this section is being prepared and we will notify you as it gets added.',
+                           textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: fontFamilyText,
+                                color: colorgrey,
+                                fontWeight: fontWeight600,
+
+                            ),),
+                        ),):
+                      ListView.builder(
                           shrinkWrap: true,
-                          itemCount: 3,
-                          itemBuilder: (BuildContext context,int index){
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: moduleLibraryListData.subCategory!.length,
+                          itemBuilder: (BuildContext context,int index1){
+                            var subCategoryData = moduleLibraryListData.subCategory![index1];
                             return Padding(
                               padding: const EdgeInsets.only(left: 10,right: 10,top: 10),
                               child: ExpansionTile(
@@ -444,7 +363,7 @@ class _Modules_ScreenState extends State<Modules_Screen> {
                                 backgroundColor: HexColor('#E9ECF1'),
                                 collapsedBackgroundColor: HexColor('#E9ECF1'),
                                 iconColor:  HexColor('#3B4250'),
-                                title: Text('Understanding Healthy Eating',
+                                title: Text(subCategoryData.mscName!,
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontFamily: fontFamilyText,
@@ -454,59 +373,140 @@ class _Modules_ScreenState extends State<Modules_Screen> {
                                   ),),
                                 // Contents
                                 children: [
+                                  subCategoryData.moduleData!.isEmpty?
                                   Container(
                                     color: colorWhite,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                         width: deviceWidth(context),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Row(
-                                              children: [
-                                                SvgPicture.asset('assets/image/play-circle 1.svg'),
-                                               sizedboxwidth(10.0),
-                                                Container(
-                                                  width: deviceWidth(context,0.7),
-                                                  child: Text('True Healthy Eating',
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontFamily: fontFamilyText,
-                                                        color: HexColor('#3B4250'),
-                                                        fontWeight: fontWeight400,
-                                                        overflow: TextOverflow.ellipsis
-                                                    ),),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: deviceWidth(context),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Row(
-                                              children: [
-                                                SvgPicture.asset('assets/image/lock_icon.svg'),
-                                                sizedboxwidth(10.0),
-                                                Container(
-                                                  width: deviceWidth(context,0.7),
-                                                  child: Text('Fad Diets vs Healthy Eating',
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontFamily: fontFamilyText,
-                                                        color: colorShadowBlue,
-                                                        fontWeight: fontWeight400,
-                                                        overflow: TextOverflow.ellipsis
-                                                    ),),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Text('The content for this section is being prepared and we will notify you as it gets added.',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: fontFamilyText,
+                                          color: colorgrey,
+                                          fontWeight: fontWeight600,
 
-                                      ],
-                                    ),
+                                        ),),
+                                    ),): Container(
+                                    color: colorWhite,
+                                    child:  ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: subCategoryData.moduleData!.length,
+                                        itemBuilder: (BuildContext context,int index2){
+                                         var moduleListData = subCategoryData.moduleData![index2];
+                                          return Padding(
+                                            padding: const EdgeInsets.only(left: 10,right: 10,top: 10),
+                                            child:  InkWell(
+                                              onTap: (){
+                                                if(modulesProviderData.learningStatus == 'Start Learning'){
+                                                  FlutterToast_message('Before starting a module, please complete the Get Started module.');
+                                                }
+                                                else if(modulesProviderData.learningStatus == 'Continue Learning')
+                                                {
+                                                  modulesProviderData.updateCmvsStatus(moduleListData.mdId!, moduleListData.cmvsStatus == null?1:moduleListData.cmvsStatus!);
+                                                  PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                                                    context,
+                                                    settings: const RouteSettings(name: "/Modules"),
+                                                    screen:   ModuleDescriptionScreen(
+                                                        moduleId:moduleListData.mdId.toString(),
+                                                        screenType:"module"
+                                                    ),
+                                                  );
+                                                }
+                                              else {
+                                                  modulesProviderData.updateCmvsStatus(moduleListData.mdId!, moduleListData.cmvsStatus == null?1:moduleListData.cmvsStatus!);
+                                                  PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                                                    context,
+                                                    settings: const RouteSettings(name: "/Modules"),
+                                                    screen:   ModuleDescriptionScreen(
+                                                        moduleId:moduleListData.mdId.toString(),
+                                                        screenType:"module"
+                                                    ),
+                                                  );
+                                                }
+
+                                              },
+                                              child: Container(
+                                                width: deviceWidth(context),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(15.0),
+                                                  child: Row(
+                                                    children: [
+                                                      moduleListData.cmvsStatus == 3?
+                                                      SvgPicture.asset('assets/image/learnCompleteIcon.svg')
+                                                      :SvgPicture.asset('assets/image/play-circle 1.svg'),
+                                                      sizedboxwidth(10.0),
+                                                      Container(
+                                                        width: deviceWidth(context,0.7),
+                                                        child: Text(moduleListData.mdTitle!,
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontFamily: fontFamilyText,
+                                                              color: HexColor('#3B4250'),
+                                                              fontWeight: fontWeight400,
+                                                              overflow: TextOverflow.ellipsis
+                                                          ),),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        })
+
+                                    // Column(
+                                    //   children: [
+                                    //     Container(
+                                    //      width: deviceWidth(context),
+                                    //       child: Padding(
+                                    //         padding: const EdgeInsets.all(15.0),
+                                    //         child: Row(
+                                    //           children: [
+                                    //             SvgPicture.asset('assets/image/play-circle 1.svg'),
+                                    //            sizedboxwidth(10.0),
+                                    //             Container(
+                                    //               width: deviceWidth(context,0.7),
+                                    //               child: Text('True Healthy Eating',
+                                    //                 style: TextStyle(
+                                    //                     fontSize: 16,
+                                    //                     fontFamily: fontFamilyText,
+                                    //                     color: HexColor('#3B4250'),
+                                    //                     fontWeight: fontWeight400,
+                                    //                     overflow: TextOverflow.ellipsis
+                                    //                 ),),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //     Container(
+                                    //       width: deviceWidth(context),
+                                    //       child: Padding(
+                                    //         padding: const EdgeInsets.all(15.0),
+                                    //         child: Row(
+                                    //           children: [
+                                    //             SvgPicture.asset('assets/image/lock_icon.svg'),
+                                    //             sizedboxwidth(10.0),
+                                    //             Container(
+                                    //               width: deviceWidth(context,0.7),
+                                    //               child: Text('Fad Diets vs Healthy Eating',
+                                    //                 style: TextStyle(
+                                    //                     fontSize: 16,
+                                    //                     fontFamily: fontFamilyText,
+                                    //                     color: colorShadowBlue,
+                                    //                     fontWeight: fontWeight400,
+                                    //                     overflow: TextOverflow.ellipsis
+                                    //                 ),),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //
+                                    //   ],
+                                    // ),
                                   )
 
 

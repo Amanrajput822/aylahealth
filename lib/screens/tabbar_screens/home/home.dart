@@ -4,7 +4,9 @@ import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/tabbar_screens/home/homeScreenProvider.dart';
 import 'package:custom_cupertino_picker/custom_cupertino_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -14,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../common/SharedPrefHelper.dart';
 import '../../../common/commonwidgets/button.dart';
 import '../../../common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
@@ -21,6 +24,9 @@ import '../../Profile_screens/Profile_screen.dart';
 import 'package:intl/intl.dart';
 
 import '../../notification_screen/FirebaseNotifications.dart';
+import '../../subscription_screens/sub_popup/subscription_plan_popup.dart';
+import '../modules/module_description_screen/module_description_screen.dart';
+import '../modules/modules_screen/modules_screen_provider.dart';
 import '../my_meals/My_Meals_Provider.dart';
 import '../my_meals/calendar_evryday_json.dart';
 import '../my_meals/shopping_list_screen/ShoppingListScreen.dart';
@@ -69,6 +75,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     homeScreenProviderData.recipeCollectionList_api();
     currentDate = _formatDateTime(DateTime.now());
     Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+  //  homeScreenProviderData.singal_day_data_gate_api1(DateTime.now());
+   // homeScreenProviderData.recipeList_ditels_api();
+   // homeScreenProviderData.singal_day_data_gate_api1(DateTime.now());
+    final modulesProviderData = Provider.of<ModulesScreenProvider>(context, listen: false);
+    modulesProviderData.get_moduleLibrary_api();
+   // modulesProviderData.continueLearningModuleList_api();
+    modulesProviderData.freeModuleList_api();
   }
 
   @override
@@ -79,6 +92,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     _scrollController?.dispose();
     super.dispose();
   }
+
   int? backgroundDateTime =0;
   int? foregroundDateTime =0;
   @override
@@ -140,7 +154,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final homeScreenProviderData = Provider.of<HomeScreenProvider>(context);
 
-    final meaBottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context);
+    final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context);
+    final modulesProviderData = Provider.of<ModulesScreenProvider>(context);
 
     return Scaffold(
       body:  NestedScrollView(
@@ -247,17 +262,33 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   sizedboxheight(25.0),
+              ///
+              //      Text('this hide button only for popup plan purchase testing'),
+              //          TextButton(onPressed: () async {
+              //            showSubscriptionPopup(context);
+              //          }, child: Text('hide')),
+              //
 
-                 // TextButton(onPressed: (){notificationPopup();}, child: Text('button')),
-
-                  hedingtile('Start Learning',(){}),
+                  headingTile1(modulesProviderData.learningStatus),
                   sizedboxheight(15.0),
-                  startlearningcard(),
+                  modulesProviderData.loading1
+                      ? const SizedBox(
+                    height: 200,
+                    child: Center(child: CircularProgressIndicator()),
+                  ):continue_learning(
+                    (modulesProviderData.freeModuleListData != null && modulesProviderData.freeModuleListData!.isNotEmpty)
+                        ? modulesProviderData.freeModuleListData!
+                        : (modulesProviderData.continueLearningModuleListData != null && modulesProviderData.continueLearningModuleListData!.isNotEmpty)
+                        ? modulesProviderData.continueLearningModuleListData!
+                        : [],
+                  ),
+                  // continue_learning(modulesProviderData.freeModuleListData != null && modulesProviderData.freeModuleListData!.isNotEmpty ?
+                  // modulesProviderData.freeModuleListData!:modulesProviderData.continueLearningModuleListData),
 
                  sizedboxheight(15.0),
-                  homeScreenProviderData.mealData1!.isEmpty? hedingtile('Recipes',(){
+                  homeScreenProviderData.mealData1!.isEmpty? headingTile('Recipes',(){
 
-                    meaBottomNavBarProviderModel.setcontrollervalue(3);
+                    BottomNavBarProviderModel.setcontrollervalue(3,context);
                     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
                     if(recipeModel.fav_filter == '1'){
@@ -278,14 +309,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     }
 
                   }):
-                  hedingtile('Today\'s Meals',() async {
+                  headingTile('Today\'s Meals',() async {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     setState(() {
                       prefs.setBool('Home_Screen', true,);
                     });
 
 
-                    meaBottomNavBarProviderModel.setcontrollervalue(2);
+                    BottomNavBarProviderModel.setcontrollervalue(2,context);
 
                   }),
                   sizedboxheight(15.0),
@@ -305,47 +336,35 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         recipeModel.selectedCollectionIDNameFunction('0');
                         recipeModel.txt_search.clear();
                         recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+                        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3,context);
 
                       }),
                   sizedboxheight(15.0),
 
-                  hedingtile('Recipe collections',(){
-                    // meaBottomNavBarProviderModel.setcontrollervalue(3);
-                    // final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
-                    //
-                    // if(recipeModel.fav_filter == '1'){
-                    //   recipeModel.txt_search.clear();
-                    //   recipeModel.selectedfav_filter("0");
-                    //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                    // }
-                    // else if(recipeModel.selectedCollectionIDName!='0'){
-                    //   recipeModel.txt_search.clear();
-                    //   recipeModel.selectedCollectionIDFunction('0');
-                    //   recipeModel.selectedCollectionIDNameFunction('0');
-                    //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                    // }
-                    // else if(recipeModel.txt_search.text.isNotEmpty){
-                    //   recipeModel.txt_search.clear();
-                    //   recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                    // }
-                  }),
+                  headingTile1('Recipe collections'),
                   sizedboxheight(15.0),
                   recipecollectionscard(),
 
                   sizedboxheight(15.0),
                   benarcard('Nutrition Support','Connect with a qualified nutritionist or dietitian',
                       'assets/banner_icon/NutritionSupport.png', HexColor('#FBE990'),(){
-                        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4);
+                        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(4,context);
                       }),
                   sizedboxheight(15.0),
                   benarcard('Shopping List','Shop for your planned meals & snacks',
                       'assets/banner_icon/ShoppingList.png', HexColor('#EC90AC'),(){
-                        PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                          context,
-                          settings: const RouteSettings(name: "/Recipes_Screen"),
-                          screen:  const ShoppingListScreen(),
-                        );
+
+                        if(SharedPrefHelper.subscriptionStatus){
+                          PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                            context,
+                            settings: const RouteSettings(name: "/Recipes_Screen"),
+                            screen:  const ShoppingListScreen(),
+                          );
+                        }
+                        else{
+                          showSubscriptionPopup(context);
+                        }
+
                       }),
                   sizedboxheight(15.0),
 
@@ -358,7 +377,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  Widget hedingtile(hedingtext,Function action){
+  Widget headingTile(hedingtext,Function action){
     return InkWell(
       onTap: () => action(),
       child: Container(
@@ -379,7 +398,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               ),),
             ),
 
-          (hedingtext=='Recipe collections')?Container() : Container(
+          Container(
                 width: 25,
                 height: 20,
                 child: const Icon(Icons.arrow_forward_ios_rounded,size: 18,),
@@ -390,13 +409,38 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       ),
     );
   }
+  /// heading function
+  Widget headingTile1(headingtext){
+    return Container(
+      width: deviceWidth(context),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: deviceWidth(context,0.9),
+            child: Text(headingtext,
+              maxLines: 2,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: fontFamilyText,
+                  color: colorRichblack,
+                  fontWeight: fontWeight600,
+                  overflow: TextOverflow.ellipsis
+              ),),
+          ),
+          // const Icon(Icons.arrow_forward_ios_rounded,size: 18,)
+        ],
+      ),
+
+    );
+  }
 
   Widget startlearningcard(){
     return  Container(
-      height: 170,
+      height: 150,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: 1,
+          itemCount:3,
           itemBuilder: (BuildContext context, int index){
             return Padding(
               padding: const EdgeInsets.only(right:10.0),
@@ -405,47 +449,53 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   borderRadius: BorderRadius.circular(5),
 
                 ),
-                width: deviceWidth(context,0.65),
-                height: 155,
+                // width: deviceWidth(context,0.65),
+                // height: 155,
                 child: Stack(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
-                        ),
-
-                      ),
-                      width: deviceWidth(context,0.65),
-                      height: 155,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
+                    AspectRatio(
+                      aspectRatio: 53 /30,
+                      child: Container(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          gradient:  LinearGradient(
-                              colors: [
-                                HexColor('#3B4250').withOpacity(0.6),
-                                HexColor('#3B4250').withOpacity(0.0),
-                              ],
-                              begin: FractionalOffset.bottomCenter,
-                              end: FractionalOffset.topCenter,
-                              tileMode: TileMode.repeated
-                          )
+                          image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
+                          ),
+
+                        ),
+                        // width: deviceWidth(context,0.65),
+                        // height: 155,
                       ),
-                      width: deviceWidth(context,0.65),
-                      height: 155,
-                      padding: EdgeInsets.only(bottom: 10,left: 20),
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text('Get Started',style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: fontFamilyText,
-                            color: colorWhite,
-                            fontWeight: fontWeight600,
-                            overflow: TextOverflow.ellipsis
-                        ),),
+                    ),
+                    AspectRatio(
+                      aspectRatio: 53 /30,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            gradient:  LinearGradient(
+                                colors: [
+                                  HexColor('#3B4250').withOpacity(0.6),
+                                  HexColor('#3B4250').withOpacity(0.0),
+                                ],
+                                begin: FractionalOffset.bottomCenter,
+                                end: FractionalOffset.topCenter,
+                                tileMode: TileMode.repeated
+                            )
+                        ),
+                        // width: deviceWidth(context,0.65),
+                        // height: 155,
+                        padding: EdgeInsets.only(bottom: 10,left: 20),
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text('Get Started',style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: fontFamilyText,
+                              color: colorWhite,
+                              fontWeight: fontWeight600,
+                              overflow: TextOverflow.ellipsis
+                          ),),
+                        ),
                       ),
                     )
                   ],
@@ -467,10 +517,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
 
     return Container(
-      height: 200,
+      height: 215,
       child: homeScreenProviderData.loading
           ? Container(
         child: const Center(child: CircularProgressIndicator()),
+      ):homeScreenProviderData.recipe_data_List!.isEmpty?Container(
+        child: Center(child: Text("No recipes found in the featured recipe list section.",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 16,
+          fontFamily: fontFamilyText,
+          fontWeight: FontWeight.w200,
+          color: colorShadowBlue
+        ),)),
       ): ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: homeScreenProviderData.recipe_data_List!.length>3?4:homeScreenProviderData.recipe_data_List!.length,
@@ -494,19 +553,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
                           settings: const RouteSettings(name: "/Recipes_Description_Screen"),
-                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"Home"),
+                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"Home",screenName:"Recipe"),
                         );
                       },
-                      child: Container(
-                        height: 110,width: deviceWidth(context),
+                      child:  AspectRatio(
+                        aspectRatio: 7/5,
                         child: Container(
-                          height: 110,width: deviceWidth(context),
+                         // height: 110,width: deviceWidth(context),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
                             child: Image.network(homeScreenProviderData.recipe_data_List![index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                              height: 110,width: deviceWidth(context),fit: BoxFit.fill,
+                             fit: BoxFit.fill,
                               errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
-                                height: 110,
 
                                 fit: BoxFit.fill,),
                               loadingBuilder: (BuildContext context, Widget child,
@@ -531,7 +589,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                           context,
                           settings: const RouteSettings(name: "/Recipes_Description_Screen"),
-                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0'),
+                          screen:  Recipes_Description_Screen(rec_id:homeScreenProviderData.recipe_data_List![index].recId,rec_index:index,txt_search:'',fav_filter:'0',screenName:"Recipe"),
                         );
                       },
                       child: Text(homeScreenProviderData.recipe_data_List![index].recTitle??"",style:TextStyle(
@@ -546,16 +604,22 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     sizedboxheight(5.0),
                     InkWell(
                       onTap: (){
-                        if(recipeModel.meals_screen){
-                          print(recipeModel.select_mealplanID_recipe.toString());
+                        if(SharedPrefHelper.subscriptionStatus){
+                          if(recipeModel.meals_screen){
+                            print(recipeModel.select_mealplanID_recipe.toString());
 
-                        }else{
-                          mealsModel.singleDayMeals_change(false);
-                          recipeModel.selectedDay_data(DateTime.now());
-                          recipeModel.selectedDate_string(null);
-                          recipeModel.meal_plan_id_select_fuction_recipe(null);
+                          }else{
+                            mealsModel.singleDayMeals_change(false);
+                            recipeModel.selectedDay_data(DateTime.now());
+                            recipeModel.selectedDate_string(null);
+                            recipeModel.meal_plan_id_select_fuction_recipe(null);
+                          }
+                          add_meals_bottom_sheet(homeScreenProviderData.recipe_data_List!,(index));
                         }
-                        add_meals_bottom_sheet(homeScreenProviderData.recipe_data_List!,(index));
+                        else{
+                          showSubscriptionPopup(context);
+                        }
+
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -608,7 +672,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                     context,
                     settings: const RouteSettings(name: "/Recipes_Description_Screen"),
-                    screen:  Recipes_Description_Screen(rec_id:todayMealsData.recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"HomeToday"),
+                  //  screen:  Recipes_Description_Screen(rec_id:todayMealsData.recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"HomeToday",screenName:"MyMeals"),
+
+                    screen:  Recipes_Description_Screen(rec_id:todayMealsData.recId,rec_index:index,txt_search:'',fav_filter:'0',screen:"HomeToday",screenName:"HomeMyMeals",
+                        mlpYear: homeScreenProviderData.select_toDay_data!.mlpYear.toString(),mlpMonth: homeScreenProviderData.select_toDay_data!.mlpMonth.toString(),mplDate: homeScreenProviderData.select_toDay_data!.date.toString(),mtId: todayMealsData.mtId.toString(),cust_serves:todayMealsData.cust_serves.toString() ),
+
                   );
                 },
                 child: Container(
@@ -631,42 +699,41 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           ),),
                       ),
                       sizedboxheight(8.0),
-                      Container(
-                        height: 110,
-                       width:deviceWidth(context,0.4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5), // Image border
-                          child: SizedBox.fromSize(
-                             // Image radius
-                            child:Image.network(todayMealsData.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                              width:deviceWidth(context,0.4) ,
-                              height: 110,
+                      AspectRatio(
+                        aspectRatio: 7/5,
+                        child: Container(
 
-                              fit: BoxFit.fill,
-                              errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
-                                height: 110,
-
-                                fit: BoxFit.fill,),
-
-                              loadingBuilder: (BuildContext context, Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                );
-                              },)
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5), // Image border
+                            child: SizedBox.fromSize(
+                               // Image radius
+                              child:Image.network(todayMealsData.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
 
 
+                                fit: BoxFit.fill,
+                                errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
 
+                                  fit: BoxFit.fill,),
+
+                                loadingBuilder: (BuildContext context, Widget child,
+                                    ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress.expectedTotalBytes != null
+                                          ? loadingProgress.cumulativeBytesLoaded /
+                                          loadingProgress.expectedTotalBytes!
+                                          : null,
+                                    ),
+                                  );
+                                },)
+
+
+
+                            ),
                           ),
                         ),
-                      )
-                   ,
+                      ),
                       sizedboxheight(8.0),
                       Container(
                         width: deviceWidth(context,0.42),
@@ -829,7 +896,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               padding: const EdgeInsets.only(right: 15.0),
               child: InkWell(
                 onTap: (){
-                  meaBottomNavBarProviderModel.setcontrollervalue(3);
+                  meaBottomNavBarProviderModel.setcontrollervalue(3,context);
                   final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
                   recipeModel.txt_search.clear();
                     recipeModel.selectedfav_filter("0");
@@ -1066,7 +1133,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                           child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')
                                       ),
                                       sizedboxheight(deviceheight(context,0.02),),
-                                      add_mymeals_Btn(recipe_data_List[index].recId),
+                                      add_mymeals_Btn(recipe_data_List[index].recId,recipe_data_List[index].recServes.toString()),
                                       sizedboxheight(deviceheight(context,0.01),),
                                     ],
                                   ),
@@ -1131,7 +1198,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
   /// add meals button  /////////////
 
-  Widget add_mymeals_Btn(rec_id) {
+  Widget add_mymeals_Btn(rec_id,String recServes) {
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
@@ -1150,7 +1217,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               if(recipeModel.select_mealplanID_recipe!=null){
                 if(rec_id!=null){
                   Navigator.pop(context);
-                  json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+                  json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0","cust_serves":recServes??""}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                 }
                 else{
                   FlutterToast_message('Add to your calendar');
@@ -1289,55 +1356,218 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     showCupertinoModalPopup(
         barrierDismissible:true,
         context: ctx,
-        builder: (_) => Container(
+        builder: (BuildContext bottomSheetContext) => Container(
           width: 250,
           height: 300,
           padding: EdgeInsets.only(bottom: 50),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20)
           ),
-          child: Container(
+          child: Stack(
+            children: [
+              Container(
 
-            decoration: BoxDecoration(
-                color: colorWhite,
-                borderRadius: BorderRadius.circular(20)
-            ),
-            child: CustomCupertinoPicker(
-
-                highlighterBorder: Border(
-                  top: BorderSide(
-                    width: 0.5, color: HexColor('#BEBEBE'),
-                  ),
-                  bottom: BorderSide(
-                    width: 0.5,  color: HexColor('#BEBEBE'),
-                  ),
+                decoration: BoxDecoration(
+                    color: colorWhite,
+                    borderRadius: BorderRadius.circular(20)
                 ),
-                highlighterBorderWidth: 80,
-                magnification:1.1,
-                scrollPhysics: const FixedExtentScrollPhysics(
-                  parent: BouncingScrollPhysics(),
-                ),
-                itemExtent: 31.0,
-                useMagnifier: true,
-                squeeze: 1.0,diameterRatio: 1.5,
+                child: CustomCupertinoPicker(
 
-                onSelectedItemChanged: (int value) {
-                  print(value);
-                  recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
-
-                },
-                children: mealsModel.get_meals_planlist_data!.map((item) {
-                  return Text(
-                    item.mtName??"",
-                    style: TextStyle(fontSize: 16.0,
-                        fontFamily: fontFamilyText,
-                        fontWeight: fontWeight400,
-                        color: colorRichblack
+                    highlighterBorder: Border(
+                      top: BorderSide(
+                        width: 0.5, color: HexColor('#BEBEBE'),
+                      ),
+                      bottom: BorderSide(
+                        width: 0.5,  color: HexColor('#BEBEBE'),
+                      ),
                     ),
-                  );
-                }).toList()
-            ),
+                    highlighterBorderWidth: 80,
+                    magnification:1.1,
+                    scrollPhysics: const FixedExtentScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    itemExtent: 31.0,
+                    useMagnifier: true,
+                    squeeze: 1.0,diameterRatio: 1.5,
+
+                    onSelectedItemChanged: (int value) {
+                      print(value);
+                      recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
+
+                    },
+                    children: mealsModel.get_meals_planlist_data!.map((item) {
+                      return Text(
+                        item.mtName??"",
+                        style: TextStyle(fontSize: 16.0,
+                            fontFamily: fontFamilyText,
+                            fontWeight: fontWeight400,
+                            color: colorRichblack
+                        ),
+                      );
+                    }).toList()
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(
+                    CupertinoIcons.clear_circled,
+                    color: colorBluePigment, // Customize the color of the close icon
+                    size: 25, // Adjust the icon size
+                  ),
+                  onPressed: () {
+                    Navigator.of(bottomSheetContext).pop(); // Close the bottom sheet
+                  },
+                ),
+              ),
+            ],
           ),
         ));
+  }
+  Widget continue_learning(continueLearningModuleListData){
+  //  final modulesProviderData = Provider.of<ModulesScreenProvider>(context, listen: false);
+
+    return  Container(
+
+      height: continueLearningModuleListData!.isEmpty?80:170,
+      child: continueLearningModuleListData!.isEmpty?Container(
+        child: Center(
+          child: RichText(
+            textAlign: TextAlign.center,
+
+            text:  TextSpan(
+              text: 'When you start a module and don’t complete it, it will be shown here.  ',
+              style: TextStyle(
+                fontSize: 16,
+                fontFamily: fontFamilyText,
+                color: colorgrey,
+                fontWeight: fontWeight400,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                    text: 'Start a module now!',
+                    style:  TextStyle(
+                      fontSize: 16,
+                      fontFamily: fontFamilyText,
+                      color: Colors.blue,
+                      fontWeight: fontWeight400,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () async {
+                        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(1,context);
+
+                        //Code to launch your URL
+                      }
+                ),
+
+              ],
+            ),
+          )
+
+          // Text("When you start a module and don’t complete it, it will be shown here. Start a module now!",
+          //   textAlign: TextAlign.center,
+          //   style: TextStyle(
+          //     fontSize: 16,
+          //     fontFamily: fontFamilyText,
+          //     color: colorgrey,
+          //     fontWeight: fontWeight400,
+          //
+          //   ),),
+        ),
+      ) : ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: continueLearningModuleListData!.length,
+          itemBuilder: (BuildContext context, int index){
+            var continueLearningData = continueLearningModuleListData![index];
+            return Padding(
+              padding: const EdgeInsets.only(top: 10,bottom: 10,right: 10),
+              child: InkWell(
+                onTap: (){
+                  // PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                  //   context,
+                  //   settings: const RouteSettings(name: "/Modules"),
+                  //   screen:  const ModuleDescriptionScreen(),
+                  // );
+                  PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                    context,
+                    settings: const RouteSettings(name: "/Modules"),
+                    screen:   ModuleDescriptionScreen(
+
+                        moduleId:continueLearningData.mdId.toString(),
+                        screenType:"module",
+                        screenName:"Home"
+                    ),
+                  );
+                },
+
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+
+                  ),
+
+                  child: Stack(
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 500/357,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            image:  DecorationImage(
+                                fit: BoxFit.fill,
+                                // image: AssetImage('assets/Screen Shot 2022-12-16 at 9.39 2.png')
+                                image: NetworkImage(continueLearningData.image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=")
+                            ),
+
+                          ),
+                          //  width: deviceWidth(context,0.68),
+                          // height: 155,
+                        ),
+                      ),
+                      AspectRatio(
+                        aspectRatio: 500/357,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              gradient:  LinearGradient(
+                                colors: [
+                                  HexColor('#3B4250').withOpacity(0.6),
+                                  HexColor('#3B4250').withOpacity(0.0),
+                                ],
+                                begin: FractionalOffset.bottomCenter,
+                                end: FractionalOffset.topCenter,
+                                stops: [0.0, 0.35], // Apply the gradient to only the bottom 30%
+                                tileMode: TileMode.clamp,
+                              )
+                          ),
+                          // width: deviceWidth(context,0.68),
+                          //  height: 155,
+                          padding: const EdgeInsets.only(bottom: 10,left: 18),
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(continueLearningData.mdTitle??"",style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: fontFamilyText,
+                                color: colorWhite,
+                                fontWeight: fontWeight600,
+                                overflow: TextOverflow.ellipsis
+                            ),maxLines: 2,),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+
+          }),
+    );
+
+
+
   }
 }

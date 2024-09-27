@@ -49,7 +49,7 @@ class _SenderMessageState extends State<SenderMessage> {
     //           textAlign: TextAlign.end),
     //     ),
         SizedBox(
-          height: 5,
+          height: 10,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -68,7 +68,7 @@ class _SenderMessageState extends State<SenderMessage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(widget.message.text,
+                  Text(widget.message.text.trim(),
                   style: TextStyle(fontSize: 16,
                       fontFamily: fontFamilyText,
                   fontWeight: fontWeight400,

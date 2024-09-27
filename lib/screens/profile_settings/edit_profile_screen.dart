@@ -131,6 +131,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
       final uerdatamodal = Provider.of<userprofile_Provider>(context, listen: false);
       uerdatamodal.customer_ditels_api(context);
       FirebaseData.instance.userUpdate();
+      Navigator.pop(context);
     } else {
       Navigator.pop(context);
       print('else==============');
@@ -188,7 +189,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate) {
       setState(() {
-        selectedDate =  DateFormat("dd-MMMM-yyyy").format(picked);
+        selectedDate =  DateFormat("dd/MM/yyyy").format(picked);
       });
     }
   }
@@ -242,18 +243,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
     uerdatamodal.customer_ditels_api(context);
     _future = gender_List_api();
   }
-  //
-  // Future<bool> _willPopCallback() async {
-  //   if(widget.edit != 0){
-  //     Get.off(() => Personal_Setting(user_details_data:widget.user_details_data,screen:1));
-  //
-  //   }
-  //  else if(widget.edit == 0){
-  //    //Navigator.pop(context);
-  //     Get.off(() => Personal_Setting(user_details_data:widget.user_details_data,screen:1));
-  //   }
-  //   return true; // return true if the route to be popped
-  // }
+
 
   Future<void> _asyncSimpleDialog(BuildContext context) async {
     return await showDialog<void>(
@@ -381,7 +371,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
               lastnamefield(),
               sizedboxheight(10.0),
 
-             dobfield(),
+              dobfield(),
               sizedboxheight(10.0),
 
               addressfield(),
@@ -733,7 +723,7 @@ class _Edite_Profile_ScreenState extends State<Edite_Profile_Screen> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10),
                           child: Text(
-                            selectedvalue??"select gender".toString(),
+                              selectedvalue!="null"? selectedvalue!:"select gender".toString(),
                             style: TextStyle(
                                 color: colorRichblack,
                                 // fontFamily: 'Nunito',

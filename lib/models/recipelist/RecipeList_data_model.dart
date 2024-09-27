@@ -33,15 +33,17 @@ class RecipeList_data_Response {
   String? image;
   int? favStatus;
   bool? recipes_like;
+  int? recServes;
 
 
-  RecipeList_data_Response({this.recId, this.recTitle, this.image,this.favStatus,this.recipes_like});
+  RecipeList_data_Response({this.recId, this.recTitle, this.image,this.favStatus,this.recipes_like, this.recServes});
 
   RecipeList_data_Response.fromJson(Map<String, dynamic> json) {
     recId = json['rec_id'];
     recTitle = json['rec_title'];
     image = json['image'];
     favStatus = json['fav_status'];
+    recServes = json['rec_serves'];
     recipes_like = false;
   }
 
@@ -51,6 +53,7 @@ class RecipeList_data_Response {
     data['rec_title'] = this.recTitle;
     data['image'] = this.image;
     data['fav_status'] = this.favStatus;
+    data['rec_serves'] = this.recServes;
     return data;
   }
 }

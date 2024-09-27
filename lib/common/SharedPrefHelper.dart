@@ -6,6 +6,10 @@ class SharedPrefHelper {
   static const String _emailPrefKey = 'email_key';
   static const String _namePrefKey = 'name_key';
   static const String _profilePrefKey = 'profile_key';
+  static const String _learningStatusKey = 'learningStatus_key';
+  static const String _subscriptionStatusKey = 'subscriptionStatus_key';
+  static const String _subscriptionCancelStatusKey = 'subscriptionCancelStatus_key';
+
 
   SharedPrefHelper._();
 
@@ -39,6 +43,7 @@ class SharedPrefHelper {
   static String get profile {
     return _prefs.getString(_profilePrefKey) ?? "";
   }
+
   static set profile(String value) {
     _prefs.setString(_profilePrefKey, value);
   }
@@ -69,4 +74,30 @@ class SharedPrefHelper {
     _prefs.setString(_namePrefKey, value);
   }
 
+/// learning status
+  static String get learningStatus {
+    return _prefs.getString(_learningStatusKey) ?? "";
+  }
+
+  static set learningStatus(String value) {
+    _prefs.setString(_learningStatusKey, value);
+  }
+
+  /// learning status
+  static bool get subscriptionStatus {
+    return _prefs.getBool(_subscriptionStatusKey) ?? false;
+  }
+
+  static set subscriptionStatus(bool value) {
+    _prefs.setBool(_subscriptionStatusKey, value);
+  }
+
+  /// learning status
+  static int get subscriptionCancelStatus {
+    return _prefs.getInt(_subscriptionCancelStatusKey) ?? 0;
+  }
+
+  static set subscriptionCancelStatus(int value) {
+    _prefs.setInt(_subscriptionCancelStatusKey, value);
+  }
 }

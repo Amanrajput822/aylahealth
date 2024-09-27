@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../myapp.dart';
+import '../screens/auth/app_cache_clear.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/tabbar_screens/my_meals/calendar_evryday_json.dart';
 import 'SharedPrefHelper.dart';
@@ -14,6 +15,7 @@ Future<void> directLogOutPopup() async {
     ), (Route route) => false,
   );
   SharedPreferences prefs =  await SharedPreferences.getInstance();
+  await prefs.clear();
   prefs.setBool("isLoggedIn", false);
   prefs.remove("login_user_token");
   prefs.remove("login_user_name");
@@ -21,7 +23,7 @@ Future<void> directLogOutPopup() async {
   prefs.remove("login_user_name");
   prefs.remove("login_user_id");
   prefs.remove("user_login_time");
-
+  deleteCacheDir();
   SharedPrefHelper.userId = null;
   ///calendar json data remove function ///
   removeDataFromFile(DateTime.now().year.toString());

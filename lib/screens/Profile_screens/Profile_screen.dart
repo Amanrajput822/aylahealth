@@ -5,6 +5,7 @@ import 'package:aylahealth/common/direct_logout.dart';
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/auth/login_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_facebook/flutter_login_facebook.dart';
@@ -41,10 +42,10 @@ class Profile_screen extends StatefulWidget {
 }
 
 class _Profile_screenState extends State<Profile_screen> {
+
+
   final plugin = FacebookLogin(debug: true);
-  Future<void> _onPressedLogOutButton() async {
-    await plugin.logOut();
-  }
+
 
   var success, message;
   var tokanget;
@@ -79,6 +80,7 @@ class _Profile_screenState extends State<Profile_screen> {
     message = (logout_model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success}");
     if (success == 200) {
+
       //Navigator.pop(context);
       Navigator.of(context).pushAndRemoveUntil(
         // the new route
@@ -87,6 +89,7 @@ class _Profile_screenState extends State<Profile_screen> {
         ), (Route route) => false,
       );
       SharedPreferences prefs =  await SharedPreferences.getInstance();
+      await prefs.clear();
       prefs.setBool("isLoggedIn", false);
       prefs.remove("login_user_token");
       prefs.remove("login_user_name");
@@ -198,16 +201,16 @@ class _Profile_screenState extends State<Profile_screen> {
                               ),
                               maxLines: 1,
                             ),
-                            Text('Upgrade membership',
-                              style: TextStyle(
-                                fontSize: 16,height: 1.5,
-                                fontFamily: fontFamilyText,
-                                color: colorShadowBlue,
-                                fontWeight: fontWeight400,
-                                  overflow: TextOverflow.ellipsis
-                              ),
-                              maxLines: 1,
-                            ),
+                            // Text('Upgrade membership',
+                            //   style: TextStyle(
+                            //     fontSize: 16,height: 1.5,
+                            //     fontFamily: fontFamilyText,
+                            //     color: colorShadowBlue,
+                            //     fontWeight: fontWeight400,
+                            //       overflow: TextOverflow.ellipsis
+                            //   ),
+                            //   maxLines: 1,
+                            // ),
                           ],
                         )
                       ],

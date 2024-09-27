@@ -8,11 +8,11 @@ Future<void> deleteCacheDir() async {
   }
 }
 
-Future<void> deleteAppDir() async {
-  print('_deleteAppDir');
-  final appDir = await getApplicationSupportDirectory();
-
-  if(appDir.existsSync()){
-    appDir.deleteSync(recursive: true);
-  }
-}
+// Future<void> deleteAppDir() async {
+//   print('_deleteAppDir');
+//   final appDir = await getApplicationSupportDirectory();
+//
+//   if(appDir.existsSync()){
+//     appDir.deleteSync(recursive: true);
+//   }
+// }

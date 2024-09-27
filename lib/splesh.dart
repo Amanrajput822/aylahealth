@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aylahealth/common/styles/const.dart';
+import 'package:aylahealth/screens/subscription_screens/Subscription.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -13,23 +14,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import 'home_screen.dart';
 
-class Splesh extends StatefulWidget {
-  static const String route = "/Splesh";
-  const Splesh({Key? key}) : super(key: key);
+class Splash extends StatefulWidget {
+  static const String route = "/Splash";
+  const Splash({Key? key}) : super(key: key);
 
   @override
-  State<Splesh> createState() => _SpleshState();
+  State<Splash> createState() => _SplashState();
 }
 
-class _SpleshState extends State<Splesh> {
+class _SplashState extends State<Splash> {
   var status;
 
-  getAuthToken() async {
-    var token = await FirebaseMessaging.instance.getToken();
-    print('Firebase Token Motivation $token');
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('firebase_token', token!);
-  }
+  // getAuthToken() async {
+  //
+  //   var token = await FirebaseMessaging.instance.getToken();
+  //   print('Firebase Token Motivation $token');
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setString('firebase_token', token!);
+  // }
 
   @override
   getValuesSF() async {
@@ -40,7 +42,8 @@ class _SpleshState extends State<Splesh> {
           () {
         // status ? Get.offAll(() => BottomNavBarPage()) : Get.offAll(() => IntroductionPage());
         status
-            ? Get.offAll(() => const New_Bottombar_Screen())
+             ? Get.offAll(() => const New_Bottombar_Screen())
+         //   ? Get.offAll(() =>  SubScreen())
             : Get.offAll(() => const HomeScreen());
       },
     );
@@ -58,7 +61,7 @@ class _SpleshState extends State<Splesh> {
      // FirebaseNotifications().firebaseInitialization();
 
     // LocalNotification().initialize();
-    getAuthToken();
+   // getAuthToken();
     getValuesSF();
   }
 

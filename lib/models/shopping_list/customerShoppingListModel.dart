@@ -4,14 +4,15 @@ class customerShoppingListModel {
   String? slStartdate;
   String? slEnddate;
 
-  customerShoppingListModel({this.status, this.data, this.slStartdate, this.slEnddate});
+  customerShoppingListModel(
+      {this.status, this.data, this.slStartdate, this.slEnddate});
 
   customerShoppingListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     if (json['data'] != null) {
       data = <customerShoppingListResponse>[];
       json['data'].forEach((v) {
-        data!.add( customerShoppingListResponse.fromJson(v));
+        data!.add(new customerShoppingListResponse.fromJson(v));
       });
     }
     slStartdate = json['sl_startdate'];
@@ -19,7 +20,7 @@ class customerShoppingListModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
@@ -60,68 +61,43 @@ class customerShoppingListResponse {
 }
 
 class IngData {
+  int? slId;
   int? ingId;
   String? ingName;
-  String? slQuantity;
+  String? varName;
+  var slQuantity;
   String? ingUnit;
-  int? slId;
   int? slItemStatus;
-  List<IngVariation>? ingVariation;
 
   IngData(
-      {this.ingId,
+      {this.slId,
+        this.ingId,
         this.ingName,
+        this.varName,
         this.slQuantity,
         this.ingUnit,
-        this.slId,
-        this.slItemStatus,
-        this.ingVariation});
+        this.slItemStatus});
 
   IngData.fromJson(Map<String, dynamic> json) {
+    slId = json['sl_id'];
     ingId = json['ing_id'];
     ingName = json['ing_name'];
+    varName = json['var_name'];
     slQuantity = json['sl_quantity'];
     ingUnit = json['ing_unit'];
-    slId = json['sl_id'];
     slItemStatus = json['sl_item_status'];
-    if (json['ingVariation'] != null) {
-      ingVariation = <IngVariation>[];
-      json['ingVariation'].forEach((v) {
-        ingVariation!.add(new IngVariation.fromJson(v));
-      });
-    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['sl_id'] = this.slId;
     data['ing_id'] = this.ingId;
     data['ing_name'] = this.ingName;
+    data['var_name'] = this.varName;
     data['sl_quantity'] = this.slQuantity;
     data['ing_unit'] = this.ingUnit;
-    data['sl_id'] = this.slId;
     data['sl_item_status'] = this.slItemStatus;
-    if (this.ingVariation != null) {
-      data['ingVariation'] = this.ingVariation!.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }
 
-class IngVariation {
-  int? ingVarId;
-  String? varName;
-
-  IngVariation({this.ingVarId, this.varName});
-
-  IngVariation.fromJson(Map<String, dynamic> json) {
-    ingVarId = json['ing_var_id'];
-    varName = json['var_name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['ing_var_id'] = this.ingVarId;
-    data['var_name'] = this.varName;
-    return data;
-  }
-}

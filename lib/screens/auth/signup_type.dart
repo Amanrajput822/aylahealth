@@ -22,6 +22,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/SharedPrefHelper.dart';
 import '../../common/api_common_fuction.dart';
@@ -59,8 +60,8 @@ class _Signup_typeState extends State<Signup_type> {
   String? _email;
   String? _imageUrl;
 
+  /// facebook login function
   final plugin = FacebookLogin(debug: true);
-
   Future<void> _onPressedLogInButton() async {
     await plugin.logIn(permissions: [
       FacebookPermission.publicProfile,
@@ -68,6 +69,8 @@ class _Signup_typeState extends State<Signup_type> {
     ]);
     await _updateLoginInfo(plugin);
   }
+
+  /// facebook profile update function
   Future<void> _updateLoginInfo(plugin1) async {
     final plugin = plugin1;
     final token = await plugin.accessToken;
@@ -97,7 +100,7 @@ class _Signup_typeState extends State<Signup_type> {
   }
    //////////// Google login //////////
 
-  ///////////// initializeFirebase /////////////
+/// initializeFirebase /////////////
 
   static Future<FirebaseApp> initializeFirebase({
     required BuildContext context,
@@ -119,7 +122,7 @@ class _Signup_typeState extends State<Signup_type> {
     return firebaseApp;
   }
 
-  ///////////////// signInWithGoogle //////////
+/// signInWithGoogle //////////
 
   static Future<User?> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -186,7 +189,7 @@ class _Signup_typeState extends State<Signup_type> {
   }
 
 
-  //////////////// Apple login /////////
+ /// Apple login /////////
 
   Future<void> apple_login_fuction () async {
     var appleIdCredential =
@@ -225,7 +228,7 @@ class _Signup_typeState extends State<Signup_type> {
   }
 
 
-  ////////////////  type_check ////////
+  ///  type_check ////////
   void type_check(){
     if (Platform.isIOS) {
       divece_type= '2';
@@ -237,14 +240,14 @@ class _Signup_typeState extends State<Signup_type> {
     }
   }
 
-  /////////////// social_login api /////////////
+/// social_login api /////////////
 
   var success, message, id, email;
   var fcmToken ;
 
   Future<user_login_model> social_login(social_name,social_id,user_name,user_email) async {
-    deleteCacheDir();
-    deleteAppDir();
+    // deleteCacheDir();
+    // deleteAppDir();
     fcmToken = await FirebaseMessaging.instance.getToken();
 
     check().then((intenet) {
@@ -371,11 +374,17 @@ class _Signup_typeState extends State<Signup_type> {
   }
 
 
-  Future<void> _onPressedLogOutButton() async {
-    await plugin.logOut();
-    await _updateLoginInfo(plugin);
+  // Future<void> _onPressedLogOutButton() async {
+  //   await plugin.logOut();
+  //   await _updateLoginInfo(plugin);
+  // }
+  /// url launch function
+  void _launchURL(String url) async {
+    final Uri _url = await Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -491,20 +500,35 @@ class _Signup_typeState extends State<Signup_type> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text('Terms of use',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontFamily: fontFamilyText,
-                                color: colorShadowBlue,
-                                fontWeight: fontWeight400,
+                            InkWell(
+                              onTap : () async {
+                                _launchURL('https://aylahealth.com.au/terms-conditions/');
+                                //Code to launch your URL
+                              },
+                              child: Text('Terms of use',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: fontFamilyText,
+                                  color: colorShadowBlue,
+                                  fontWeight: fontWeight400,
+                                  decoration: TextDecoration.underline,
+                                ),
                               ),
                             ),
-                            Text('Privacy & cookies',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontFamily: fontFamilyText,
-                                color: colorShadowBlue,
-                                fontWeight: fontWeight400,
+                            InkWell(
+                              onTap : () async {
+
+                                _launchURL('https://aylahealth.com.au/privacy-policy/');
+                                //Code to launch your URL
+                              },
+                              child: Text('Privacy & cookies',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: fontFamilyText,
+                                  color: colorShadowBlue,
+                                  fontWeight: fontWeight400,
+                                  decoration: TextDecoration.underline,
+                                ),
                               ),
                             )
                           ],

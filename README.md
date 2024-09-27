@@ -28,3 +28,5 @@ Platform  Firebase App Id
 zsh: command not found: flutterfire
 
 export PATH="$PATH":"$HOME/.pub-cache/bin"
+
+export PATH="$PATH:/Users/mac/Desktop/flutter/flutter/bin"

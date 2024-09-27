@@ -51,7 +51,7 @@ class MyMeals_Provider with ChangeNotifier {
   bool _loading1 = false;
   bool get loading1 => _loading1;
   void loaderFunction1(newMessage){
-    _loading = newMessage;
+    _loading1 = newMessage;
     notifyListeners();
   }
   bool _loading2 = false;
@@ -177,7 +177,7 @@ class MyMeals_Provider with ChangeNotifier {
     notifyListeners();
   }
   /// add and update meals  calendar data
-  Future<Meals_Update_MealsPlane_model?> add_update_meals_api(context,String year,String month,String datelist,List<Map<String, dynamic>> monthsData,index) async {
+  Future<Meals_Update_MealsPlane_model?> add_update_meals_api(context,String year,String month,String datelist,List<Map<String, dynamic>> monthsData,index,days) async {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -221,10 +221,11 @@ class MyMeals_Provider with ChangeNotifier {
          await saveMonthsDataToFile(monthsData,year.toString(),month.toString());
          await singal_day_data_gate_api(selectedDay!,true,index);
 
-          if(selectedDay!.year == DateTime.now().year && selectedDay!.month == DateTime.now().month &&selectedDay!.day == DateTime.now().day){
+
+         if(int.parse(year.toString()) == DateTime.now().year && int.parse(month.toString()) == DateTime.now().month &&int.parse(days.toString()) == DateTime.now().day){
             final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
             homeScreenProviderData.singal_day_data_gate_api1(DateTime.now());
-          }
+         }
 
           FlutterToast_message(message);
           notifyListeners();
@@ -237,7 +238,7 @@ class MyMeals_Provider with ChangeNotifier {
         }
       }
       else{
-        loaderFunction(false);
+     //   loaderFunction(false);
         if(response.statusCode ==401){
           directLogOutPopup();
         }
@@ -285,7 +286,7 @@ class MyMeals_Provider with ChangeNotifier {
         map["mlp_month"] = month.toString();
         return map;
       }
-      loaderFunction1(true);
+      loaderFunction(true);
       print(toMap());
       print(Endpoints.baseURL + Endpoints.customerMealPlanData);
       var response = await http.post(
@@ -296,13 +297,14 @@ class MyMeals_Provider with ChangeNotifier {
             'Accept': 'application/json'
           }
       );
-      print("get_meals_calendardata_api${json.decode(response.body)}");
+
       if(response.statusCode ==200){
         loaderFunction1(false);
+       if(json.decode(response.body)['data'] == null){
+         loaderFunction(false);
+         await  singal_day_data_gate_api(selectedDay!,true,index);
+       }
 
-        if(Get_Meals_Plane_model.fromJson(json.decode(response.body)).data==null){
-          await  singal_day_data_gate_api(selectedDay!,true,index);
-        }
         _success = (Get_Meals_Plane_model.fromJson(json.decode(response.body)).status);
         print("get_meals_calendardata_api${json.decode(response.body)}");
         if (success == 200) {
@@ -333,10 +335,15 @@ class MyMeals_Provider with ChangeNotifier {
           // Get.to(() => Pre_Question_Screen());
         } else {
           loaderFunction1(false);
+          loaderFunction(false);
           print('else==============');
           FlutterToast_message(json.decode(response.body)['message']);
         }
       } else{
+        if(Get_Meals_Plane_model.fromJson(json.decode(response.body)).data==null){
+          await  singal_day_data_gate_api(selectedDay!,true,index);
+        }
+        loaderFunction(false);
         loaderFunction1(false);
         if(response.statusCode ==401){
           directLogOutPopup();
@@ -352,9 +359,6 @@ class MyMeals_Provider with ChangeNotifier {
 
 
   int getDaysInMonth(int year, int month) {
-    print('++++++++++++++++');
-    print(year);
-    print(month);
     var monthday  = 0;
     _dataList = [];
      DateTime? date;
@@ -462,7 +466,7 @@ class MyMeals_Provider with ChangeNotifier {
         }
       }
       else{
-        loaderFunction(false);
+       // loaderFunction(false);
         if(response.statusCode ==401){
           directLogOutPopup();
         }
@@ -520,7 +524,7 @@ class MyMeals_Provider with ChangeNotifier {
         } else {
           // Navigator.pop(context);
           print('else==============');
-          loaderFunction(false);
+         // loaderFunction(false);
           FlutterToast_message(json.decode(response.body)['message']);
         }
 
@@ -529,7 +533,7 @@ class MyMeals_Provider with ChangeNotifier {
         if(response.statusCode ==401){
           directLogOutPopup();
         }
-        loaderFunction(false);
+       // loaderFunction(false);
         FlutterToast_message(json.decode(response.body)['message']);
       }
 
@@ -587,9 +591,7 @@ class MyMeals_Provider with ChangeNotifier {
 
    Future<Meal_Plan_Date_Data_model?> singal_day_data_gate_api(DateTime selectDate,bool loder,int index) async {
 
-    select_tab_data_list!.clear();
-    mealData!.clear();
-    tabbarindex!.clear();
+
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       _tokanget = prefs.getString('login_user_token');
@@ -609,7 +611,7 @@ class MyMeals_Provider with ChangeNotifier {
         return map;
       }
 
-      loaderFunction(true);
+    //  loaderFunction(true);
       print(toMap());
       print(Endpoints.baseURL + Endpoints.customerMealOfDay);
       var response = await http.post(
@@ -620,9 +622,12 @@ class MyMeals_Provider with ChangeNotifier {
             'Accept': 'application/json'
           }
       );
-    print("singal_day_data_gate_api${response.body}");
+     print("singal_day_data_gate_api${response.body}");
 
      if(response.statusCode == 200){
+       select_tab_data_list!.clear();
+       mealData!.clear();
+       tabbarindex!.clear();
        loaderFunction(false);
        _success = (Meal_Plan_Date_Data_model.fromJson(jsonDecode(response.body)).status);
        print("json.decode(response.body)${jsonDecode(response.body)}");
@@ -643,7 +648,7 @@ class MyMeals_Provider with ChangeNotifier {
            print(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId);
            if(int.parse(item.mtId.toString()) == get_meals_planlist_data![selecttab!].mtId){
              select_tab_data_list!.add(item);
-             _boolDataList.add(false);
+              _boolDataList.add(false);
              print(select_tab_data_list!.length.toString());
            }
          }

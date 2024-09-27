@@ -14,11 +14,35 @@
       },
       "oauth_client": [
         {
+          "client_id": "691184521472-6uvlecj9sqcasttgcprgni84a6aln6ln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.aylahealth",
+            "certificate_hash": "df0e0ecb68934650096906bf66c0a508f09fcfef"
+          }
+        },
+        {
           "client_id": "691184521472-gpsts6feshb6ps0cj3nvnd0s35ha0ktp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "app.aylahealth",
             "certificate_hash": "933e65067047a1488e23e9124a0f284effd53c3c"
+          }
+        },
+        {
+          "client_id": "691184521472-nov7dpvkdrsge5ejta7mpj50jl0i0ue1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.aylahealth",
+            "certificate_hash": "0a86fb417e182d4a9e2bd762db970b8f349db02d"
+          }
+        },
+        {
+          "client_id": "691184521472-sqa72s3kpdu5bqjpe60jkmpbpvnqtcss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.aylahealth",
+            "certificate_hash": "b9db03e2f9cd3633f0dd8a6bc8376b30e4626669"
           }
         },
         {

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import '../../../../../common/SharedPrefHelper.dart';
+import '../../../../../common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
 import 'model/MessageModel.dart';
 
 class FirebaseData {
@@ -46,7 +48,7 @@ class FirebaseData {
     print("shjbcxjscjusgcjubcghbjk${_userCollection}${id}${name}${email}${profile}");
   }
 
-  Future<void> sendMessage(Message message) async {
+  Future<void> sendMessage(context ,Message message) async {
 
     await _userCollection
         .doc(SharedPrefHelper.userId.toString())

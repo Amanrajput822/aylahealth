@@ -135,6 +135,8 @@ class HomeScreenProvider extends ChangeNotifier {
    List<MealData_list> _select_tab_data_list1 = [];
   List<MealData_list>? get select_tab_data_list1 =>_select_tab_data_list1;
 
+  Meal_Plan_Date_Data_Response? _select_toDay_data ;
+  Meal_Plan_Date_Data_Response? get select_toDay_data =>_select_toDay_data;
 
   List<MealData_list>? _mealData1 = [];
   List<MealData_list>? get mealData1 =>_mealData1;
@@ -181,6 +183,7 @@ class HomeScreenProvider extends ChangeNotifier {
         _mealData1!.clear();
         _select_tab_data_list1.clear();
         _mealData1 =  (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body))).data!.mealData;
+        _select_toDay_data =  (Meal_Plan_Date_Data_model.fromJson(json.decode(response.body))).data!;
         notifyListeners();
 
         for(var item1 in get_meals_planlist_data!){

@@ -1,7 +1,11 @@
 
 class Endpoints {
+  /// development (staging) base url for developer
+  static const baseURL = "https://staging.aylahealth.app/api/auth/";
 
-  static const baseURL = 'https://staging.aylahealth.app/api/auth/';
+  /// production base url for live
+ // static const baseURL = "https://aylahealth.app/api/auth/";
+
 
   static const Login = 'login';
   static const Signup = 'signup';
@@ -24,6 +28,7 @@ class Endpoints {
 
   static const recipeList = 'recipeList';
   static const recipeDetails = 'recipeDetails';
+  static const updateMealPlanRecipeServes = 'updateMealPlanRecipeServes';
   static const markRecipeFavorite = 'markRecipeFavorite';
   static const unmarkRecipeFromFavorite = 'unmarkRecipeFromFavorite';
   static const allRecipeFiltersList = 'allRecipeFiltersList';
@@ -51,6 +56,23 @@ class Endpoints {
 
   static const customerNotificationSetting = 'customerNotificationSetting';
   static const updateCustomerNotificationSetting = 'updateCustomerNotificationSetting';
+
+
+  static const moduleLibrary = 'moduleLibrary';
+  static const modulePagesContentList = 'modulePagesContentList';
+  static const updateCustomerModuleViewStatus = 'updateCustomerModuleViewStatus';
+  static const customerModuleViewStatus = 'customerModuleViewStatus';
+  static const searchModule = 'searchModule';
+  static const moduleDetailsForApp = 'moduleDetailsForApp';
+  static const continueLearningModuleList = 'continueLearningModuleList';
+  static const freeModuleList = 'freeModuleList';
+
+  static const deleteCustomerApp = 'deleteCustomerApp';
+
+  // static const addCustomerSubscriptionDetails = 'addCustomerSubscriptionDetails';
+  static const subscribeApp = 'subscribeApp';
+  static const customerSubscriptionDetails = 'customerSubscriptionDetails';
+  static const checkSubscription = 'checkSubscription';
 
 
 }

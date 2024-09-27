@@ -3,14 +3,17 @@ import 'dart:io';
 
 import 'package:aylahealth/common/formtextfield/validations_field.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/SharedPrefHelper.dart';
 import '../../common/api_common_fuction.dart';
@@ -37,6 +40,8 @@ class Signup_screen extends StatefulWidget {
 class _Signup_screenState extends State<Signup_screen> {
 
   var _formKey = GlobalKey<FormState>();
+
+
   TextEditingController txt_email = TextEditingController();
   TextEditingController txt_pass = TextEditingController();
   TextEditingController txt_fist_name = TextEditingController();
@@ -60,7 +65,7 @@ class _Signup_screenState extends State<Signup_screen> {
     super.initState();
     type_check();
   }
-
+/// device check function
   void type_check(){
     if (Platform.isIOS) {
       divece_type= '2';
@@ -72,10 +77,8 @@ class _Signup_screenState extends State<Signup_screen> {
     }
   }
 
-
+/// signup api call function
   Future<user_login_model> signup() async {
-    deleteCacheDir();
-    deleteAppDir();
     fcmToken = await FirebaseMessaging.instance.getToken();
 
     check().then((intenet) {
@@ -159,7 +162,7 @@ class _Signup_screenState extends State<Signup_screen> {
     return user_login_model.fromJson(json.decode(response.body));
   }
 
-
+/// error dialog function
   void error_dialog(message){
     showDialog(
         context: context,
@@ -193,9 +196,13 @@ class _Signup_screenState extends State<Signup_screen> {
           );
         });
   }
-
-
-
+/// url launch function
+  void _launchURL(String url) async {
+    final Uri _url = await Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,8 +263,74 @@ class _Signup_screenState extends State<Signup_screen> {
                         conformpasswordfield().paddingOnly(left: 20,right: 20),
                         sizedboxheight(deviceheight(context,0.025)),
                         signupBtn(context).paddingOnly(left: 20,right: 20),
-                        sizedboxheight(deviceheight(context,0.01)),
+                        sizedboxheight(deviceheight(context,0.025)),
+                        Align(
+                            alignment: Alignment.center,
+                            child:RichText(
+                              textAlign: TextAlign.center,
 
+                              text:  TextSpan(
+                                text: 'By Signing up you agree to ',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: fontFamilyText,
+                                  color: colorShadowBlue,
+                                  fontWeight: fontWeight400,
+                                ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: 'Terms of Service',
+                                      style:  TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: fontFamilyText,
+                                        color: colorRichblack,
+                                        fontWeight: fontWeight400,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+
+                                          _launchURL('https://aylahealth.com.au/terms-conditions/');
+                                          //Code to launch your URL
+                                        }
+                                  ),
+                                  TextSpan(
+                                      text: ' and ',
+                                      style:  TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: fontFamilyText,
+                                        color: colorShadowBlue,
+                                        fontWeight: fontWeight400,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+
+
+                                          //Code to launch your URL
+                                        }
+                                  ),
+                                  TextSpan(
+                                      text: 'Privacy Policy',
+                                      style:  TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: fontFamilyText,
+                                        color: colorRichblack,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: fontWeight400,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+
+                                          _launchURL('https://aylahealth.com.au/privacy-policy/');
+                                          //Code to launch your URL
+                                        }
+                                  ),
+                                ],
+                              ),
+                            )
+
+
+                        ).paddingOnly(left: 20,right: 20),
                       ],
                     ),
                   ),

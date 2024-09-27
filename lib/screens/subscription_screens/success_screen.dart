@@ -5,9 +5,11 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../common/new_bottombar_screen/New_Bottombar_Screen.dart';
+import 'manageplane_screen.dart';
 
 class Success_Screen extends StatelessWidget {
-  const Success_Screen({Key? key}) : super(key: key);
+   String? screenName;
+   Success_Screen({Key? key,this.screenName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +35,12 @@ class Success_Screen extends StatelessWidget {
                 elevation: 5,
                 color: HexColor('#F2F2F2').withOpacity(0.8),
                 child: Container(
-                  width: deviceWidth(context,0.7),
-                  height: 120,
+                  width: deviceWidth(context,0.75),
+                 // height: 120,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10)
                   ),
-                  padding: EdgeInsets.only(top: 10,bottom: 10),
+                  padding: EdgeInsets.only(top: 10,bottom: 10,left: 10,right: 10),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -46,18 +48,20 @@ class Success_Screen extends StatelessWidget {
 
                     children: [
 
-                      Text('You’re all set',style: TextStyle(
+                      Text('Congratulations!',style: TextStyle(
                         fontSize: 17,
                         fontFamily: fontFamilyText,
                         color: colorBlack,
                         fontWeight: fontWeight600,
                       )),
-                      Text('Your purchase was successful.',style: TextStyle(
+                      sizedboxheight(10.0),
+                      Text('Your subscription is now active, and you can access premium features.',
+                        style: TextStyle(
                         fontSize: 13,
                         fontFamily: fontFamilyText,
                         color: colorBlack,
                         fontWeight: fontWeight400,
-                      )),
+                      ),textAlign: TextAlign.center,),
 
                       Divider(
                         color: colorgrey,
@@ -66,14 +70,30 @@ class Success_Screen extends StatelessWidget {
 
                       InkWell(
                         onTap: (){
-                          Get.offAll(() => New_Bottombar_Screen());
+
+                          if(screenName == 'manegeSubScreen')
+                            {
+                              Get.offAll(() => New_Bottombar_Screen());
+                            }
+                          else if(screenName == "subScreen"){
+                            Get.offAll(() => New_Bottombar_Screen());
+                          }
+                          else if(screenName == "popupScreen"){
+                            Navigator.of(context).pop();
+                         //   Navigator.of(context).pop();
+                          }
+
                         },
-                        child: Text('Proceed',style: TextStyle(
-                          fontSize: 17,
-                          fontFamily: fontFamilyText,
-                          color: HexColor('#007AFF'),
-                          fontWeight: fontWeight600,
-                        )),
+                        child: Container(
+                          child: Center(
+                            child: Text('Proceed',style: TextStyle(
+                              fontSize: 17,
+                              fontFamily: fontFamilyText,
+                              color: HexColor('#007AFF'),
+                              fontWeight: fontWeight600,
+                            )),
+                          ),
+                        ),
                       ),
 
                     ],

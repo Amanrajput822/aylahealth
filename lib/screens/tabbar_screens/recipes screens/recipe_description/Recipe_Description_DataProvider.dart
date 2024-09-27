@@ -5,13 +5,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../common/api_common_fuction.dart';
 import '../../../../common/check_screen.dart';
 import '../../../../common/direct_logout.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
+import '../../../../models/recipelist/RecipeServeAPIModel.dart';
 import '../../../../models/recipelist/Recipe_details_data_model.dart';
 import '../../../../models/recipelist/recipe_like_unlike_data_model.dart';
+import '../../home/homeScreenProvider.dart';
+import '../../my_meals/My_Meals_Provider.dart';
 
 
 class Recipe_Description_DataProvider with ChangeNotifier {
@@ -39,11 +43,19 @@ class Recipe_Description_DataProvider with ChangeNotifier {
   Recipe_details_data_recponse? get recipe_ditels_data => _recipe_ditels_data;
 
 
-  getRecipeData(context,rec_id) async {
+  getRecipeData(context,rec_id,screenName,cust_serves) async {
     _loading = true;
     post = (await recipe_ditels_api(context,rec_id))!;
     _recipe_ditels_data = post.data;
-    _server_count = recipe_ditels_data!.recServes;
+    if(screenName == "MyMeals"){
+      _server_count = int.parse(cust_serves.toString());
+    }else if(screenName == "HomeMyMeals"){
+      _server_count = int.parse(cust_serves.toString());
+    }
+    else{
+      _server_count = recipe_ditels_data!.recServes;
+    }
+   // _server_count = recipe_ditels_data!.recServes;
     _loading = false;
     notifyListeners();
   }
@@ -79,6 +91,7 @@ class Recipe_Description_DataProvider with ChangeNotifier {
         // map["checkNutritionSetting"] = '1';
         return map;
       }
+
       print(toMap());
       print(Endpoints.baseURL + Endpoints.recipeDetails);
       var response = await http.post(
@@ -249,5 +262,78 @@ class Recipe_Description_DataProvider with ChangeNotifier {
     }
     return recipe_like_unlike_data_model.fromJson(json.decode(response.body));
   }
+
+
+  /// recipe_unlike_api ///////////////////
+
+  Future<RecipeServeAPIModel> recipe_serve_api(context,mlpYear,mlpMonth,mplDate,recId,mtId,custServes,countType) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    _tokanget = prefs.getString('login_user_token');
+    _tokanget = _tokanget!.replaceAll('"', '');
+
+    check().then((intenet) async {
+      if (intenet != null && intenet) {
+
+      } else {
+        FlutterToast_Internet();
+      }
+    });
+
+    Map toMap() {
+      var map = Map<String, dynamic>();
+    //  map["rec_id"] = recipe_id.toString();
+      map["mlp_year"] = mlpYear.toString();
+      map["mlp_month"] = mlpMonth.toString();
+      map["date"] = mplDate.toString();
+      map["rec_id"] = recId.toString();
+      map["mt_id"] = mtId.toString();
+      map["cust_serves"] = custServes.toString();
+
+      return map;
+    }
+    print(toMap());
+    var response = await http.post(
+        Uri.parse(Endpoints.baseURL + Endpoints.updateMealPlanRecipeServes),
+        body: toMap(),
+        headers: {
+          'Authorization': 'Bearer $_tokanget',
+          'Accept': 'application/json'
+        }
+    );
+    print(response.statusCode);
+    print(response.body);
+    if (response.statusCode == 200) {
+      print(response.body.toString());
+      _success = (RecipeServeAPIModel
+          .fromJson(json.decode(response.body))
+          .status);
+      _message = (RecipeServeAPIModel
+          .fromJson(json.decode(response.body))
+          .message);
+      print("success 123 ==${_success}");
+      if (_success == 200) {
+        FlutterToast_message(_message);
+        final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+        await mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
+        final homeScreenProviderData =  Provider.of<HomeScreenProvider>(context, listen: false);
+        await homeScreenProviderData.singal_day_data_gate_api1(DateTime.now());
+        notifyListeners();
+        // Get.to(() => Pre_Question_Screen());
+      }
+      else{
+        FlutterToast_message(_message);
+      }
+    }
+    else {
+      if(response.statusCode ==401){
+        directLogOutPopup();
+      }
+      FlutterToast_message(json.decode(response.body)['message']);
+
+    }
+    return RecipeServeAPIModel.fromJson(json.decode(response.body));
+  }
+
 
 }

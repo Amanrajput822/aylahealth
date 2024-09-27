@@ -28,7 +28,8 @@ void json_add_api_data_calendar_json_fuction(context,String year, String month,S
                 "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString(),
                 "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString(),
                 "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString(),
-                "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString()
+                "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString(),
+                "cust_serves": lodeing_save_data[m]['days'][day]['mealData'][j]['cust_serves'].toString()
               }];
 
               if(int.parse(month)==int.parse(lodeing_save_data[m]['month'])&&int.parse(days.toString())==int.parse(lodeing_save_data[m]['days'][day]['date'])){
@@ -36,6 +37,7 @@ void json_add_api_data_calendar_json_fuction(context,String year, String month,S
                     lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString() == mealDataList[0]['mt_id']&&
                     lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString() == mealDataList[0]['note']&&
                     lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString() == mealDataList[0]['logged']
+                   //&& lodeing_save_data[m]['days'][day]['mealData'][j]['cust_serves'].toString() == mealDataList[0]['cust_serves']
                 ){
                   print('###########');
                   recipe_check = true;
@@ -49,11 +51,11 @@ void json_add_api_data_calendar_json_fuction(context,String year, String month,S
     }
 
     if(recipe_check){
-      FlutterToast_message('This recipe already added');
+      FlutterToast_message('This recipe as already been added.');
     }else{
       addMealDataDynamically(monthsData, month.toString(), days.toString(), mealDataList);
       String jsonData = jsonEncode(monthsData[int.parse(month)-1]['days']);
-     await mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,index);
+      await mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,index,days);
       print(jsonData);
     }
   } catch (e) {
@@ -95,7 +97,8 @@ void change_meals_fuction(context,String remove_year,String remove_month,String 
               "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'],
               "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'],
               "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'],
-              "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged']
+              "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'],
+              "cust_serves": lodeing_save_data[m]['days'][day]['mealData'][j]['cust_serves']
             }];
 
             if(int.parse(add_month)==int.parse(lodeing_save_data[m]['month'])&&int.parse(add_day.toString())==int.parse(lodeing_save_data[m]['days'][day]['date'])){
@@ -103,6 +106,7 @@ void change_meals_fuction(context,String remove_year,String remove_month,String 
                   lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString() == add_mealDataList[0]['mt_id']&&
                   lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString() == add_mealDataList[0]['note']&&
                   lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString() == add_mealDataList[0]['logged']
+                // && lodeing_save_data[m]['days'][day]['mealData'][j]['cust_serves'].toString() == add_mealDataList[0]['cust_serves']
               ){
                 print('###########');
                 recipe_check = true;
@@ -118,18 +122,20 @@ void change_meals_fuction(context,String remove_year,String remove_month,String 
   print('recipe_check');
   print(recipe_check);
   if(recipe_check){
-    FlutterToast_message('This recipe already added');
+    FlutterToast_message('This recipe as already been added.');
   }else{
-    addMealDataDynamically(monthsData, add_month.toString(), add_day.toString(), add_mealDataList);
-    removeMealDataObject(context,monthsData,int.parse(remove_month), int.parse(remove_day), remove_selectedRecId,remove_selectedMtId,remove_year);
-    index = index;
-    Timer(Duration(seconds:1), () async {
-      String add_jsonData = jsonEncode(monthsData[int.parse(add_month)-1]['days']);
-      String remove_jsonData = jsonEncode(monthsData[int.parse(remove_month)-1]['days']);
-      mealsModel.add_update_meals_api(context,remove_year.toString(),remove_month.toString(),remove_jsonData.toString(),monthsData,index);
-     await mealsModel.add_update_meals_api(context,add_year.toString(),add_month.toString(),add_jsonData.toString(),monthsData,index);
 
-    });
+    addMealDataDynamically(monthsData, add_month.toString(), add_day.toString(), add_mealDataList);
+    removeMealDataObject(context, monthsData, int.parse(remove_month), int.parse(remove_day), remove_selectedRecId, remove_selectedMtId, remove_year);
+    index = index;
+    String add_jsonData = jsonEncode(monthsData[int.parse(add_month) - 1]['days']);
+    String remove_jsonData = jsonEncode(monthsData[int.parse(remove_month) - 1]['days']);
+
+    Future<void> addMealData = mealsModel.add_update_meals_api(context, add_year.toString(), add_month.toString(), add_jsonData.toString(), monthsData, index, add_day.toString());
+    Future<void> removeMealData = mealsModel.add_update_meals_api(context, remove_year.toString(), remove_month.toString(), remove_jsonData.toString(), monthsData, index, remove_day.toString());
+    mealsModel.get_meals_calendardata_api(context, add_year.toString(),add_month.toString(),index,"1",mealsModel.selectedDay);
+
+    await Future.wait([addMealData, removeMealData]);
   }
 
 }
@@ -153,7 +159,8 @@ void apidata_lode_calendar_json_fuction(context,String year, String month,List<M
                 "rec_id": apimonthdata[day]['mealData'][j]['rec_id'].toString(),
                 "mt_id": apimonthdata[day]['mealData'][j]['mt_id'].toString(),
                 "note": apimonthdata[day]['mealData'][j]['note'].toString(),
-                "logged":apimonthdata[day]['mealData'][j]['logged'].toString()
+                "logged":apimonthdata[day]['mealData'][j]['logged'].toString(),
+                "cust_serves":apimonthdata[day]['mealData'][j]['cust_serves'].toString()
               }];
               addMealDataDynamically(monthsData, month.toString(), apimonthdata[day]['date'].toString(), mealDataList);
             }
@@ -170,7 +177,8 @@ void apidata_lode_calendar_json_fuction(context,String year, String month,List<M
                 "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString(),
                 "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString(),
                 "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString(),
-                "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString()
+                "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString(),
+                "cust_serves": lodeing_save_data[m]['days'][day]['mealData'][j]['cust_serves'].toString()
               }];
               addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'].toString(), mealDataList);
 
@@ -194,7 +202,8 @@ void apidata_lode_calendar_json_fuction(context,String year, String month,List<M
                   "rec_id": apimonthdata[day]['mealData'][j]['rec_id'].toString(),
                   "mt_id": apimonthdata[day]['mealData'][j]['mt_id'].toString(),
                   "note": apimonthdata[day]['mealData'][j]['note'].toString(),
-                  "logged":apimonthdata[day]['mealData'][j]['logged'].toString()
+                  "logged":apimonthdata[day]['mealData'][j]['logged'].toString(),
+                  "cust_serves":apimonthdata[day]['mealData'][j]['cust_serves'].toString()
                 }];
                 addMealDataDynamically(monthsData, month.toString(), apimonthdata[day]['date'].toString(), mealDataList);
               }
@@ -230,7 +239,8 @@ void remove_meals_fuction(context,String year,String month,String day,selectedRe
               "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'],
               "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'],
               "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'],
-              "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged']
+              "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'],
+              "cust_serves": lodeing_save_data[m]['days'][day]['mealData'][j]['cust_serves']
             }];
             addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'], mealDataList);
           }
@@ -241,12 +251,12 @@ void remove_meals_fuction(context,String year,String month,String day,selectedRe
   removeMealDataObject(context,monthsData,int.parse(month), int.parse(day), selectedRecId,selectedMtId,year);
 
   String jsonData = jsonEncode(monthsData[int.parse(month)-1]['days']);
- await mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,index);
+ await mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,index,day);
   print(jsonData);
 }
 
 /// update json data create function
-void update_json_create_fuction(context,String year,String month,String day,selectedRecId,selectedMtId,String logged,int index,String notes,int indexid) async{
+void update_json_create_fuction(context,String year,String month,String day,selectedRecId,selectedMtId,String logged,int index,String notes,int indexid,String cust_serves) async{
   // removeDataFromFile();
   final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
 
@@ -267,7 +277,8 @@ void update_json_create_fuction(context,String year,String month,String day,sele
               "rec_id": lodeing_save_data[m]['days'][day]['mealData'][j]['rec_id'].toString(),
               "mt_id": lodeing_save_data[m]['days'][day]['mealData'][j]['mt_id'].toString(),
               "note": lodeing_save_data[m]['days'][day]['mealData'][j]['note'].toString(),
-              "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString()
+              "logged": lodeing_save_data[m]['days'][day]['mealData'][j]['logged'].toString(),
+              "cust_serves": lodeing_save_data[m]['days'][day]['mealData'][j]['cust_serves'].toString()
             }];
             addMealDataDynamically(monthsData, lodeing_save_data[m]['month'].toString(), lodeing_save_data[m]['days'][day]['date'].toString(), mealDataList);
           }
@@ -275,10 +286,10 @@ void update_json_create_fuction(context,String year,String month,String day,sele
       }}
   }
 
-  editMealData(monthsData, month,int.parse(day), index, notes.toString(), selectedRecId, logged ,selectedMtId);
+  editMealData(monthsData, month,int.parse(day), index, notes.toString(), selectedRecId, logged ,selectedMtId,cust_serves);
 
   String jsonData = jsonEncode(monthsData[int.parse(month)-1]['days']);
- await mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,indexid);
+ await mealsModel.add_update_meals_api(context,year.toString(),month.toString(),jsonData.toString(),monthsData,indexid,day);
 
   print(jsonData);
 }
@@ -437,7 +448,7 @@ void addMealDataDynamically(List<Map<String, dynamic>> monthsData, String monthN
   }
 }
 /// edite meals data function
-void editMealData(List<Map<String, dynamic>> monthsData, String monthName, int day, int index,  String note,  String recId,  String logged ,String mtId) {
+void editMealData(List<Map<String, dynamic>> monthsData, String monthName, int day, int index,  String note,  String recId,  String logged ,String mtId,String cust_serves) {
   int monthIndex = -1;
   for (int i = 0; i < monthsData.length; i++) {
     if (monthsData[i]['month'] == monthName) {
@@ -456,6 +467,7 @@ void editMealData(List<Map<String, dynamic>> monthsData, String monthName, int d
         mealData['rec_id'] = recId;
         mealData['note'] = note;
         mealData['logged'] = logged;
+        mealData['cust_serves'] = cust_serves;
       } else {
         print('Invalid index: $index');
       }

@@ -1,25 +1,26 @@
 
+import 'package:aylahealth/screens/notification_screen/newNotificationFile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 
 import 'DefaultFirebaseOptions.dart';
 import 'common/SharedPrefHelper.dart';
 import 'myapp.dart';
 
 
-final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-
-
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+   // await FlutterInappPurchase.instance.initialize();
+  await Firebase.initializeApp();
   await SharedPrefHelper.init();
-  // await NotificationHandler.initialize();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+//  NotificationHandler.firebaseInit();
+ // NotificationHandler.initialize();
+
   SystemChrome.setPreferredOrientations(
     [
       DeviceOrientation.portraitUp,

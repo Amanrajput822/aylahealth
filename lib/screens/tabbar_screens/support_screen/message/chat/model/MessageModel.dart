@@ -30,7 +30,7 @@ class Message {
     if(json["receiverId"].runtimeType==String||json["receiverId"].runtimeType==int){
       receiverId=json["receiverId"].toString();
     }else{
-      receiverId="33";
+      receiverId="11";
     }
     return Message(
         text: json["text"],

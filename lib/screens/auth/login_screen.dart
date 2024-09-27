@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/auth/signup_type.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../common/SharedPrefHelper.dart';
 import '../../common/api_common_fuction.dart';
@@ -24,9 +26,9 @@ import '../../common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
 import '../../models/auth model/user_login_model.dart';
-import '../onbording_screen/pre_question_loding_screen.dart';
-import '../tabbar_screens/home/homeScreenProvider.dart';
-import '../tabbar_screens/my_meals/My_Meals_Provider.dart';
+
+import '../subscription_screens/Subscription.dart';
+import '../subscription_screens/subscriptionProvider.dart';
 import 'app_cache_clear.dart';
 import 'forgot_password_screens/forgotpassword_screen.dart';
 import 'package:http/http.dart' as http;
@@ -66,7 +68,7 @@ class _LogInState extends State<LogIn> {
     type_check();
 
   }
-
+/// device type check function
   void type_check(){
     if (Platform.isIOS) {
       divece_type= '2';
@@ -80,11 +82,11 @@ class _LogInState extends State<LogIn> {
     }
   }
 
-
+/// sign in api call function
 
   Future<user_login_model> signin() async {
-    deleteCacheDir();
-    deleteAppDir();
+  //  FirebaseMessaging.instance.requestPermission();
+
     fcmToken = await FirebaseMessaging.instance.getToken();
     check().then((intenet) {
       if (intenet) {
@@ -94,6 +96,7 @@ class _LogInState extends State<LogIn> {
         FlutterToast_Internet();
       }
     });
+    print('aman login api param data');
     Map toMap() {
       var map =  Map<String, dynamic>();
       map["cust_email"] = txt_email.text.toString().trim();
@@ -103,19 +106,20 @@ class _LogInState extends State<LogIn> {
 
       return map;
     }
+    print('aman login api param data');
     print(toMap());
     var response = await http.post(
       Uri.parse(Endpoints.baseURL+Endpoints.Login),
       body: toMap(),
     );
-
+    print('aman login api data');
     print(response.body.toString());
     success = (user_login_model.fromJson(json.decode(response.body)).status);
     message = (user_login_model.fromJson(json.decode(response.body)).message);
     print("success 123 ==${success??""}");
     if (success == 200) {
 
-        Navigator.pop(context);
+      Navigator.pop(context);
 
         final user = user_login_model.fromJson(json.decode(response.body)).data!;
         FlutterToast_message(message??"");
@@ -131,16 +135,16 @@ class _LogInState extends State<LogIn> {
           ),
         );
         prefs.setString(
-          'login_user_name',
-        (  "${json.encode(
-            user_login_model.fromJson(json.decode(response.body))
-            .data!
-            .custFirstname ?? '',
-    )}""\t""${json.encode(
-            user_login_model.fromJson(json.decode(response.body))
-            .data!
-            .custLastname ?? '',
-    )}")
+            'login_user_name',
+            (  "${json.encode(
+              user_login_model.fromJson(json.decode(response.body))
+                  .data!
+                  .custFirstname ?? '',
+            )}""\t""${json.encode(
+              user_login_model.fromJson(json.decode(response.body))
+                  .data!
+                  .custLastname ?? '',
+            )}")
         );
         prefs.setString(
           'login_user_email',
@@ -163,19 +167,24 @@ class _LogInState extends State<LogIn> {
 
         prefs.setBool(
           'user_login_time',
-           true,
+          true,
         );
         SharedPrefHelper.userId = int.tryParse(user.custId.toString());
         SharedPrefHelper.name =  "${user.custFirstname}""\t""${user.custLastname}";
         SharedPrefHelper.email = user.custEmail ?? "";
         SharedPrefHelper.authToken = user.accessToken ?? "";
 
+      //  Get.offAll(() => SubScreen());
         Get.offAll(() => New_Bottombar_Screen());
         txt_email.clear();
         txt_pass.clear();
         FlutterToast_message(message??"");
 
-    } else {
+      final subscriptionProvider = Provider.of<SubscriptionProvider>(context, listen: false);
+
+      subscriptionProvider.checkSubscriptionAPI(context,'LoginScreen');
+    }
+    else {
       Navigator.pop(context);
       error_dialog(message??"");
     }
@@ -183,7 +192,7 @@ class _LogInState extends State<LogIn> {
   }
 
 
-
+/// error dialog function
 
   void error_dialog(message){
     showDialog(
@@ -217,6 +226,26 @@ class _LogInState extends State<LogIn> {
               ),),
           );
         });
+  }
+
+ // /// Url Launcher function
+ //  void _launchURL(String url) async {
+ //    print("launchURL onClick");
+ //    print("url: ${url}");
+ //    await launch(url);
+ //    if (await canLaunch(url)) {
+ //
+ //      await launch(url);
+ //    } else {
+ //      throw 'Could not launch $url';
+ //    }
+ //  }
+  /// Url Launcher function
+  void _launchURL(String url) async {
+    final Uri _url = await Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   @override
@@ -344,20 +373,35 @@ class _LogInState extends State<LogIn> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text('Terms of use',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontFamily: fontFamilyText,
-                              color: colorShadowBlue,
-                              fontWeight: fontWeight400,
+                          InkWell(
+                            onTap : () async {
+                              _launchURL('https://aylahealth.com.au/terms-conditions');
+                              //Code to launch your URL
+                            },
+                            child: Text('Terms of use',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: fontFamilyText,
+                                color: colorShadowBlue,
+                                fontWeight: fontWeight400,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           ),
-                          Text('Privacy & cookies',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontFamily: fontFamilyText,
-                              color: colorShadowBlue,
-                              fontWeight: fontWeight400,
+                          InkWell(
+                            onTap : () async {
+
+                              _launchURL('https://aylahealth.com.au/privacy-policy');
+                              //Code to launch your URL
+                            },
+                            child: Text('Privacy & cookies',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontFamily: fontFamilyText,
+                                color: colorShadowBlue,
+                                fontWeight: fontWeight400,
+                                decoration: TextDecoration.underline,
+                              ),
                             ),
                           )
                         ],

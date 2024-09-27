@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fraction/fraction.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
@@ -17,11 +18,14 @@ import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../common/SharedPrefHelper.dart';
 import '../../../common/commonwidgets/button.dart';
 import '../../../common/formtextfield/mytextfield.dart';
 import '../../../common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
+import '../../../common/new_bottombar_screen/New_Bottombar_Screen.dart';
 import '../../../common/styles/Fluttertoast_internet.dart';
 import '../../../common/styles/const.dart';
+import '../../subscription_screens/sub_popup/subscription_plan_popup.dart';
 import '../recipes screens/recipe_description/recipes_description_screen.dart';
 import '../recipes screens/recipe_screen/RecipeData_Provider.dart';
 import 'My_Meals_Provider.dart';
@@ -40,6 +44,9 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
   AppLifecycleState? _appLifecycleState;
 
   bool selectButton = false;
+
+  DateTime toDay = DateTime.now();
+
 
   TextEditingController txt_search = TextEditingController();
 
@@ -66,13 +73,72 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
     mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,0);
     mealsModel.singal_day_data_gate_api(mealsModel.selectedDay!,true,0);
 
-     _timer = Timer.periodic(Duration(days: 1), (timer) {
-       _updateSelectedDay(mealsModel.focusedDay!);
-     });
+     // _timer = Timer.periodic(Duration(seconds:20), (timer) {
+     //   _updateDate();
+     // });
+     _initializeDate();
   }
+  void _initializeDate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? lastDate = prefs.getString('last_date');
+    if (lastDate != null && lastDate != _formatDate(DateTime.now())) {
+      _updateDate();
+    }
+    _scheduleMidnightUpdate(DateTime.now());
+  }
+  void _scheduleMidnightUpdate(DateTime lastDateSave) async {
+    print('lastDateSave: ${_formatDate(lastDateSave)}');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('last_date', _formatDate(lastDateSave));
+
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) async {
+      final now = DateTime.now();
+      String? lastDate = prefs.getString('last_date');
+      print('lastDate: ${lastDate.toString()}');
+      print('now: ${_formatDate(now)}');
+      if (lastDate != _formatDate(now)) {
+        await prefs.setString('last_date', _formatDate(now));
+        _updateDate();
+        _scheduleMidnightUpdate(now);
+      }
+    });
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month}-${date.day}';
+  }
+
+
+  void _updateDate() {
+    final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+
+    setState(() {
+      today = DateTime.now();
+      // Call your mealsModel update functions here
+      mealsModel.singlecalendarstartdate_set(today);
+      mealsModel.singlecalendar_selectedDay(today);
+      mealsModel.userSelectDay_set('Today');
+      mealsModel.singal_day_data_gate_api(today, true, 0);
+      mealsModel.select_tab_data_list!.clear();
+      mealsModel.boolDataList.clear();
+      for (var item in mealsModel.mealData!) {
+        if (int.parse(item.mtId.toString()) == mealsModel.get_meals_planlist_data![0].mtId) {
+          mealsModel.boolDataList.add(false);
+          mealsModel.select_tab_data_list!.add(item);
+        }
+      }
+      _controller = TabController(vsync: this, length: mealsModel.get_meals_planlist_data!.length, initialIndex: 0);
+      mealsModel.selecttab_fuction(0);
+      mealsModel.meal_plan_id_select_fuction(mealsModel.get_meals_planlist_data![0].mtId.toString());
+      mealsModel.get_meals_calendardata_multiple_months_api(context, today, 0);
+    });
+    // Reschedule the timer to run again at the next midnight
+  }
+
 
   @override
   void dispose() {
+    _timer.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -104,6 +170,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
   void _updateSelectedDay(focusedDay) {
     setState(() {
       focusedDay = DateTime.now();
+      print("focusedDay $focusedDay");
     });
   }
    Future<void> toDayDataFunction() async {
@@ -217,10 +284,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
         body:
         /// all Months calendar ///
         mealsModel.calendar_listview?all_months_calendar():
-        mealsModel.loading1
-            ? Container(
-          child: const Center(child: CircularProgressIndicator()),
-        ): Container(
+       Container(
           height: deviceheight(context),
           width: deviceWidth(context),
           padding: const EdgeInsets.only(bottom: 15),
@@ -274,14 +338,20 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                     ),
                     InkWell(
                       onTap: (){
+                        print('mealsModel.notes : ${mealsModel.notes}');
                         if(mealsModel.notes){
+                          print('today_check : ${today_check}');
+                          print('today : ${today}');
+                          print('today_check!=today : ${today_check!=today}');
                           if(today_check!=today){
                             setState(() {
                               mealsModel.singlecalendarstartdate_set(DateTime.now());
                               mealsModel.singlecalendar_selectedDay(DateTime.now());
                               final aDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
                               today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-
+                              print('aDate : ${aDate}');
+                              print('today : ${today}');
+                              print('aDate == today : ${aDate == today}');
                               if(aDate == today) {
                                 mealsModel.userSelectDay_set('Today');
                                 today_check = today;
@@ -331,8 +401,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                   ],
                 ).paddingOnly(left: 17,right: 17,bottom: 12),
                 /// single month calendar
-                mealsModel.loading1
-                    ? Container():  single_months_calendar(),
+               single_months_calendar(),
 
                 Text(mealsModel.user_select_day.toString(),style: TextStyle(
                     fontSize: 24,
@@ -377,86 +446,97 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                                                 if(mealsModel.notes){
                                                   PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                                     context,
-                                                    settings: const RouteSettings(name: "/Recipes_Screen"),
-                                                    screen:  Recipes_Description_Screen(rec_id:mealsModel.select_tab_data_list![index].recId,rec_index:index,txt_search:txt_search.text.toString(),fav_filter:'0',screen:"meals"),
+                                                    settings: const RouteSettings(name: "/Recipes_Description_Screen"),
+                                                    screen:  Recipes_Description_Screen(rec_id:mealsModel.select_tab_data_list![index].recId,rec_index:index,txt_search:txt_search.text.toString(),fav_filter:'0',screen:"meals",screenName:"MyMeals",
+                                                    mlpYear: mealsModel.singleDayaData!.mlpYear.toString(),mlpMonth: mealsModel.singleDayaData!.mlpMonth.toString(),mplDate: mealsModel.singleDayaData!.date.toString(),mtId: mealsModel.select_tab_data_list![index].mtId.toString(),cust_serves:mealsModel.select_tab_data_list![index].cust_serves.toString()),
                                                   );
+                                                 // Navigator.push(context, MaterialPageRoute(builder: (_)=>Recipes_Description_Screen(rec_id:mealsModel.select_tab_data_list![index].recId,rec_index:index,txt_search:txt_search.text.toString(),fav_filter:'0',screen:"meals",screenName:"MyMeals",
+                                                  //    mlpYear: mealsModel.singleDayaData!.mlpYear.toString(),mlpMonth: mealsModel.singleDayaData!.mlpMonth.toString(),mplDate: mealsModel.singleDayaData!.date.toString(),mtId: mealsModel.select_tab_data_list![index].mtId.toString(),cust_serves:mealsModel.select_tab_data_list![index].cust_serves.toString())));
+
+
                                                 }
                                                 else{
                                                   warning_popup();
                                                 }
 
                                               },
-                                              child: Container(
-                                                height:deviceheight(context,0.22),
-                                                width: deviceWidth(context),
-                                                color: colorWhite,
-                                                child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      height: deviceheight(context,0.22),
-                                                      width: deviceWidth(context),
-                                                      child:ClipRRect(
-                                                        borderRadius: BorderRadius.circular(5.0),
-                                                        child: Image.network(mealsModel.select_tab_data_list![index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",fit: BoxFit.fill,
-                                                          errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
-                                                            height: 110,
+                                              child: AspectRatio(
+                                                aspectRatio: 7/5,
+                                                child: Container(
+                                                  color: colorWhite,
+                                                  child: Stack(
+                                                    children: [
+                                                      AspectRatio(
+                                                        aspectRatio: 7/5,
+                                                        child: Container(
 
-                                                            fit: BoxFit.fill,),
-                                                          loadingBuilder: (BuildContext context, Widget child,
-                                                              ImageChunkEvent? loadingProgress) {
-                                                            if (loadingProgress == null) return child;
-                                                            return Center(
-                                                              child: CircularProgressIndicator(
-                                                                value: loadingProgress.expectedTotalBytes != null
-                                                                    ? loadingProgress.cumulativeBytesLoaded /
-                                                                    loadingProgress.expectedTotalBytes!
-                                                                    : null,
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: deviceheight(context,0.22),
-                                                      width: deviceWidth(context),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(right: 15.0,top: 12),
-                                                        child: Row(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          mainAxisAlignment: MainAxisAlignment.end,
-                                                          children: [
+                                                          child:ClipRRect(
+                                                            borderRadius: BorderRadius.circular(5.0),
+                                                            child: Image.network(mealsModel.select_tab_data_list![index].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",fit: BoxFit.fill,
+                                                              errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                                                                height: 110,
 
-                                                            InkWell(
-                                                              onTap: (){
-                                                                setState(() {
-                                                                  if(mealsModel.select_tab_data_list![index].favStatus == 0){
-                                                                    mealsModel.select_tab_data_list![index].favStatus = 1;
-                                                                    recipe_model.likeRecipeData1(context,mealsModel.select_tab_data_list![index].recId);
-                                                                  }
-                                                                  else if(mealsModel.select_tab_data_list![index].favStatus == 1){
-                                                                    mealsModel.select_tab_data_list![index].favStatus = 0;
-                                                                    recipe_model.unlikeRecipeData1(context,mealsModel.select_tab_data_list![index].recId,'','0');
-                                                                  }
-                                                                });
+                                                                fit: BoxFit.fill,),
+                                                              loadingBuilder: (BuildContext context, Widget child,
+                                                                  ImageChunkEvent? loadingProgress) {
+                                                                if (loadingProgress == null) return child;
+                                                                return Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    value: loadingProgress.expectedTotalBytes != null
+                                                                        ? loadingProgress.cumulativeBytesLoaded /
+                                                                        loadingProgress.expectedTotalBytes!
+                                                                        : null,
+                                                                  ),
+                                                                );
                                                               },
-                                                              child: Container(
-                                                                height: 28,width: 28,
-                                                                alignment: Alignment.topRight,
-                                                                child:mealsModel.select_tab_data_list![index].favStatus==1?
-                                                                Center(child: SvgPicture.asset('assets/image/Heart_lick.svg',height: 26,)):
-                                                                Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg',height: 26,)),
-                                                              ),
                                                             ),
-                                                          ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                      AspectRatio(
+                                                        aspectRatio: 7/5,
+                                                        child: SizedBox(
+
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(right: 15.0,top: 12),
+                                                            child: Row(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              children: [
+
+                                                                InkWell(
+                                                                  onTap: (){
+                                                                    setState(() {
+                                                                      if(mealsModel.select_tab_data_list![index].favStatus == 0){
+                                                                        mealsModel.select_tab_data_list![index].favStatus = 1;
+                                                                        recipe_model.likeRecipeData1(context,mealsModel.select_tab_data_list![index].recId);
+                                                                      }
+                                                                      else if(mealsModel.select_tab_data_list![index].favStatus == 1){
+                                                                        mealsModel.select_tab_data_list![index].favStatus = 0;
+                                                                        recipe_model.unlikeRecipeData1(context,mealsModel.select_tab_data_list![index].recId,'','0');
+                                                                      }
+                                                                    });
+                                                                  },
+                                                                  child: Container(
+                                                                    height: 28,width: 28,
+                                                                    alignment: Alignment.topRight,
+                                                                    child:mealsModel.select_tab_data_list![index].favStatus==1?
+                                                                    Center(child: SvgPicture.asset('assets/image/Heart_lick.svg',height: 26,)):
+                                                                    Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg',height: 26,)),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
                                             sizedboxheight(10.0),
+
                                             Text(mealsModel.select_tab_data_list![index].recTitle??"",
                                               style:  TextStyle(
                                                 fontSize: 24,
@@ -464,6 +544,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                                                 color: colorRichblack,
                                                 fontWeight: fontWeight600,
                                               ),),
+
                                             Container(
                                               width: deviceWidth(context),
                                               height: 40,
@@ -632,7 +713,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                                                 ],
                                               ),
                                             ),
-                                            sizedboxheight(15.0),
+                                            sizedboxheight(5.0),
                                             index == mealsModel.selectedIdx? Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
@@ -683,7 +764,8 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                                                                 mealsModel.select_tab_data_list![index].logged.toString(),
                                                                 i,
                                                                 txt_search.text.toString(),
-                                                                int.parse(mealsModel.select_mealplanID.toString())-1
+                                                                int.parse(mealsModel.select_mealplanID.toString())-1,
+                                                                mealsModel.select_tab_data_list![index].cust_serves.toString(),
                                                             );
                                                           }
                                                         }
@@ -742,18 +824,25 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
       actions: [
         IconButton(
         onPressed: (){
-          if(mealsModel.notes){
-            // Navigator.push(context, MaterialPageRoute(builder: (_)=>const ShoppingListScreen()));
-            PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-              context,
-              settings: const RouteSettings(name: "/Recipes_Screen"),
-              screen:  const ShoppingListScreen(),
-            );
+
+
+          if(SharedPrefHelper.subscriptionStatus){
+            if(mealsModel.notes){
+              // Navigator.push(context, MaterialPageRoute(builder: (_)=>const ShoppingListScreen()));
+              PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                context,
+                settings: const RouteSettings(name: "/Recipes_Screen"),
+                screen:  const ShoppingListScreen(),
+              );
+            }
+            else{
+              warning_popup();
+            }
+
           }
           else{
-            warning_popup();
+            showSubscriptionPopup(context);
           }
-
         },
             icon: SvgPicture.asset('assets/image/basket-shopping.svg',color: colorCharcoal,))
       ],
@@ -777,40 +866,46 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
         btnColor: colorBluePigment,
 
         onPressed: () {
-        /// tab bar tab controller
-        Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+          if(SharedPrefHelper.subscriptionStatus){
+            /// tab bar tab controller
+            Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3,context);
 
-       /// calendar data save api
+            /// calendar data save api
 
-        if(recipeModel.fav_filter == '1'){
-          recipeModel.txt_search.clear();
-          recipeModel.selectedfav_filter("0");
-          recipeModel.txt_search.clear();
-          recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-        }
-        else if(recipeModel.txt_search.text.isNotEmpty){
-          recipeModel.txt_search.clear();
-          recipeModel.selectedCollectionIDFunction('0');
-          recipeModel.selectedCollectionIDNameFunction('0');
-          recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-        }
-        else if(recipeModel.selectedCollectionIDName!='0'){
-          recipeModel.txt_search.clear();
-          recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-        }
-       // mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0", mealsModel.selectedDay);
-      //  mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,int.parse(mealsModel.select_mealplanID.toString())-1);
-       /// select day and focused day save
-        recipeModel.selectedDay_data( mealsModel.selectedDay);
-        recipeModel.focusedDay_data( mealsModel.selectedDay);
-        recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.select_mealplanID);
-       /// select meal plan id
-        mealsModel.meal_plan_id_select_fuction(mealsModel.select_mealplanID);
-       /// date string type save
-        recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(mealsModel.selectedDay!));
-       /// screen check function
-        recipeModel.select_screen_data(true);
-        mealsModel.singleDayMeals_change(false);
+            if(recipeModel.fav_filter == '1'){
+              recipeModel.txt_search.clear();
+              recipeModel.selectedfav_filter("0");
+              recipeModel.txt_search.clear();
+              recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+            }
+            else if(recipeModel.txt_search.text.isNotEmpty){
+              recipeModel.txt_search.clear();
+              recipeModel.selectedCollectionIDFunction('0');
+              recipeModel.selectedCollectionIDNameFunction('0');
+              recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+            }
+            else if(recipeModel.selectedCollectionIDName!='0'){
+              recipeModel.txt_search.clear();
+              recipeModel.getRecipeData(context,'','0',recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+            }
+            // mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),int.parse(mealsModel.select_mealplanID.toString())-1,"0", mealsModel.selectedDay);
+            //  mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDay,int.parse(mealsModel.select_mealplanID.toString())-1);
+            /// select day and focused day save
+            recipeModel.selectedDay_data( mealsModel.selectedDay);
+            recipeModel.focusedDay_data( mealsModel.selectedDay);
+            recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.select_mealplanID);
+            /// select meal plan id
+            mealsModel.meal_plan_id_select_fuction(mealsModel.select_mealplanID);
+            /// date string type save
+            recipeModel.selectedDate_string(DateFormat('EEEE d MMM').format(mealsModel.selectedDay!));
+            /// screen check function
+            recipeModel.select_screen_data(true);
+            mealsModel.singleDayMeals_change(false);
+          }
+          else{
+            showSubscriptionPopup(context);
+          }
+
         },
       ),
     );
@@ -835,7 +930,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
           mealsModel.singlecalendar_selectedDay(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
           mealsModel.singlecalendar_focuseday(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day));
         //  mealsModel.singal_day_data_gate_api1(DateTime.now(),0);
-          mealsModel.singal_day_data_gate_api(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day),true,0);
+        //  mealsModel.singal_day_data_gate_api(DateTime(mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,mealsModel.selectedDays!.day),true,0);
           mealsModel.get_meals_calendardata_api(context, mealsModel.selectedDays!.year,mealsModel.selectedDays!.month,0,"0",mealsModel.selectedDays);
 
           mealsModel.get_meals_calendardata_multiple_months_api(context,mealsModel.selectedDays,0);
@@ -977,22 +1072,24 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextButton(onPressed: (){
+                    IconButton(onPressed: (){
                       setState(() {
                         mealsModel.listviewCalendar_hideShow(false);
                         selectButton = false;
                       });
-                    }, child: Row(
-                      children: [
-                        Icon(Icons.chevron_left,color: colorBluePigment,),
-                        Text('Today',style:  TextStyle(
-                          color: colorBluePigment,
-                          fontSize: 16,
-                          fontWeight: fontWeight400,
-                          fontFamily: fontFamilyText,
-                        ),)
-                      ],
-                    )),
+                    }, icon: Icon(Icons.chevron_left,color: colorBluePigment,)
+                    // Row(
+                    //   children: [
+                    //     Icon(Icons.chevron_left,color: colorBluePigment,),
+                    //     // Text('Today',style:  TextStyle(
+                    //     //   color: colorBluePigment,
+                    //     //   fontSize: 16,
+                    //     //   fontWeight: fontWeight400,
+                    //     //   fontFamily: fontFamilyText,
+                    //     // ),)
+                    //   ],
+                    // )
+                    ),
 
                     TextButton(
                         onPressed: (){
@@ -1515,6 +1612,8 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
         onTap: (){
           if(mealsModel.notes){
             setState(() {
+              print('mealsModel.select_tab_data_list![index].cust_serves.toString()');
+              print(mealsModel.select_tab_data_list![index].cust_serves.toString());
               for(int i=0;i<mealsModel.mealData!.length;i++){
                 if(mealsModel.mealData![i].mtId==mealsModel.select_tab_data_list![index].mtId&&mealsModel.mealData![i].recId==mealsModel.select_tab_data_list![index].recId){
                   if(mealsModel.select_tab_data_list![index].logged == '1'){
@@ -1529,7 +1628,9 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                         '0',
                         i,
                         mealsModel.select_tab_data_list![index].note.toString(),
-                        int.parse(mealsModel.select_mealplanID.toString())-1);
+                        int.parse(mealsModel.select_mealplanID.toString())-1,
+                        mealsModel.select_tab_data_list![index].cust_serves.toString(),
+                    );
                     // remove_meals_fuction(context,recipeModel.selectedDay!.year.toString(),recipeModel.selectedDay!.month.toString(),recipeModel.selectedDay!.day.toString(),itam.recId.toString(),itam.mtId.toString(),recipeModel.selectedDay!);
                   }else if(mealsModel.select_tab_data_list![index].logged == '0'){
                     mealsModel.select_tab_data_list![index].logged = '1';
@@ -1543,7 +1644,8 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                         '1',
                         i,
                         mealsModel.select_tab_data_list![index].note.toString(),
-                        int.parse(mealsModel.select_mealplanID.toString())-1
+                        int.parse(mealsModel.select_mealplanID.toString())-1,
+                        mealsModel.select_tab_data_list![index].cust_serves.toString(),
                     );
                   }
                 }
@@ -1800,54 +1902,73 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
     showCupertinoModalPopup(
         barrierDismissible:true,
         context: ctx,
-        builder: (_) => Container(
+        builder: (BuildContext bottomSheetContext) => Container(
           width: 250,
           height: 300,
           padding: EdgeInsets.only(bottom: 50),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20)
           ),
-          child: Container(
+          child: Stack(
+            children: [
+              Container(
 
-            decoration: BoxDecoration(
-                color: colorWhite,
-                borderRadius: BorderRadius.circular(20)
-            ),
-            child: CustomCupertinoPicker(
-
-                highlighterBorder: Border(
-                  top: BorderSide(
-                    width: 0.5, color: HexColor('#BEBEBE'),
-                  ),
-                  bottom: BorderSide(
-                    width: 0.5,  color: HexColor('#BEBEBE'),
-                  ),
+                decoration: BoxDecoration(
+                    color: colorWhite,
+                    borderRadius: BorderRadius.circular(20)
                 ),
-                highlighterBorderWidth: 80,
-                magnification:1.1,
-                scrollPhysics: const FixedExtentScrollPhysics(
-                  parent: BouncingScrollPhysics(),
-                ),
-                itemExtent: 31.0,
-                useMagnifier: true,
-                squeeze: 1.0,diameterRatio: 1.5,
+                child: CustomCupertinoPicker(
 
-                onSelectedItemChanged: (int value) {
-                  print(value);
-                  recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
-
-                },
-                children: mealsModel.get_meals_planlist_data!.map((item) {
-                  return Text(
-                    item.mtName??"",
-                    style: TextStyle(fontSize: 16.0,
-                        fontFamily: fontFamilyText,
-                        fontWeight: fontWeight400,
-                        color: colorRichblack
+                    highlighterBorder: Border(
+                      top: BorderSide(
+                        width: 0.5, color: HexColor('#BEBEBE'),
+                      ),
+                      bottom: BorderSide(
+                        width: 0.5,  color: HexColor('#BEBEBE'),
+                      ),
                     ),
-                  );
-                }).toList()
-            ),
+                    highlighterBorderWidth: 80,
+                    magnification:1.1,
+                    scrollPhysics: const FixedExtentScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    itemExtent: 31.0,
+                    useMagnifier: true,
+                    squeeze: 1.0,diameterRatio: 1.5,
+
+                    onSelectedItemChanged: (int value) {
+                      print(value);
+                      recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
+
+                    },
+                    children: mealsModel.get_meals_planlist_data!.map((item) {
+                      return Text(
+                        item.mtName??"",
+                        style: TextStyle(fontSize: 16.0,
+                            fontFamily: fontFamilyText,
+                            fontWeight: fontWeight400,
+                            color: colorRichblack
+                        ),
+                      );
+                    }).toList()
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(
+                    CupertinoIcons.clear_circled,
+                    color: colorBluePigment, // Customize the color of the close icon
+                    size: 25, // Adjust the icon size
+                  ),
+                  onPressed: () {
+                    Navigator.of(bottomSheetContext).pop(); // Close the bottom sheet
+                  },
+                ),
+              ),
+            ],
           ),
         ));
   }
@@ -1936,7 +2057,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                                               onTap: (){
                                                 Navigator.pop(context);
                                                 /// tab bar tab controller
-                                                Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3);
+                                                Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(3,context);
 
                                                 if(recipeModel.selectedCollectionIDName!='0'){
                                                 recipeModel.txt_search.clear();
@@ -2117,7 +2238,7 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
                           recipeModel.selectedDay.year.toString(),
                           recipeModel.selectedDay.month.toString(),
                           recipeModel.selectedDay.day.toString(),
-                          [{"rec_id":mealsModel.select_tab_data_list![index].recId.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":mealsModel.select_tab_data_list![index].note.toString(),"logged":mealsModel.select_tab_data_list![index].logged.toString()}]
+                          [{"rec_id":mealsModel.select_tab_data_list![index].recId.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":mealsModel.select_tab_data_list![index].note.toString(),"logged":mealsModel.select_tab_data_list![index].logged.toString(),"cust_serves":mealsModel.select_tab_data_list![index].cust_serves.toString()}]
                       );
                     }
                   }
@@ -2135,24 +2256,6 @@ class _MyMealsScreenState extends State<MyMealsScreen>  with WidgetsBindingObser
             FlutterToast_message('Please select Date');
           }
 
-
-          // if(recipeModel.selectedDay != null){
-          //   if(recipeModel.select_mealplanID_recipe!=null){
-          //     if(rec_id!=null){
-          //       json_add_api_data_calendar_json_fuction(context,mealsModel.selectedDay!.year.toString(),mealsModel.selectedDay!.month.toString(),mealsModel.selectedDay!.day.toString(),[{"rec_id":mealsModel.select_tab_data_list![index].recId.toString(),"mt_id":mealsModel.select_tab_data_list![index].mtId.toString(),"note":mealsModel.select_tab_data_list![index].note.toString(),"logged":mealsModel.select_tab_data_list![index].logged.toString()}],int.parse(mealsModel.select_tab_data_list![index].recId.toString())-1);
-          //
-          //
-          //     }
-          //     else{
-          //       FlutterToast_message('Add to your calendar');
-          //     }
-          //   }
-          //   else{
-          //     FlutterToast_message('Choose an eating occasion');
-          //   }
-          // }else{
-          //   FlutterToast_message('Please select Date');
-          // }
         },
       ),
     );

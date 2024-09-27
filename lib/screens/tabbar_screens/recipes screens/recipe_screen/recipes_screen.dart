@@ -22,10 +22,12 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 
+import '../../../../common/SharedPrefHelper.dart';
 import '../../../../common/commonwidgets/button.dart';
 import '../../../../common/formtextfield/mytextfield.dart';
 import '../../../../common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
+import '../../../subscription_screens/sub_popup/subscription_plan_popup.dart';
 import '../../my_meals/calendar_evryday_json.dart';
 import '../../../../models/month_json_model.dart';
 import '../../my_meals/My_Meals_Provider.dart';
@@ -85,6 +87,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                 recipeModel.selectedcategory_id(_selectedRecipeCategory.toString());
                 recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
               }
+              recipeModel.scrollToTop();
               print(_selectedIndex_RecipeCategory);
               print(_selectedRecipeCategory);
             });
@@ -106,6 +109,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
     recipeModel.getRecipeData1(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,'0',recipeModel.selected_filter);
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     mealsModel.get_meals_plantypelist_api();
+
   }
 
   Future<void> _onRefresh() async {
@@ -164,7 +168,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                           recipeModel.txt_search.clear();
                         }
                         recipeModel.txt_search.clear();
-
+                        recipeModel.scrollToTop();
                       }
                       // Navigator.pop(context);
                     }, child: Text("cancel",
@@ -211,7 +215,8 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           recipeModel.selectedCollectionIDFunction('0');
           recipeModel.selectedCollectionIDNameFunction('0');
           recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-        },
+          recipeModel.scrollToTop();
+          },
         icon: SvgPicture.asset('assets/image/heart.svg',width: 18,height: 18,
           color: HexColor('#131A29'),),
       ):IconButton(
@@ -370,6 +375,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                     search_done = true;
                  // recipeModel.recipeList_ditels_api(search_test:txt_search.text.toString());
                     recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                    recipeModel.scrollToTop();
                   }
 
                 });
@@ -384,6 +390,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                       search_done = false;
                       textfieldfocus = false;
                       recipeModel.getRecipeData(context,'',recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                      recipeModel.scrollToTop();
                     }
                   }
                 });
@@ -469,63 +476,70 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                             rec_id:recipeModel.recipe_data_List![index * 2].recId,
                                             rec_index:index * 2,
                                             txt_search:recipeModel.txt_search.text.toString(),
-                                            fav_filter:recipeModel.fav_filter
+                                            fav_filter:recipeModel.fav_filter,
+                                            screenName:"Recipe"
                                         ),
                                       );
                                     },
-                                    child: Container(
-                                      height: 110,width: deviceWidth(context),
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            height: 110,width: deviceWidth(context),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(5),
-                                              child: Image.network(recipeModel.recipe_data_List![index * 2].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                                                height: 110,width: deviceWidth(context),fit: BoxFit.fill,
-                                                errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
-                                                  height: 110,
-                                                  fit: BoxFit.fill,),
-                                                loadingBuilder: (BuildContext context, Widget child,
-                                                    ImageChunkEvent? loadingProgress) {
-                                                  if (loadingProgress == null) return child;
-                                                  return Center(
-                                                    child: CircularProgressIndicator(
-                                                      value: loadingProgress.expectedTotalBytes != null
-                                                          ? loadingProgress.cumulativeBytesLoaded /
-                                                          loadingProgress.expectedTotalBytes!
-                                                          : null,
-                                                    ),
-                                                  );
-                                                },),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: InkWell(
-                                              onTap: (){
-                                                setState(() {
-                                                  if(recipeModel.recipe_data_List![index * 2].favStatus == 0){
-                                                    recipeModel.recipe_data_List![index * 2].favStatus = 1;
-                                                    recipeModel.likeRecipeData1(context,recipeModel.recipe_data_List![index * 2].recId);
-                                                  }
-                                                  else if(recipeModel.recipe_data_List![index * 2].favStatus == 1){
-                                                    recipeModel.recipe_data_List![index * 2].favStatus = 0;
-                                                    recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![index * 2].recId,recipeModel.txt_search.text.toString(),recipeModel.fav_filter);
-                                                    if(recipeModel.fav_filter =='1'){
-                                                      recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                                                    }
-                                                  }
-                                                });
-                                              },
+                                    child: AspectRatio(
+                                      aspectRatio: 7/5,
+                                      child: Container(
+
+                                        child: Stack(
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: 7/5,
                                               child: Container(
-                                                height: 40,width: 40,
-                                                alignment: Alignment.topRight,
-                                                child:recipeModel.recipe_data_List![index * 2].favStatus == 1?Center(child: SvgPicture.asset('assets/image/Heart_lick.svg')): Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg')),
+
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                  child: Image.network(recipeModel.recipe_data_List![index * 2].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                                    height: 110,width: deviceWidth(context),fit: BoxFit.fill,
+                                                    errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                                                      height: 110,
+                                                      fit: BoxFit.fill,),
+                                                    loadingBuilder: (BuildContext context, Widget child,
+                                                        ImageChunkEvent? loadingProgress) {
+                                                      if (loadingProgress == null) return child;
+                                                      return Center(
+                                                        child: CircularProgressIndicator(
+                                                          value: loadingProgress.expectedTotalBytes != null
+                                                              ? loadingProgress.cumulativeBytesLoaded /
+                                                              loadingProgress.expectedTotalBytes!
+                                                              : null,
+                                                        ),
+                                                      );
+                                                    },),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: InkWell(
+                                                onTap: (){
+                                                  setState(() {
+                                                    if(recipeModel.recipe_data_List![index * 2].favStatus == 0){
+                                                      recipeModel.recipe_data_List![index * 2].favStatus = 1;
+                                                      recipeModel.likeRecipeData1(context,recipeModel.recipe_data_List![index * 2].recId);
+                                                    }
+                                                    else if(recipeModel.recipe_data_List![index * 2].favStatus == 1){
+                                                      recipeModel.recipe_data_List![index * 2].favStatus = 0;
+                                                      recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![index * 2].recId,recipeModel.txt_search.text.toString(),recipeModel.fav_filter);
+                                                      if(recipeModel.fav_filter =='1'){
+                                                        recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                                                      }
+                                                    }
+                                                  });
+                                                },
+                                                child: Container(
+                                                  height: 40,width: 40,
+                                                  alignment: Alignment.topRight,
+                                                  child:recipeModel.recipe_data_List![index * 2].favStatus == 1?Center(child: SvgPicture.asset('assets/image/Heart_lick.svg')): Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg')),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -535,7 +549,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                       PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                         context,
                                         settings: const RouteSettings(name: "/Recipes_Screen"),
-                                        screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index * 2].recId,rec_index:index * 2,txt_search:recipeModel.txt_search.text.toString(),fav_filter:recipeModel.fav_filter),
+                                        screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index * 2].recId,rec_index:index * 2,txt_search:recipeModel.txt_search.text.toString(),fav_filter:recipeModel.fav_filter,screenName:"Recipe"),
                                       );
                                     },
                                     child: Text(recipeModel.recipe_data_List![index * 2].recTitle??"",style:TextStyle(
@@ -550,16 +564,24 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                   sizedboxheight(5.0),
                                   InkWell(
                                     onTap: (){
-                                      if(recipeModel.meals_screen){
-                                        print(recipeModel.select_mealplanID_recipe.toString());
 
-                                      }else{
-                                        mealsModel.singleDayMeals_change(false);
-                                        recipeModel.selectedDay_data(DateTime.now());
-                                        recipeModel.selectedDate_string(null);
-                                        recipeModel.meal_plan_id_select_fuction_recipe(null);
+
+                                      if(SharedPrefHelper.subscriptionStatus){
+                                        if(recipeModel.meals_screen){
+                                          print(recipeModel.select_mealplanID_recipe.toString());
+
+                                        }else{
+                                          mealsModel.singleDayMeals_change(false);
+                                          recipeModel.selectedDay_data(DateTime.now());
+                                          recipeModel.selectedDate_string(null);
+                                          recipeModel.meal_plan_id_select_fuction_recipe(null);
+                                        }
+                                        add_meals_bottom_sheet(recipeModel.recipe_data_List!,(index * 2));
+
                                       }
-                                      add_meals_bottom_sheet(recipeModel.recipe_data_List!,(index * 2));
+                                      else{
+                                        showSubscriptionPopup(context);
+                                      }
                                     },
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -607,78 +629,82 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                           context,
                                           settings: const RouteSettings(name: "/Recipes_Screen"),
-                                          screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index * 2 + 1].recId,rec_index:index * 2+1,txt_search:recipeModel.txt_search.text.toString(),fav_filter:recipeModel.fav_filter),
+                                          screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index * 2 + 1].recId,rec_index:index * 2+1,txt_search:recipeModel.txt_search.text.toString(),fav_filter:recipeModel.fav_filter,screenName:"Recipe"),
                                         );
                                       },
-                                      child: Container(
-                                        height: 110,width: deviceWidth(context),
-                                        child: Stack(
-                                          children: [
-                                            Container(
-                                              height: 110,width: deviceWidth(context),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(5),
-                                                child: Image.network(recipeModel.recipe_data_List![index * 2 + 1].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                                                  height: 110,width: deviceWidth(context),fit: BoxFit.fill,
-                                                  errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
-                                                    height: 110,
-                                                    fit: BoxFit.fill,),
-                                                  loadingBuilder: (BuildContext context, Widget child,
-                                                      ImageChunkEvent? loadingProgress) {
-                                                    if (loadingProgress == null) return child;
-                                                    return Center(
-                                                      child: CircularProgressIndicator(
-                                                        value: loadingProgress.expectedTotalBytes != null
-                                                            ? loadingProgress.cumulativeBytesLoaded /
-                                                            loadingProgress.expectedTotalBytes!
-                                                            : null,
-                                                      ),
-                                                    );
-                                                  },),
-                                              ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.topRight,
-                                              child: InkWell(
-                                                onTap: (){
-                                                  // setState(() {
-                                                  //   print('recipe_ditels_data!.favStatus.toString()');
-                                                  //   print(recipeModel.recipe_data_List![index * 2+1].favStatus.toString());
-                                                  //   print('recipe_ditels_data!.favStatus.toString()');
-                                                  //   if(recipeModel.recipe_data_List![index * 2+1].favStatus == 0){
-                                                  //     recipeModel.recipe_data_List![index * 2+1].favStatus = 1;
-                                                  //     recipeModel.recipe_like_api(recipeModel.recipe_data_List![index * 2+1].recId);
-                                                  //   }
-                                                  //   else if(recipeModel.recipe_data_List![index * 2+1].favStatus == 1){
-                                                  //     recipeModel.recipe_data_List![index * 2+1].favStatus = 0;
-                                                  //     recipeModel.recipe_unlike_api(recipeModel.recipe_data_List![index * 2+1].recId);
-                                                  //   }
-                                                  //
-                                                  // });
-                                                  setState(() {
-                                                    if(recipeModel.recipe_data_List![index * 2+1].favStatus == 0){
-                                                      recipeModel.recipe_data_List![index * 2+1].favStatus = 1;
-                                                      recipeModel.likeRecipeData1(context,recipeModel.recipe_data_List![index * 2+1].recId);
-                                                    }
-                                                    else if(recipeModel.recipe_data_List![index * 2+1].favStatus == 1){
-                                                      recipeModel.recipe_data_List![index * 2+1].favStatus = 0;
-                                                      recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![index * 2+1].recId,recipeModel.txt_search.text.toString(),recipeModel.fav_filter);
-                                                      if(recipeModel.fav_filter =='1'){
-                                                        recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
-                                                      }
-                                                    }
-                                                  });
-                                                },
+                                      child: AspectRatio(
+                                        aspectRatio: 7/5,
+                                        child: Container(
+                                          child: Stack(
+                                            children: [
+                                              AspectRatio(
+                                                aspectRatio: 7/5,
                                                 child: Container(
-                                                  height: 40,width: 40,
-
-                                                  alignment: Alignment.topRight,
-
-                                                  child:recipeModel.recipe_data_List![index * 2+1].favStatus == 1?Center(child: SvgPicture.asset('assets/image/Heart_lick.svg')): Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg')),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                    child: Image.network(recipeModel.recipe_data_List![index * 2 + 1].image??"https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                                      height: 110,width: deviceWidth(context),fit: BoxFit.fill,
+                                                      errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=", width:deviceWidth(context,0.4) ,
+                                                        height: 110,
+                                                        fit: BoxFit.fill,),
+                                                      loadingBuilder: (BuildContext context, Widget child,
+                                                          ImageChunkEvent? loadingProgress) {
+                                                        if (loadingProgress == null) return child;
+                                                        return Center(
+                                                          child: CircularProgressIndicator(
+                                                            value: loadingProgress.expectedTotalBytes != null
+                                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                                loadingProgress.expectedTotalBytes!
+                                                                : null,
+                                                          ),
+                                                        );
+                                                      },),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: InkWell(
+                                                  onTap: (){
+                                                    // setState(() {
+                                                    //   print('recipe_ditels_data!.favStatus.toString()');
+                                                    //   print(recipeModel.recipe_data_List![index * 2+1].favStatus.toString());
+                                                    //   print('recipe_ditels_data!.favStatus.toString()');
+                                                    //   if(recipeModel.recipe_data_List![index * 2+1].favStatus == 0){
+                                                    //     recipeModel.recipe_data_List![index * 2+1].favStatus = 1;
+                                                    //     recipeModel.recipe_like_api(recipeModel.recipe_data_List![index * 2+1].recId);
+                                                    //   }
+                                                    //   else if(recipeModel.recipe_data_List![index * 2+1].favStatus == 1){
+                                                    //     recipeModel.recipe_data_List![index * 2+1].favStatus = 0;
+                                                    //     recipeModel.recipe_unlike_api(recipeModel.recipe_data_List![index * 2+1].recId);
+                                                    //   }
+                                                    //
+                                                    // });
+                                                    setState(() {
+                                                      if(recipeModel.recipe_data_List![index * 2+1].favStatus == 0){
+                                                        recipeModel.recipe_data_List![index * 2+1].favStatus = 1;
+                                                        recipeModel.likeRecipeData1(context,recipeModel.recipe_data_List![index * 2+1].recId);
+                                                      }
+                                                      else if(recipeModel.recipe_data_List![index * 2+1].favStatus == 1){
+                                                        recipeModel.recipe_data_List![index * 2+1].favStatus = 0;
+                                                        recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![index * 2+1].recId,recipeModel.txt_search.text.toString(),recipeModel.fav_filter);
+                                                        if(recipeModel.fav_filter =='1'){
+                                                          recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
+                                                        }
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    height: 40,width: 40,
+
+                                                    alignment: Alignment.topRight,
+
+                                                    child:recipeModel.recipe_data_List![index * 2+1].favStatus == 1?Center(child: SvgPicture.asset('assets/image/Heart_lick.svg')): Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg')),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -690,7 +716,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                         PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                           context,
                                           settings: const RouteSettings(name: "/Recipes_Screen"),
-                                          screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index * 2 + 1].recId,rec_index:index * 2+1,txt_search:recipeModel.txt_search.text.toString(),fav_filter:recipeModel.fav_filter),
+                                          screen:  Recipes_Description_Screen(rec_id:recipeModel.recipe_data_List![index * 2 + 1].recId,rec_index:index * 2+1,txt_search:recipeModel.txt_search.text.toString(),fav_filter:recipeModel.fav_filter,screenName:"Recipe"),
                                         );
                                       },
                                       child: Text(recipeModel.recipe_data_List![index * 2 + 1].recTitle??"",style:TextStyle(
@@ -705,15 +731,24 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                     sizedboxheight(5.0),
                                     InkWell(
                                       onTap: (){
-                                        if(recipeModel.meals_screen){
-                                          print(recipeModel.select_mealplanID_recipe.toString());
-                                        }else{
-                                          mealsModel.singleDayMeals_change(false);
-                                          recipeModel.selectedDay_data(DateTime.now());
-                                          recipeModel.selectedDate_string(null);
-                                          recipeModel.meal_plan_id_select_fuction_recipe(null);
+
+                                        if(SharedPrefHelper.subscriptionStatus){
+                                          if(recipeModel.meals_screen){
+                                            print(recipeModel.select_mealplanID_recipe.toString());
+                                          }else{
+                                            mealsModel.singleDayMeals_change(false);
+                                            recipeModel.selectedDay_data(DateTime.now());
+                                            recipeModel.selectedDate_string(null);
+                                            recipeModel.meal_plan_id_select_fuction_recipe(null);
+                                          }
+                                          add_meals_bottom_sheet(recipeModel.recipe_data_List!,(index * 2+1));
+
                                         }
-                                        add_meals_bottom_sheet(recipeModel.recipe_data_List!,(index * 2+1));
+                                        else{
+                                          showSubscriptionPopup(context);
+                                          showSubscriptionPopup(context);
+                                        }
+
                                       },
                                       child: Row(
                                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -964,6 +999,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           recipeModel.getRecipeData(context,recipeModel.txt_search.text.toString(),recipeModel.fav_filter,recipeModel.select_cat_id,recipeModel.save_eatingPattern_id,recipeModel.selected_filter);
            // Get.to(() => Pre_Question_Screen());
           Navigator.pop(context);
+          recipeModel.scrollToTop();
           (context as Element).reassemble();
         },
       ),
@@ -1009,6 +1045,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
           recipeModel.selectedfiltercount(a.toString());
         }
         Navigator.pop(context);
+        recipeModel.scrollToTop();
        // (context as Element).reassemble();
         },
       ),
@@ -1197,54 +1234,74 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
     showCupertinoModalPopup(
         barrierDismissible:true,
         context: ctx,
-        builder: (_) => Container(
+        builder: (BuildContext bottomSheetContext) =>
+            Container(
           width: 250,
           height: 300,
           padding: EdgeInsets.only(bottom: 50),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20)
           ),
-          child: Container(
+          child: Stack(
+            children: [
+              Container(
 
-            decoration: BoxDecoration(
-                color: colorWhite,
-                borderRadius: BorderRadius.circular(20)
-            ),
-            child: CustomCupertinoPicker(
-
-                highlighterBorder: Border(
-                  top: BorderSide(
-                    width: 0.5, color: HexColor('#BEBEBE'),
-                  ),
-                  bottom: BorderSide(
-                    width: 0.5,  color: HexColor('#BEBEBE'),
-                  ),
+                decoration: BoxDecoration(
+                    color: colorWhite,
+                    borderRadius: BorderRadius.circular(20)
                 ),
-                highlighterBorderWidth: 80,
-                magnification:1.1,
-                scrollPhysics: const FixedExtentScrollPhysics(
-                  parent: BouncingScrollPhysics(),
-                ),
-                itemExtent: 31.0,
-                useMagnifier: true,
-                squeeze: 1.0,diameterRatio: 1.5,
+                child: CustomCupertinoPicker(
 
-                onSelectedItemChanged: (int value) {
-                  print(value);
-                  recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
-
-                },
-                children: mealsModel.get_meals_planlist_data!.map((item) {
-                  return Text(
-                    item.mtName??"",
-                    style: TextStyle(fontSize: 16.0,
-                        fontFamily: fontFamilyText,
-                        fontWeight: fontWeight400,
-                        color: colorRichblack
+                    highlighterBorder: Border(
+                      top: BorderSide(
+                        width: 0.5, color: HexColor('#BEBEBE'),
+                      ),
+                      bottom: BorderSide(
+                        width: 0.5,  color: HexColor('#BEBEBE'),
+                      ),
                     ),
-                  );
-                }).toList()
-            ),
+                    highlighterBorderWidth: 80,
+                    magnification:1.1,
+                    scrollPhysics: const FixedExtentScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    itemExtent: 31.0,
+                    useMagnifier: true,
+                    squeeze: 1.0,diameterRatio: 1.5,
+
+                    onSelectedItemChanged: (int value) {
+                      print(value);
+                      recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
+
+                    },
+                    children: mealsModel.get_meals_planlist_data!.map((item) {
+                      return Text(
+                        item.mtName??"",
+                        style: TextStyle(fontSize: 16.0,
+                            fontFamily: fontFamilyText,
+                            fontWeight: fontWeight400,
+                            color: colorRichblack
+                        ),
+                      );
+                    }).toList()
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Icon(
+                    CupertinoIcons.clear_circled,
+                    color: colorBluePigment, // Customize the color of the close icon
+                    size: 25, // Adjust the icon size
+                  ),
+                  onPressed: () {
+                    Navigator.of(bottomSheetContext).pop(); // Close the bottom sheet
+                  },
+                ),
+              ),
+            ],
           ),
         ));
   }
@@ -1335,7 +1392,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                                     child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')
                                 ),
                                 sizedboxheight(deviceheight(context,0.02),),
-                                add_mymeals_Btn(recipe_data_List[index].recId??""),
+                                add_mymeals_Btn(recipe_data_List[index].recId??"",recipe_data_List[index].recServes??""),
                                 sizedboxheight(deviceheight(context,0.01),),
                               ],
                             ),
@@ -1398,7 +1455,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
   }
    /// add meals button  /////////////
 
-  Widget add_mymeals_Btn(rec_id) {
+  Widget add_mymeals_Btn(rec_id,recServes) {
     final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
     final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
@@ -1429,7 +1486,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
                recipeModel.selectedDay.year.toString(),
                recipeModel.selectedDay.month.toString(),
                recipeModel.selectedDay.day.toString(),
-               [{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].note.toString(),"logged":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].logged.toString()}]
+               [{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].note.toString(),"logged":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].logged.toString(),"cust_serves":mealsModel.select_tab_data_list![mealsModel.single_day_recipe_index!].cust_serves.toString()}]
            );
          }
          else{
@@ -1437,7 +1494,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
              if(recipeModel.select_mealplanID_recipe!=null){
                if(rec_id!=null){
                  Navigator.pop(context);
-                 json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
+                 json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0","cust_serves":recServes??""}],int.parse(recipeModel.select_mealplanID_recipe.toString())-1);
                }
                else{
                  FlutterToast_message('Add to your calendar');
@@ -1451,7 +1508,7 @@ class _Recipes_ScreenState extends State<Recipes_Screen> {
            }
          }
          if(recipeModel.meals_screen){
-           Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2);
+           Provider.of<Bottom_NavBar_Provider>(context, listen: false).setcontrollervalue(2,context);
          }
          recipeModel.select_screen_data(false);
          mealsModel.singleDayMeals_change(false);

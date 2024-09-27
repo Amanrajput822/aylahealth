@@ -29,12 +29,14 @@ import '../../common/check_screen.dart';
 import '../../common/direct_logout.dart';
 import '../../common/styles/Fluttertoast_internet.dart';
 import '../../common/styles/showLoaderDialog_popup.dart';
+import '../../inAppPurchase/payment_service.dart';
 import '../../models/onboarding_screens_models/Answer_submit_Model.dart';
 
 import '../../models/onboarding_screens_models/Gender_List_Model.dart';
 import '../../models/onboarding_screens_models/customerNutritionArea_model.dart';
 import '../../models/onboarding_screens_models/ingredient_name_list_model.dart';
 import '../../models/onboarding_screens_models/qution_list_model.dart';
+import '../subscription_screens/Subscription.dart';
 import '../subscription_screens/subscription_screen.dart';
 
 class Pagination_screen extends StatefulWidget {
@@ -418,8 +420,9 @@ class _Pagination_screenState extends State<Pagination_screen> {
           content:  SingleChildScrollView(
             child:  Column(
               children:  [
-                Text('You can select the nutrition interest area and '
-                    'then drag and drop it to rank the selection in order of importance.',
+                Text("Please press and hold, then drag the options to rank them in order of importance.",
+                  // 'You can select the nutrition interest area and '
+                  //   'then drag and drop it to rank the selection in order of importance.',
                   style: TextStyle(
                     fontSize: 14,
                     fontFamily: fontFamilyText,
@@ -642,7 +645,17 @@ class _Pagination_screenState extends State<Pagination_screen> {
                                   }
                                 },
                               ),
-
+                              qustion_data_list![index].queAnswerSource == "INGREDIENT"?
+                              Text("In future versions, these settings will adjust your experience in the app. For now, it will help us understand you more!",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  fontFamily: fontFamilyText,
+                                  color: colorRichblack,
+                                  fontWeight: fontWeight400,
+                                ),
+                                textAlign: TextAlign.center,
+                              ):Container(height: 0),
                             ],
                           ),
                         ),
@@ -667,7 +680,8 @@ class _Pagination_screenState extends State<Pagination_screen> {
                                 textAlign: TextAlign.center,
                               ),
                               qustion_data_list![index].queSubtext == null?Container(height: 0,): sizedboxheight(deviceheight(context,0.05)),
-                              qustion_data_list![index].queSubtext == null?Container(height: 0,):  Text(qustion_data_list![index].queSubtext??"",
+                              qustion_data_list![index].queSubtext == null?Container(height: 0,):
+                              Text(qustion_data_list![index].queSubtext??"",
                                 style: TextStyle(
                                   fontSize: 14,
                                   height: 1.5,
@@ -677,6 +691,20 @@ class _Pagination_screenState extends State<Pagination_screen> {
                                 ),
                                 textAlign: TextAlign.center,
                               ),
+                              qustion_data_list![index].queIndex == 2?
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: Text("Scroll for all the options",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    height: 1.5,
+                                    fontFamily: fontFamilyText,
+                                    color: colorRichblack,
+                                    fontWeight: fontWeight400,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ):Container(height: 0),
                               ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount:qustion_data_list![index].optionData!.length,
@@ -701,7 +729,18 @@ class _Pagination_screenState extends State<Pagination_screen> {
                                       chackboxunchackcolor: colorWhite,
                                       chackboxchackcolor: colorWhite,
                                     ),
-                                  );})
+                                  );}),
+                              qustion_data_list![index].queIndex == 6?
+                              Text("In future versions, these settings will adjust your experience in the app. For now, it will help us understand you more!",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  height: 1.5,
+                                  fontFamily: fontFamilyText,
+                                  color: colorRichblack,
+                                  fontWeight: fontWeight400,
+                                ),
+                                textAlign: TextAlign.center,
+                              ):Container(height: 0),
                             ],
                           ),
                         ),
@@ -986,55 +1025,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
                               ),
 
                               sizedboxheight(deviceheight(context,0.01)),
-                        // BottomPicker.date(
-                        //   title: 'Select your date of birth.',
-                        //   buttonSingleColor: Colors.black12,
-                        //   backgroundColor:Colors.white ,
-                        //   bottomPickerTheme: BottomPickerTheme.orange,
-                        //   height: 200,
-                        //   displaySubmitButton: false,
-                        //   dismissable: false,
-                        //   displayCloseIcon: false,
-                        //   initialDateTime: DateTime.now(),
-                        //   maxDateTime: DateTime.now(),
-                        //   minDateTime: DateTime(1850),
-                        //   dateOrder: DatePickerDateOrder.dmy,
-                        //   pickerTextStyle: TextStyle(color: Colors.black, fontSize: 14 ,fontFamily: 'Messina Sans',
-                        //                 fontWeight: fontWeight400,),
-                        //
-                        //   titleStyle: TextStyle(
-                        //     fontSize: 14,
-                        //     // height: 1.8,
-                        //     fontFamily: fontFamilyText,
-                        //     color: colorRichblack,
-                        //     fontWeight: fontWeight400,
-                        //   ),
-                        //   onChange: (index) {
-                        //     print(index);
-                        //     setState(() {
-                        //       var  selectedDate =  DateFormat("dd-MMMM-yyyy").format(index);
-                        //       print('selectedDate');
-                        //       print(selectedDate);
-                        //       print('selectedDate');
-                        //              _selectedDate = index;
-                        //               select = selectedDate;
-                        //               print(select.toString());
-                        //             });
-                        //   },
-                        //   onSubmit: (index) {
-                        //     print(index);
-                        //     setState(() {
-                        //     var  selectedDate =  DateFormat("dd-MMMM-yyyy").format(index);
-                        //     print('selectedDate');
-                        //     print(selectedDate);
-                        //     print('selectedDate');
-                        //       _selectedDate = index;
-                        //       select = selectedDate;
-                        //       print(select.toString());
-                        //     });
-                        //   },
-                        //   //bottomPickerTheme: BottomPickerTheme.plumPlate,
-                        // ),
+
                               Container(
 
                                 child: DatePickerWidget(
@@ -1046,7 +1037,7 @@ class _Pagination_screenState extends State<Pagination_screen> {
                                   //  locale: DatePicker.localeFromString('th'),
                                   onChange: (DateTime newDate, _) {
                                     setState(() {
-                                      var  selectedDate =  DateFormat("dd-MMMM-yyyy").format(newDate);
+                                      var  selectedDate =  DateFormat("dd/MM/yyyy").format(newDate);
                                     print(selectedDate.toString());
                                      _selectedDate = newDate;
                                       select = selectedDate;
@@ -1076,7 +1067,8 @@ class _Pagination_screenState extends State<Pagination_screen> {
                       children: [
                         GestureDetector(onTap: (){
                           setState(() {
-                            Get.off(() => SubscriptionScreen());
+                           // Get.off(() => SubscriptionScreen());
+                            Get.off(() => Subscription_screen(screenName:"Registration"));
                            //  _currentPageNotifier.value = qustion_data_list!.length;
                            //  _pageController.jumpToPage(qustion_data_list!.length);
                           });
@@ -1148,13 +1140,15 @@ class _Pagination_screenState extends State<Pagination_screen> {
 
                         }
                         else if(qustion_data_list![index].queType == 'DATE'){
-                          select= select??DateTime.now().toString().split(' ')[0];
+                          select= select??DateFormat("dd/MM/yyyy").format(DateTime.now());
+                        //  select= select??DateTime.now().toString().split(' ')[0];
                           add_Customer_Answer_up(qustion_data_list![index].queId.toString(),qustion_data_list![index].queType.toString(),index);
                         }
 
                         if(qustion_data_list!.length == index+1)
                         {
-                          Get.off(() => SubscriptionScreen());
+                          Get.off(() => Subscription_screen(screenName:"Registration"));
+                          // Get.off(() => SubscriptionScreen());
                         }else{
 
                         }

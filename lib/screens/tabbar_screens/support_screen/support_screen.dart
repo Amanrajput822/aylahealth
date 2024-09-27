@@ -9,6 +9,9 @@ import 'package:provider/provider.dart';
 
 import '../../../../../common/commonwidgets/button.dart';
 import '../../../../../common/styles/const.dart';
+import '../../../common/SharedPrefHelper.dart';
+import '../../../common/new_bottombar_screen/Bottom_NavBar_Provider.dart';
+import '../../subscription_screens/sub_popup/subscription_plan_popup.dart';
 import '../modules/module_description_screen/HomeWidget.dart';
 import '../modules/module_description_screen/ModuleDescriptionProvider.dart';
 import 'message/chat/chat_list.dart';
@@ -22,6 +25,11 @@ class SupportScreen extends StatefulWidget {
 }
 
 class _SupportScreenState extends State<SupportScreen> {
+  void resetUnreadMessages() {
+    final BottomNavBarProviderModel = Provider.of<Bottom_NavBar_Provider>(context, listen: false);
+    BottomNavBarProviderModel.unreadMessagesFunction(0);
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +117,7 @@ class _SupportScreenState extends State<SupportScreen> {
                         //       );
                         //     }),
                         sizedboxheight(20.0),
-                        benarcard('Book a Video Appointment','For quality one-on-one coaching',
+                        benarcard('Nutrition Coaching','For quality one-on-one support.',
                             'assets/banner_icon/VideoConsultations.png', HexColor('#D0EEB2'),(){
                               PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
                                 context,
@@ -118,14 +126,21 @@ class _SupportScreenState extends State<SupportScreen> {
                               );
                             }),
                         sizedboxheight(20.0),
-                        benarcard('Live Chat','Ask a nutrition question for a quick answer from our team',
+                        benarcard('Live Chat','Ask a quick nutrition question.',
                             'assets/banner_icon/LiveChat.png', HexColor('#EC90AC'),
                              (){
-                                PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
-                                context,
-                                settings: const RouteSettings(name: "/Support"),
-                                screen:  ChatListScreen(),
-                              );
+
+                               if(SharedPrefHelper.subscriptionStatus){
+                                 PersistentNavBarNavigator.pushNewScreenWithRouteSettings(
+                                   context,
+                                   settings: const RouteSettings(name: "/Support"),
+                                   screen:  ChatListScreen(),
+                                 );
+                               }
+                               else{
+                                 showSubscriptionPopup(context);
+                               }
+
                             }),
                         sizedboxheight(20.0),
                         Container(
@@ -211,7 +226,7 @@ class _SupportScreenState extends State<SupportScreen> {
       onTap: () => action() ,
       child: Container(
         width: deviceWidth(context),
-        height: 100,
+       /// height: 100,
         decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(8)
@@ -221,28 +236,28 @@ class _SupportScreenState extends State<SupportScreen> {
           children: [
             Container(
               width: deviceWidth(context,0.56),
-              padding: const EdgeInsets.only(left: 15),
+              padding: const EdgeInsets.only(left: 15,top: 10,bottom: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(hedingtext,
-                    maxLines: 2,
+                  //  maxLines: 2,
                     style: TextStyle(
                         fontSize: 20,
                         fontFamily: fontFamilyText,
                         color: colorPrimaryColor,
                         fontWeight: fontWeight700,
-                        overflow: TextOverflow.ellipsis
+                      //  overflow: TextOverflow.ellipsis
                     ),),
                   Text(lebletext,
-                    maxLines: 2,
+                   // maxLines: 2,
                     style: TextStyle(
                         fontSize: 12,
                         fontFamily: fontFamilyText,
                         color: colorPrimaryColor,
                         fontWeight: fontWeight400,
-                        overflow: TextOverflow.ellipsis
+                       // overflow: TextOverflow.ellipsis
                     ),)
                 ],
               ),

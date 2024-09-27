@@ -38,8 +38,8 @@ class Show_Updete_Settings_Screen extends StatefulWidget {
   var qut_type;
   var fsh_description;
   int? edit;
-
   List<customerFoodSettingHeadingList_responce>? customerFoodSettingHeading_list;
+
    Show_Updete_Settings_Screen({Key? key,
      this.fsh_text,
      this.qut_id,
@@ -408,8 +408,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
           content:  SingleChildScrollView(
             child:  Column(
               children:  [
-                Text('You can select the nutrition interest area and then '
-                    'drag and drop it to rank the selection in order of importance.',
+                Text("Please press and hold, then drag the options to rank them in order of importance.",
                   style: TextStyle(
                     fontSize: 14,
                     fontFamily: fontFamilyText,
@@ -854,7 +853,7 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
                         if (snapshot.hasData) {
                           return  Container(
                             width: deviceWidth(context),
-                            height: deviceheight(context),
+                           // height: deviceheight(context,0.6),
                             //padding: EdgeInsets.only(left: deviceWidth(context,0.13),right: deviceWidth(context,0.12)),
                             child: ListView.builder(
                                 physics: NeverScrollableScrollPhysics(),
@@ -902,7 +901,17 @@ class _Show_Updete_Settings_ScreenState extends State<Show_Updete_Settings_Scree
                       },
                     ),
 
-
+                    widget.fsh_text == "Food dislikes"||widget.fsh_text == "Allergies"?
+                    Text("In future versions, these settings will adjust your experience in the app. For now, it will help us understand you more!",
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.5,
+                        fontFamily: fontFamilyText,
+                        color: colorRichblack,
+                        fontWeight: fontWeight400,
+                      ),
+                      textAlign: TextAlign.center,
+                    ):Container(height: 0),
                   ],
                 ),
               ),

@@ -5,6 +5,7 @@ import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
 class HomeWidget extends StatefulWidget {
+  const HomeWidget({Key? key}) : super(key: key);
   @override
   _VideoWidget createState() => _VideoWidget();
 }

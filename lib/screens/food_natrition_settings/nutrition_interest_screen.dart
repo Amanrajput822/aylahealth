@@ -258,8 +258,20 @@ class _Nitrition_Interest_ScreenState extends State<Nitrition_Interest_Screen> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0,bottom: 30),
+                      padding: const EdgeInsets.only(left: 8.0,bottom: 10),
                       child: Text('Select any that apply.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: fontFamilyText,
+                          color: colorSlateGray,
+                          fontWeight: fontWeight400,
+                        ),
+
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0,bottom: 30),
+                      child: Text('Scroll for all the options',
                         style: TextStyle(
                           fontSize: 14,
                           fontFamily: fontFamilyText,

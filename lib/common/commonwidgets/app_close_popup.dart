@@ -20,7 +20,9 @@ Future<bool> onWillPop1(context) async {
             actions: [
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: colorEnabledButton,
+
+
+                    backgroundColor: colorEnabledButton,
                     textStyle: TextStyle(fontWeight: FontWeight.bold),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
@@ -37,7 +39,7 @@ Future<bool> onWillPop1(context) async {
                   child: Text('Yes')),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: colorEnabledButton,
+                    backgroundColor: colorEnabledButton,
                     textStyle: TextStyle(fontWeight: FontWeight.bold),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),

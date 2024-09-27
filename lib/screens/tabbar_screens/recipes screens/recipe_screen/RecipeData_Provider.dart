@@ -90,6 +90,15 @@ class RecipeData_Provider with ChangeNotifier {
   RecipeList_data_model post = RecipeList_data_model();
   bool loading = false;
 
+/// recipe list scroll on top function
+  void scrollToTop() {
+    controller!.animateTo(
+      0, // scroll position to go to
+      duration: Duration(seconds: 1), // duration of the scroll
+      curve: Curves.easeInOut, // animation curve
+    );
+  }
+
 
   List<RecipeList_data_Response>? _recipe_data_List ;
   List<RecipeList_data_Response>? get recipe_data_List => _recipe_data_List;

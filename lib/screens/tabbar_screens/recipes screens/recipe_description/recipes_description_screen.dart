@@ -1,26 +1,25 @@
-import 'dart:convert';
+
+import 'dart:async';
 
 import 'package:aylahealth/common/styles/const.dart';
 import 'package:aylahealth/screens/tabbar_screens/recipes%20screens/recipe_description/Recipe_Description_DataProvider.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:custom_cupertino_picker/custom_cupertino_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fraction/fraction.dart';
 import 'package:function_tree/function_tree.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../../common/SharedPrefHelper.dart';
 import '../../../../common/commonwidgets/button.dart';
 import '../../../../common/styles/Fluttertoast_internet.dart';
 import '../../../../models/recipelist/Recipe_details_data_model.dart';
+import '../../../subscription_screens/sub_popup/subscription_plan_popup.dart';
 import '../../home/homeScreenProvider.dart';
 import '../../my_meals/My_Meals_Provider.dart';
 import '../../my_meals/calendar_evryday_json.dart';
@@ -31,7 +30,15 @@ class Recipes_Description_Screen extends StatefulWidget {
   String? txt_search;
   String? fav_filter;
   String? screen;
-   Recipes_Description_Screen({Key? key, this.rec_id,this.rec_index, this.txt_search, this.fav_filter, this.screen}) : super(key: key);
+
+  String? screenName;
+  String? mlpYear;
+  String? mlpMonth;
+  String? mplDate;
+  String? mtId;
+  String? cust_serves;
+   Recipes_Description_Screen({Key? key, this.rec_id,this.rec_index, this.txt_search, this.fav_filter, this.screen,
+     this.screenName,this.mlpYear,this.mlpMonth,this.mplDate,this.mtId,this.cust_serves}) : super(key: key);
 
   @override
   State<Recipes_Description_Screen> createState() => _Recipes_Description_ScreenState();
@@ -39,6 +46,10 @@ class Recipes_Description_Screen extends StatefulWidget {
 
 class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen> with SingleTickerProviderStateMixin{
    final GlobalKey _childKey = GlobalKey();
+   final GlobalKey _childKey1 = GlobalKey();
+
+   bool _isButtonEnabled = false;
+   Timer? _timer;
 
   int tab_value = 0;
 
@@ -50,16 +61,27 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
  void initState() {
    // TODO: implement initState
    super.initState();
+   _startTimer();
   // _future = recipe_ditels_api();
    final recipeDescreptioModel = Provider.of<Recipe_Description_DataProvider>(context, listen: false);
-   recipeDescreptioModel.getRecipeData(context,widget.rec_id);
+   if(widget.screenName == "MyMeals"){
+     recipeDescreptioModel.getRecipeData(context,widget.rec_id,"MyMeals",widget.cust_serves);
+   }
+  else if(widget.screenName == "HomeMyMeals"){
+     recipeDescreptioModel.getRecipeData(context,widget.rec_id,"MyMeals",widget.cust_serves);
+   }
+   else{
+     recipeDescreptioModel.getRecipeData(context,widget.rec_id,"Recipe","");
+   }
+
    _childKey.currentState?.dispose();
+   _childKey1.currentState?.dispose();
    height12 = 0.0;
    isHeightCalculated = false;
    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
      if (!isHeightCalculated) {
        setState(() {
-         height12 =  (_childKey.currentContext!.findRenderObject() as RenderBox).size.height+20+deviceheight(context,0.25);
+         height12 =  (_childKey.currentContext!.findRenderObject() as RenderBox).size.height+20+(_childKey1.currentContext!.findRenderObject() as RenderBox).size.height;
          isHeightCalculated = true;
        });
      }
@@ -73,19 +95,35 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
   void dispose() {
     // TODO: implement dispose
    _childKey.currentState?.dispose();
+   _childKey1.currentState?.dispose();
    height12 = 0.0;
    isHeightCalculated = false;
+   _timer?.cancel();
     super.dispose();
   }
 
+   void _startTimer() {
+     _timer = Timer(const Duration(milliseconds: 600), () {
+       setState(() {
+         _isButtonEnabled = true;
+       });
+     });
+   }
 
+   void _resetTimer() {
+     _timer?.cancel();
+     setState(() {
+       _isButtonEnabled = false;
+     });
+     _startTimer();
+   }
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!isHeightCalculated) {
         setState(() {
-          height12 =  (_childKey.currentContext!.findRenderObject() as RenderBox).size.height+20+deviceheight(context,0.25);
+          height12 =  (_childKey.currentContext!.findRenderObject() as RenderBox).size.height+20+(_childKey1.currentContext!.findRenderObject() as RenderBox).size.height;
           isHeightCalculated = true;
         });
       }
@@ -96,12 +134,14 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
 
     return WillPopScope(
       onWillPop: () async{
+
         if(widget.fav_filter=='1'){
           // Navigator.pop(context);
           if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 0){
             recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'1');
           }
           Navigator.pop(context);
+
         }
         else {
           Navigator.pop(context);
@@ -136,191 +176,204 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Container(
 
-                                height: deviceheight(context,0.25),
-                                width: deviceWidth(context),
-                                color: colorgrey,
-                                child: Stack(
-                                  children: [
-                                    SizedBox(
-                                      height: deviceheight(context,0.25),
-                                      width: deviceWidth(context),
-                                      child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??
-                                         "https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="
-                                        ,fit: BoxFit.fill,
-                                        errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
-                                          fit: BoxFit.fill,),
-                                        loadingBuilder: (BuildContext context, Widget child,
-                                            ImageChunkEvent? loadingProgress) {
-                                          if (loadingProgress == null) return child;
-                                          return Center(
-                                            child: CircularProgressIndicator(
-                                              value: loadingProgress.expectedTotalBytes != null
-                                                  ? loadingProgress.cumulativeBytesLoaded /
-                                                  loadingProgress.expectedTotalBytes!
-                                                  : null,
-                                            ),
-                                          );
-                                        },),
-                                    ),
-                                    Container(
-                                      height: deviceheight(context,0.25),
-                                      width: deviceWidth(context),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            InkWell(
-                                                onTap: (){
-                                                  if(widget.fav_filter=='1'){
-                                                    // Navigator.pop(context);
-                                                    if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 0){
-                                                      recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'1');
+                            AspectRatio(
+                              aspectRatio: 500/357,
+                                child: Container(
+                                  key: _childKey1,
+                                  color: colorgrey,
+                                  child: Stack(
+                                    children: [
+                                      AspectRatio(
+                                        aspectRatio: 500/357,
+                                        child: SizedBox(
 
-                                                    }Navigator.pop(context);
-                                                  }
-                                                  else {
-                                                    Navigator.pop(context);
-                                                  }
-                                                },
-                                                child: CircleAvatar(
-                                                    backgroundColor: Colors.white,
-                                                    radius: 12.5,
-                                                    child: SvgPicture.asset('assets/backbutton.svg',color: colorBluePigment,height: 13,))),
-                                            Row(
+                                          child: Image.network(recipeDescreptioModel.recipe_ditels_data!.image??
+                                             "https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="
+                                            ,fit: BoxFit.fill,
+                                            errorBuilder: (context, url, error) => Image.network("https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=",
+                                              fit: BoxFit.fill,),
+                                            loadingBuilder: (BuildContext context, Widget child,
+                                                ImageChunkEvent? loadingProgress) {
+                                              if (loadingProgress == null) return child;
+                                              return Center(
+                                                child: CircularProgressIndicator(
+                                                  value: loadingProgress.expectedTotalBytes != null
+                                                      ? loadingProgress.cumulativeBytesLoaded /
+                                                      loadingProgress.expectedTotalBytes!
+                                                      : null,
+                                                ),
+                                              );
+                                            },),
+                                        ),
+                                      ),
+                                      AspectRatio(
+                                        aspectRatio: 500/357,
+                                        child: Container(
+
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 InkWell(
                                                     onTap: (){
-                                                      print(recipeModel.meals_screen);
-                                                      if(recipeModel.meals_screen){
-                                                        print(recipeModel.select_mealplanID_recipe.toString());
-                                                      }else{
-                                                        recipeModel.selectedDate_string(null);
-                                                        recipeModel.selectedDay_data(DateTime.now());
-                                                        recipeModel.selectedDate_string(null);
-                                                        recipeModel.meal_plan_id_select_fuction_recipe(null);
-                                                      }
-
-                                                      add_meals_bottom_sheet(recipeDescreptioModel.recipe_ditels_data);
-                                                    },
-                                                    child: SvgPicture.asset('assets/image/Plus.svg',height: 26,)),
-                                                sizedboxwidth(10.0),
-                                                InkWell(
-                                                  onTap: (){
-                                                    setState(() {
-                                                    print('widget.screen');
-                                                    print(widget.screen);
-                                                    print(widget.screen=="Notification");
-                                                      if(widget.screen=="meals"){
-                                                        final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
-                                                        if(mealsModel.select_tab_data_list![widget.rec_index!].favStatus == 0){
-                                                          mealsModel.select_tab_data_list![widget.rec_index!].favStatus = 1;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
-                                                          mealsModel.likeRecipeData1(context,mealsModel.select_tab_data_list![widget.rec_index!].recId);
-                                                        }
-                                                        else if(mealsModel.select_tab_data_list![widget.rec_index!].favStatus == 1){
-                                                          mealsModel.select_tab_data_list![widget.rec_index!].favStatus = 0;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
-                                                          mealsModel.unlikeRecipeData1(context,mealsModel.select_tab_data_list![widget.rec_index!].recId,'','0');
-                                                        }
-
-                                                        // if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 0){
-                                                        //   recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
-                                                        //   recipeModel.likeRecipeData1(context,recipeDescreptioModel.recipe_ditels_data!.recId);
-                                                        // }
-                                                        // else if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 1){
-                                                        //   recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
-                                                        //   if(widget.fav_filter=='1'){
-                                                        //     // recipeModel1.unRecipeData1(context,recipeModel1.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'0');
-                                                        //
-                                                        //   }else{
-                                                        //     recipeModel.unRecipeData1(context,recipeDescreptioModel.recipe_ditels_data!.recId,widget.txt_search,'0');
-                                                        //
-                                                        //   }
-                                                        // }
-                                                      }
-                                                    else if(widget.screen=="Home"){
-                                                        final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
-                                                        if(homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus == 0){
-                                                          homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus = 1;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
-                                                          homeScreenProviderData.likeRecipeData1(context,homeScreenProviderData.recipe_data_List![widget.rec_index!].recId);
-                                                        }
-                                                        else if(homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus == 1){
-                                                          homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus = 0;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
-                                                          homeScreenProviderData.unlikeRecipeData1(context,homeScreenProviderData.recipe_data_List![widget.rec_index!].recId,'','0');
-                                                        }
-
-                                                      }
-
-                                                      else if(widget.screen=="HomeToday"){
-                                                        final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
-                                                        if(homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus == 0){
-                                                          homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus = 1;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
-                                                          homeScreenProviderData.likeRecipeData1(context,homeScreenProviderData.select_tab_data_list1![widget.rec_index!].recId);
-                                                        }
-                                                        else if(homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus == 1){
-                                                          homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus = 0;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
-                                                          homeScreenProviderData.unlikeRecipeData1(context,homeScreenProviderData.select_tab_data_list1![widget.rec_index!].recId,'','0');
-                                                        }
-                                                      }
-
-                                                      else if(widget.screen=="Notification"){
-                                                        if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 0){
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
-                                                          recipeDescreptioModel.recipe_like_api(context,recipeDescreptioModel.recipe_ditels_data!.recId!);
-                                                        }
-                                                        else if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 1){
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
-                                                          recipeDescreptioModel.recipe_unlike_api(context,recipeDescreptioModel.recipe_ditels_data!.recId);
-                                                        }
-                                                      }
-                                                      else{
+                                                      if(widget.fav_filter=='1'){
+                                                        // Navigator.pop(context);
                                                         if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 0){
-                                                          recipeModel.recipe_data_List![widget.rec_index!].favStatus = 1;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
-                                                          recipeModel.likeRecipeData1(context,recipeModel.recipe_data_List![widget.rec_index!].recId);
-                                                        }
-                                                        else if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 1){
-                                                          recipeModel.recipe_data_List![widget.rec_index!].favStatus = 0;
-                                                          recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
-                                                          if(widget.fav_filter=='1'){
-                                                            // recipeModel1.unRecipeData1(context,recipeModel1.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'0');
+                                                          recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'1');
 
-                                                          }else{
-                                                            recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'0');
+                                                        }Navigator.pop(context);
+                                                      }
+                                                      else {
+                                                        Navigator.pop(context);
+                                                      }
+
+                                                    },
+                                                    child: CircleAvatar(
+                                                        backgroundColor: Colors.white,
+                                                        radius: 12.5,
+                                                        child: SvgPicture.asset('assets/backbutton.svg',color: colorBluePigment,height: 13,))),
+                                                Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    InkWell(
+                                                        onTap: (){
+                                                          if(SharedPrefHelper.subscriptionStatus){
+                                                            print(recipeModel.meals_screen);
+                                                            if(recipeModel.meals_screen){
+                                                              print(recipeModel.select_mealplanID_recipe.toString());
+                                                            }else{
+                                                              recipeModel.selectedDate_string(null);
+                                                              recipeModel.selectedDay_data(DateTime.now());
+                                                              recipeModel.selectedDate_string(null);
+                                                              recipeModel.meal_plan_id_select_fuction_recipe(null);
+                                                            }
+
+                                                            add_meals_bottom_sheet(recipeDescreptioModel.recipe_ditels_data);
+                                                          }
+                                                          else{
+                                                            showSubscriptionPopup(context);
+                                                          }
+
+                                                        },
+                                                        child: SvgPicture.asset('assets/image/Plus.svg',height: 26,)),
+                                                    sizedboxwidth(10.0),
+                                                    InkWell(
+                                                      onTap: (){
+                                                        setState(() {
+                                                        print('widget.screen');
+                                                        print(widget.screen);
+                                                        print(widget.screen=="Notification");
+                                                          if(widget.screen=="meals"){
+                                                            final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
+                                                            if(mealsModel.select_tab_data_list![widget.rec_index!].favStatus == 0){
+                                                              mealsModel.select_tab_data_list![widget.rec_index!].favStatus = 1;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                              mealsModel.likeRecipeData1(context,mealsModel.select_tab_data_list![widget.rec_index!].recId);
+                                                            }
+                                                            else if(mealsModel.select_tab_data_list![widget.rec_index!].favStatus == 1){
+                                                              mealsModel.select_tab_data_list![widget.rec_index!].favStatus = 0;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                              mealsModel.unlikeRecipeData1(context,mealsModel.select_tab_data_list![widget.rec_index!].recId,'','0');
+                                                            }
+
+                                                            // if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 0){
+                                                            //   recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                            //   recipeModel.likeRecipeData1(context,recipeDescreptioModel.recipe_ditels_data!.recId);
+                                                            // }
+                                                            // else if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 1){
+                                                            //   recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                            //   if(widget.fav_filter=='1'){
+                                                            //     // recipeModel1.unRecipeData1(context,recipeModel1.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'0');
+                                                            //
+                                                            //   }else{
+                                                            //     recipeModel.unRecipeData1(context,recipeDescreptioModel.recipe_ditels_data!.recId,widget.txt_search,'0');
+                                                            //
+                                                            //   }
+                                                            // }
+                                                          }
+                                                        else if(widget.screen=="Home"){
+                                                            final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
+                                                            if(homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus == 0){
+                                                              homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus = 1;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                              homeScreenProviderData.likeRecipeData1(context,homeScreenProviderData.recipe_data_List![widget.rec_index!].recId);
+                                                            }
+                                                            else if(homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus == 1){
+                                                              homeScreenProviderData.recipe_data_List![widget.rec_index!].favStatus = 0;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                              homeScreenProviderData.unlikeRecipeData1(context,homeScreenProviderData.recipe_data_List![widget.rec_index!].recId,'','0');
+                                                            }
 
                                                           }
-                                                        }
-                                                      }
 
-                                                    });
-                                                  },
-                                                  child: Container(
-                                                    height: 28,width: 28,
+                                                          else if(widget.screen=="HomeToday"){
+                                                            final homeScreenProviderData = Provider.of<HomeScreenProvider>(context, listen: false);
+                                                            if(homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus == 0){
+                                                              homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus = 1;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                              homeScreenProviderData.likeRecipeData1(context,homeScreenProviderData.select_tab_data_list1![widget.rec_index!].recId);
+                                                            }
+                                                            else if(homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus == 1){
+                                                              homeScreenProviderData.select_tab_data_list1![widget.rec_index!].favStatus = 0;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                              homeScreenProviderData.unlikeRecipeData1(context,homeScreenProviderData.select_tab_data_list1![widget.rec_index!].recId,'','0');
+                                                            }
+                                                          }
 
-                                                    alignment: Alignment.topRight,
+                                                          else if(widget.screen=="Notification"){
+                                                            if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 0){
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                              recipeDescreptioModel.recipe_like_api(context,recipeDescreptioModel.recipe_ditels_data!.recId!);
+                                                            }
+                                                            else if(recipeDescreptioModel.recipe_ditels_data!.favStatus == 1){
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                              recipeDescreptioModel.recipe_unlike_api(context,recipeDescreptioModel.recipe_ditels_data!.recId);
+                                                            }
+                                                          }
+                                                          else{
+                                                            if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 0){
+                                                              recipeModel.recipe_data_List![widget.rec_index!].favStatus = 1;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 1;
+                                                              recipeModel.likeRecipeData1(context,recipeModel.recipe_data_List![widget.rec_index!].recId);
+                                                            }
+                                                            else if(recipeModel.recipe_data_List![widget.rec_index!].favStatus == 1){
+                                                              recipeModel.recipe_data_List![widget.rec_index!].favStatus = 0;
+                                                              recipeDescreptioModel.recipe_ditels_data!.favStatus = 0;
+                                                              if(widget.fav_filter=='1'){
+                                                                // recipeModel1.unRecipeData1(context,recipeModel1.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'0');
 
-                                                    child:recipeDescreptioModel.recipe_ditels_data!.favStatus == 1?
-                                                    Center(child: SvgPicture.asset('assets/image/Heart_lick.svg',height: 26,)):
-                                                    Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg',height: 26,)),
-                                                  ),
-                                                )
+                                                              }else{
+                                                                recipeModel.unlikeRecipeData1(context,recipeModel.recipe_data_List![widget.rec_index!].recId,widget.txt_search,'0');
+
+                                                              }
+                                                            }
+                                                          }
+
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        height: 28,width: 28,
+
+                                                        alignment: Alignment.topRight,
+
+                                                        child:recipeDescreptioModel.recipe_ditels_data!.favStatus == 1?
+                                                        Center(child: SvgPicture.asset('assets/image/Heart_lick.svg',height: 26,)):
+                                                        Center(child: SvgPicture.asset('assets/image/Heart_unlick.svg',height: 26,)),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
                                               ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ),
 
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                               Container(
@@ -410,15 +463,24 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                       children: [
                                         InkWell(
                                           onTap: (){
-                                            setState(() {
-                                              if(recipeDescreptioModel.server_count! >1){
-                                                recipeDescreptioModel.updateeatingPattern(recipeDescreptioModel.server_count! - 1);
-                                              }
-                                              else{
-                                                FlutterToast_message('Serve cannot be less than 1');
-                                              }
+                                            if (_isButtonEnabled) {
 
-                                            });
+                                              setState(() {
+                                                if(recipeDescreptioModel.server_count! >1){
+                                                  recipeDescreptioModel.updateeatingPattern(recipeDescreptioModel.server_count! - 1);
+                                                  if(widget.screenName == "MyMeals"){
+                                                    recipeDescreptioModel.recipe_serve_api(context,widget.mlpYear,widget.mlpMonth,widget.mplDate,widget.rec_id,widget.mtId,recipeDescreptioModel.server_count,'decrease');
+                                                  }
+                                                  else if(widget.screenName == "HomeMyMeals"){
+                                                    recipeDescreptioModel.recipe_serve_api(context,widget.mlpYear,widget.mlpMonth,widget.mplDate,widget.rec_id,widget.mtId,recipeDescreptioModel.server_count,'decrease');
+                                                  }
+                                                }
+                                                else{
+                                                  FlutterToast_message('Recipe serves cannot be less than 1');
+                                                }
+                                              });
+                                              _resetTimer();
+                                            }
                                           },
                                           child: CircleAvatar(
                                             radius: 10,
@@ -431,7 +493,8 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                           ),
                                         ),
                                         sizedboxwidth(12.0),
-                                        Text('${recipeDescreptioModel.server_count??""} serve',style: TextStyle(
+                                        Text('${recipeDescreptioModel.server_count??""} '+(recipeDescreptioModel.server_count! <= 1?"serve":"serves"),
+                                          style: TextStyle(
                                           fontSize: 16,
                                           fontFamily: fontFamilyText,
                                           color: colorSlateGray,
@@ -441,15 +504,26 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                         sizedboxwidth(12.0),
                                         InkWell(
                                           onTap: (){
-                                            setState(() {
+                                            if (_isButtonEnabled) {
+                                              setState(() {
 
-                                              if(recipeDescreptioModel.server_count! <10){
-                                                recipeDescreptioModel.updateeatingPattern(recipeDescreptioModel.server_count! + 1);
-                                              }
-                                              else{
-                                                FlutterToast_message('serve cannot be greater 10');
-                                              }
-                                            });
+                                                if(recipeDescreptioModel.server_count! <10){
+                                                  recipeDescreptioModel.updateeatingPattern(recipeDescreptioModel.server_count! + 1);
+                                                  print(widget.screenName);
+                                                  if(widget.screenName == "MyMeals"){
+                                                    recipeDescreptioModel.recipe_serve_api(context,widget.mlpYear,widget.mlpMonth,widget.mplDate,widget.rec_id,widget.mtId,recipeDescreptioModel.server_count,'increase');
+                                                  }
+                                                  else if(widget.screenName == "HomeMyMeals"){
+                                                    recipeDescreptioModel.recipe_serve_api(context,widget.mlpYear,widget.mlpMonth,widget.mplDate,widget.rec_id,widget.mtId,recipeDescreptioModel.server_count,'increase');
+                                                  }
+                                                }
+                                                else{
+                                                  FlutterToast_message('Recipe serves cannot be greater than 10');
+                                                }
+                                              });
+                                              _resetTimer();
+                                            }
+
                                           },
                                           child: CircleAvatar(
                                             radius: 10,
@@ -471,7 +545,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                             ],
                           ),
                         ),
-                        expandedHeight: isHeightCalculated?height12+15:deviceheight(context),
+                        expandedHeight: isHeightCalculated?height12+10:deviceheight(context),
                         bottom:  TabBar(
                           indicatorColor: colorBluePigment,
                           indicatorSize:TabBarIndicatorSize.label ,
@@ -855,53 +929,73 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
      showCupertinoModalPopup(
          barrierDismissible:true,
          context: ctx,
-         builder: (_) => Container(
+         builder: (BuildContext bottomSheetContext) => Container(
            width: 250,
            height: 300,
            padding: EdgeInsets.only(bottom: 50),
            decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(20)
            ),
-           child: Container(
+           child: Stack(
+             children: [
+               Container(
 
-             decoration: BoxDecoration(
-                 color: colorWhite,
-                 borderRadius: BorderRadius.circular(20)
-             ),
-             child: CustomCupertinoPicker(
-
-                 highlighterBorder: Border(
-                   top: BorderSide(
-                     width: 0.5, color: HexColor('#BEBEBE'),
-                   ),
-                   bottom: BorderSide(
-                     width: 0.5,  color: HexColor('#BEBEBE'),
-                   ),
+                 decoration: BoxDecoration(
+                     color: colorWhite,
+                     borderRadius: BorderRadius.circular(20)
                  ),
-                 highlighterBorderWidth: 80,
-                 magnification:1.1,
-                 scrollPhysics: const FixedExtentScrollPhysics(
-                   parent: BouncingScrollPhysics(),
-                 ),
-                 itemExtent: 31.0,
-                 useMagnifier: true,
-                 squeeze: 1.0,diameterRatio: 1.5,
+                 child: CustomCupertinoPicker(
 
-                 onSelectedItemChanged: (int value) {
-                     print(value);
-                     recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
-                 },
-                 children: mealsModel.get_meals_planlist_data!.map((item) {
-                   return Text(
-                     item.mtName??"",
-                     style: TextStyle(fontSize: 16.0,
-                         fontFamily: fontFamilyText,
-                         fontWeight: fontWeight400,
-                         color: colorRichblack
+                     highlighterBorder: Border(
+                       top: BorderSide(
+                         width: 0.5, color: HexColor('#BEBEBE'),
+                       ),
+                       bottom: BorderSide(
+                         width: 0.5,  color: HexColor('#BEBEBE'),
+                       ),
                      ),
-                   );
-                 }).toList()
-             ),
+                     highlighterBorderWidth: 80,
+                     magnification:1.1,
+                     scrollPhysics: const FixedExtentScrollPhysics(
+                       parent: BouncingScrollPhysics(),
+                     ),
+                     itemExtent: 31.0,
+                     useMagnifier: true,
+                     squeeze: 1.0,diameterRatio: 1.5,
+
+                     onSelectedItemChanged: (int value) {
+                       print(value);
+                       recipeModel.meal_plan_id_select_fuction_recipe(mealsModel.get_meals_planlist_data![value].mtId.toString());
+
+                     },
+                     children: mealsModel.get_meals_planlist_data!.map((item) {
+                       return Text(
+                         item.mtName??"",
+                         style: TextStyle(fontSize: 16.0,
+                             fontFamily: fontFamilyText,
+                             fontWeight: fontWeight400,
+                             color: colorRichblack
+                         ),
+                       );
+                     }).toList()
+                 ),
+               ),
+               Positioned(
+                 top: 10,
+                 right: 10,
+                 child: CupertinoButton(
+                   padding: EdgeInsets.zero,
+                   child: Icon(
+                     CupertinoIcons.clear_circled,
+                     color: colorBluePigment, // Customize the color of the close icon
+                     size: 25, // Adjust the icon size
+                   ),
+                   onPressed: () {
+                     Navigator.of(bottomSheetContext).pop(); // Close the bottom sheet
+                   },
+                 ),
+               ),
+             ],
            ),
          ));
    }
@@ -1022,7 +1116,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
                                            child: feildcontainer(recipeModel.select_mealplanID_recipe == null?'At which meal will you eat this?':mealsModel.get_meals_planlist_data![int.parse(recipeModel.select_mealplanID_recipe!) -1].mtName.toString(),"Choose an eating occasion",recipeModel.select_mealplanID_recipe == null?'1':'0')
                                        ),
                                        sizedboxheight(deviceheight(context,0.02),),
-                                       add_mymeals_Btn(recipe_data_List.recId??""),
+                                       add_mymeals_Btn(recipe_data_List.recId??"",recipe_data_List.recServes??""),
                                        sizedboxheight(deviceheight(context,0.01),),
                                      ],
                                    ),
@@ -1086,7 +1180,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
    }
    /// add meals button  /////////////
 
-   Widget add_mymeals_Btn(rec_id) {
+   Widget add_mymeals_Btn(rec_id,recServes) {
      final mealsModel = Provider.of<MyMeals_Provider>(context, listen: false);
      final recipeModel = Provider.of<RecipeData_Provider>(context, listen: false);
 
@@ -1111,7 +1205,7 @@ class _Recipes_Description_ScreenState extends State<Recipes_Description_Screen>
              if(recipeModel.select_mealplanID_recipe!=null){
                if(rec_id!=null){
                  Navigator.pop(context);
-                 json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0"}],0);
+                 json_add_api_data_calendar_json_fuction(context,recipeModel.selectedDay.year.toString(),recipeModel.selectedDay.month.toString(),recipeModel.selectedDay.day.toString(),[{"rec_id":rec_id.toString(),"mt_id":recipeModel.select_mealplanID_recipe.toString(),"note":"","logged":"0","cust_serves":recServes??""}],0);
                }
                else{
                  FlutterToast_message('Add to your calendar');
